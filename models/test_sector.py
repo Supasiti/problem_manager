@@ -1,7 +1,6 @@
 # test sector
 
 from sector import Sector
-from problem import Problem
 import unittest
 
 class TestSector(unittest.TestCase):

@@ -24,6 +24,3 @@ class Sector():
 
 if __name__ == '__main__':
     sector = Sector('Front')
-
-
-    
