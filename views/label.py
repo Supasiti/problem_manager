@@ -25,9 +25,12 @@ class FixedSizeLabel(QLabel):
 class ProblemCell(FixedSizeLabel):
     # cell displaying info on problem if there is
 
-    def __init__(self, width:int, height:int, name:str):
+    def __init__(self, width:int, height:int, row:int, col:int):
         super().__init__(width, height)
-        self.name = name
+        self.row = row
+        self.col = col
+        self.clicked_command = None
+        
         self.set_background_colour(30,30,30)
         self.__add_mouse_effect()
 
@@ -35,13 +38,23 @@ class ProblemCell(FixedSizeLabel):
         self.setFocusPolicy(Qt.StrongFocus)
         self.enterEvent  = self.__add_hover_effect
         self.leaveEvent  = self.__remove_hover_effect
-        
+
+        if not self.clicked_command is None:
+            self.mousePressEvent = self.on_mouse_clicked
+    
+    def on_mouse_clicked(self, event):
+        if not self.clicked_command is None:
+            self.clicked_command(self.row, self.col)
+    
     def __add_hover_effect(self, event):
         self.set_background_colour(60,60,60)
     
     def __remove_hover_effect(self, event):
         self.set_background_colour(30,30,30)
 
+    def set_clicked_command(self, command):
+        self.clicked_command = command
+        self.mousePressEvent = self.on_mouse_clicked
 
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade

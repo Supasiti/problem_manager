@@ -10,20 +10,21 @@ from views.frame import FixedHeightFrame
 
 class TopStation(FixedHeightFrame):
 
-    def __init__(self):
+    def __init__(self, controller):
         super().__init__(height=40)
-        
-        self.date_label = self.create_label()
+        self.controller = controller
+
+        self.date_label = self.__create_label()
         self.date_lineedit = QLineEdit('date here')
-        self.set_layout()
+        self.__set_layout()
         
-    def create_label(self):
+    def __create_label(self):
         label = QLabel('Date')
         label.setFixedWidth(60)
         label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)
         return label
     
-    def set_layout(self):
+    def __set_layout(self):
         layout = QHBoxLayout()
         layout.addWidget(self.date_label)
         layout.addWidget(self.date_lineedit)

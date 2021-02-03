@@ -22,14 +22,14 @@ class MainView(QMainWindow):
         self.presenter = MainPresenter()
         self.controller = MainController(self.presenter)   
         
-        self.top_station = TopStation()
-        self.work_station = WorkStation()
-        self.bottom_station = BottomStation()
-        self.tool_station = ToolStation()
+        self.top_station = TopStation(self.controller)
+        self.work_station = WorkStation(self.controller)
+        self.tool_station = ToolStation(self.controller)
+        self.bottom_station = BottomStation(self.controller)
 
-        self.init_UI()
+        self.__init_UI()
         
-    def init_UI(self):
+    def __init_UI(self):
         self.title = 'Problem Manager'
         self.setWindowTitle(self.title)  
         
@@ -37,13 +37,9 @@ class MainView(QMainWindow):
         self.height =  800
         self.setMinimumSize(self.width, self.height) 
 
-        self.init_window_area()
+        self.__init_window_area()
         
-    def init_window_area(self):
-        
-        # test palette
-        pal = QPalette()
-        pal.setColor(QPalette.Window, QColor(100, 100, 100))
+    def __init_window_area(self):
         
         window_area = QLabel() 
         window_layout = QGridLayout()

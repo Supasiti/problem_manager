@@ -3,7 +3,6 @@
 
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QPushButton
 
 from PyQt5.QtCore import Qt
@@ -12,28 +11,28 @@ from views.frame import FixedHeightFrame
 
 class BottomStation(FixedHeightFrame):
 
-    def __init__(self):
+    def __init__(self, controller):
         super().__init__(height=80)
-        
-        self.path_label = self.create_path_label()
-        self.path_lineedit = QLabel('path here')
-        self.change_button = self.create_change_button()
-        self.set_layout()
+        self.controller    = controller
+        self.path_label    = self.__create_path_label()
+        self.path_info     = QLabel('path here')
+        self.change_button = self.__create_change_button()
+        self.__set_layout()
 
-    def create_path_label(self):
+    def __create_path_label(self):
         path_label = QLabel('Content Path:')
         path_label.setFixedWidth(100)
         path_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)
         return path_label
 
-    def create_change_button(self):
+    def __create_change_button(self):
         button = QPushButton('Change')
         button.setFixedWidth(100)
         return button
     
-    def set_layout(self):
+    def __set_layout(self):
         layout = QHBoxLayout()
         layout.addWidget(self.path_label)
-        layout.addWidget(self.path_lineedit)
+        layout.addWidget(self.path_info)
         layout.addWidget(self.change_button)
         self.setLayout(layout)

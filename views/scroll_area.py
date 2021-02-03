@@ -42,33 +42,36 @@ class FixedHeightScrollArea(ScrollArea):
 class ProblemScrollArea(ScrollArea):
     # area similar to excel sheet to display problem cells
 
-    def __init__(self, n_row: int, n_columns:int):
+    def __init__(self, n_row: int, n_columns:int, controller):
         super().__init__()
+        self.controller = controller
         self.widget = QWidget()
         self.n_row = n_row
         self.n_col = n_columns
         
-
         grid = QGridLayout()
         grid.setSpacing(2)
         grid.setContentsMargins(0,0,0,0)
 
         for index in range(self.n_cells):
-            label = ProblemCell(96, 48, '%s' % index )
+            label = ProblemCell(96, 48, index//self.n_col, index % self.n_col )
+            label.set_clicked_command(self.controller.print_cell_info)
             grid.addWidget(label, index//self.n_col, index % self.n_col)
         
         self.widget.setLayout(grid)
         self.setWidget(self.widget)
     
+
+    
     @property
     def n_cells(self):
         return self.n_row * self.n_col
 
-    def connect_horizontal_scroll_bar(self, delegate):
-        self.horizontalScrollBar().valueChanged.connect(delegate)
+    def connect_horizontal_scroll_bar(self, command):
+        self.horizontalScrollBar().valueChanged.connect(command)
     
-    def connect_vertical_scroll_bar(self, delegate):
-        self.verticalScrollBar().valueChanged.connect(delegate)
+    def connect_vertical_scroll_bar(self, command):
+        self.verticalScrollBar().valueChanged.connect(command)
 
 
 class SectorScrollArea(FixedHeightScrollArea):

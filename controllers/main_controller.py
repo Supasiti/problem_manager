@@ -12,3 +12,6 @@ class MainController(QObject):
         super().__init__()
 
         self.presenter = presenter
+
+    def print_cell_info(self, row, col):
+        print ('row: %s, column: %s' % (row, col))
