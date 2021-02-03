@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt 
 
 class FixedSizeLabel(QLabel):
 
@@ -22,8 +23,38 @@ class FixedSizeLabel(QLabel):
 
 
 class ProblemCell(FixedSizeLabel):
+    # cell displaying info on problem if there is
 
     def __init__(self, width:int, height:int, name:str):
+        super().__init__(width, height)
+        self.name = name
+        self.set_background_colour(30,30,30)
+        self.__add_mouse_effect()
+
+    def __add_mouse_effect(self):
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.enterEvent  = self.__add_hover_effect
+        self.leaveEvent  = self.__remove_hover_effect
+        
+    def __add_hover_effect(self, event):
+        self.set_background_colour(60,60,60)
+    
+    def __remove_hover_effect(self, event):
+        self.set_background_colour(30,30,30)
+
+
+class GradeCell(FixedSizeLabel):
+    # cell displaying info related to the grade
+
+    def __init__(self, width:int, height:int, name:str):
+        super().__init__(width, height)
+        self.name = name
+        self.set_background_colour(30,30,30)
+
+class SectorCell(FixedSizeLabel):
+    # cell displaying info on each sector
+
+     def __init__(self, width:int, height:int, name:str):
         super().__init__(width, height)
         self.name = name
         self.set_background_colour(30,30,30)

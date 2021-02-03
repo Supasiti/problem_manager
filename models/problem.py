@@ -10,11 +10,11 @@ from grade import Grade
 class Problem(
     namedtuple(
         'Problem',
-        ['id', 'RIC', 'grade', 'styles', 'set_by', 'set_date', 'status'],
-        defaults = (-1, RIC(1,1,1), Grade('yellow','mid'), [], '', date.today(), 'on')
+        ['id', 'RIC', 'grade', 'colour', 'sector','styles', 'set_by', 'set_date', 'status'],
+        defaults = (-1, RIC(1,1,1), Grade('yellow','mid'), 'yellow','front', [], '', date.today(), 'on')
     )):
     pass
 
 if __name__ == '__main__':
-    prob = Problem(1,RIC(1,2,3),Grade('yellow','hard'),['pop'],'Thara')
+    prob = Problem(1,RIC(1,2,3),Grade('yellow','hard'),styles=['pop'],set_by='Thara')
     print(prob)

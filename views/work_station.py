@@ -1,9 +1,11 @@
 # main work station with the overview of the current problems in the gym
 
 from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QColor
 
 from views.frame import Frame
-from views.scroll_area import ProblemScrollArea, FixedHeightScrollArea, FixedWidthScrollArea
+from views.scroll_area import ProblemScrollArea, SectorScrollArea, GradeScrollArea
 from views.label import FixedSizeLabel
 
 class WorkStation(Frame):
@@ -12,12 +14,16 @@ class WorkStation(Frame):
         super().__init__()
         
         self.info         = FixedSizeLabel(160, 48)
-        self.sector_view  = FixedHeightScrollArea(48)
-        self.grade_view   = FixedWidthScrollArea(160)
-        self.problem_view = ProblemScrollArea()
-        self.config_layout()
+        self.sector_view  = SectorScrollArea(48, 14)
+        self.grade_view   = GradeScrollArea(160, 19)
+        self.problem_view = ProblemScrollArea(14, 19)
+        self.__config_layout()
+        self.set_background_colour()
+        self.__connect_scroll_areas()
         
-    def config_layout(self):
+    def __config_layout(self):
+        # private method to config the station layout
+
         grid = QGridLayout()
         grid.setContentsMargins(2,2,2,2)
         grid.setSpacing(4)
@@ -27,4 +33,18 @@ class WorkStation(Frame):
         grid.addWidget(self.problem_view, 1, 1)
         self.setLayout(grid)
 
-    
+    def set_background_colour(self):
+        pal = QPalette()
+        pal.setColor(QPalette.Window, QColor(45, 45, 45))
+        self.setAutoFillBackground(True)
+        self.setPalette(pal)
+
+    def __connect_scroll_areas(self):
+        self.problem_view.connect_horizontal_scroll_bar(self.__set_horizontal_bar_value)
+        self.problem_view.connect_vertical_scroll_bar(self.__set_vertical_bar_value)
+
+    def __set_horizontal_bar_value(self, value:int):
+        self.sector_view.set_horizontal_bar_value(value)
+
+    def __set_vertical_bar_value(self, value:int):
+        self.grade_view.set_vertical_bar_value(value)
