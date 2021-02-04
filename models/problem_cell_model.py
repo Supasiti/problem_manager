@@ -1,4 +1,3 @@
-
 from collections import namedtuple 
 
 from models.dicts import GradeDict, ColourDict, SectorDict
@@ -11,7 +10,10 @@ class ProblemCellModel(
     )):
     pass
 
-class ProblemCellModelBuidler():
+class ProblemCellModelBuilder():
+    # build problem cell model from either:
+    #  - problem
+    #  - row, col - in case there isn't one
 
     def __init__(self):
         self.grade_setting = GradeDict()

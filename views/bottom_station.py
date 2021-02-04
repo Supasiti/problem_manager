@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtWidgets import QFileDialog
-
 from PyQt5.QtCore import Qt
 
 from views.frame import FixedHeightFrame
