@@ -38,31 +38,50 @@ class FixedHeightScrollArea(ScrollArea):
         self.setFixedHeight(height)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-
 class ProblemScrollArea(ScrollArea):
     # area similar to excel sheet to display problem cells
 
-    def __init__(self, n_row: int, n_columns:int, controller):
+    widget: QWidget
+    grid: QGridLayout
+    n_row: int
+    n_col: int
+
+    def __init__(self, controller, presenter):
         super().__init__()
         self.controller = controller
-        self.widget = QWidget()
-        self.n_row = n_row
-        self.n_col = n_columns
+        self.presenter  = presenter
         
-        grid = QGridLayout()
-        grid.setSpacing(2)
-        grid.setContentsMargins(0,0,0,0)
+        self.__init__grid()
+    
+    def __init__grid(self):
+        self.widget     = QWidget()
+        self.grid       = QGridLayout()
+        self.__config_grid()
+        self.widget.setLayout(self.grid)
+        self.setWidget(self.widget)
+
+    def __config_grid(self):
+        self.grid.setSpacing(2)
+        self.grid.setContentsMargins(0,0,0,0)
+        self.n_row = self.presenter.n_row
+        self.n_col = self.presenter.n_col
 
         for index in range(self.n_cells):
-            label = ProblemCell(96, 48, index//self.n_col, index % self.n_col )
-            label.set_clicked_command(self.controller.print_cell_info)
-            grid.addWidget(label, index//self.n_col, index % self.n_col)
+            self.__generate_problem_cell(index)
+            
+    def __generate_problem_cell(self, index:int):
+        row   = index//self.n_col
+        col   = index % self.n_col
+        model = self.__get_cell_model(row, col)
+        cell  = ProblemCell(96, 48, model, self.controller)
+        cell.set_clicked_command(self.controller.print_cell_info)
+        self.grid.addWidget(cell, row, col)
         
-        self.widget.setLayout(grid)
-        self.setWidget(self.widget)
-    
-
-    
+    def __get_cell_model(self, row, col):
+        if (row, col) in self.presenter.problem_cell_model_dict.keys():
+            return self.presenter.problem_cell_model_dict[(row,col)]     
+        return self.presenter.get_default_problem_cell_model(row, col)
+        
     @property
     def n_cells(self):
         return self.n_row * self.n_col
@@ -77,7 +96,7 @@ class ProblemScrollArea(ScrollArea):
 class SectorScrollArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
-    def __init__(self, height:int, n_columns:int):
+    def __init__(self, n_columns:int, height:int=48,):
         super().__init__(height)
         self.widget = QWidget()
         self.n_col = n_columns
@@ -106,7 +125,7 @@ class SectorScrollArea(FixedHeightScrollArea):
 class GradeScrollArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym
 
-    def __init__(self, width:int, n_row:int):
+    def __init__(self, n_row:int, width:int=160 ):
         super().__init__(width)
         self.widget = QWidget()
         self.n_row = n_row

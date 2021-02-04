@@ -31,7 +31,7 @@ class RIC():
         setattr(self, tag, value)
 
     def __str__(self):
-        return '(R: %s, I:%s C:%s )' % (self.R, self.I, self.C)
+        return '%s %s %s' % (self.R, self.I, self.C)
 
     def __repr__(self):
         return 'RIC(%s, %s, %s)' % (self.R, self.I, self.C)

@@ -4,14 +4,14 @@
 
 from collections import namedtuple 
 from datetime import date
-from RIC import RIC
-from grade import Grade
+from models.RIC import RIC
+from models.grade import Grade
 
 class Problem(
     namedtuple(
         'Problem',
         ['id', 'RIC', 'grade', 'colour', 'sector','styles', 'set_by', 'set_date', 'status'],
-        defaults = (-1, RIC(1,1,1), Grade('yellow','mid'), 'yellow','front', [], '', date.today(), 'on')
+        defaults = (-1, RIC(1,1,1), Grade('yellow','mid'), 'yellow','front l', [], '', date.today(), 'on')
     )):
     pass
 

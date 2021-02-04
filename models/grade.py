@@ -29,7 +29,7 @@ class Grade():
         setattr(self, tag, lowercase)
 
     def __str__(self):
-        return '%s %s' % (self.difficulty, self.range)
+        return '%s %s' % (self.range, self.difficulty)
 
     def __repr__(self):
         return 'Grade(%s, %s)' % (self.range, self.difficulty)

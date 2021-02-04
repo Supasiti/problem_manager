@@ -16,7 +16,6 @@ class App(QApplication):
         self.main_view = MainView()
         self.main_view.show()
 
-
 if __name__ == '__main__':
     app = App(sys.argv)
     app.setStyle('Fusion')

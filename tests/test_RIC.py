@@ -1,6 +1,6 @@
 # tests for RIC
 import unittest
-from RIC import RIC
+from models.RIC import RIC
 
 class TestRIC(unittest.TestCase):
 
@@ -23,6 +23,3 @@ class TestRIC(unittest.TestCase):
         self.ric = RIC(1,2,3)
         with self.assertRaises(AttributeError):
             self.ric.R = 2
-
-if __name__ == '__main__':
-    unittest.main()

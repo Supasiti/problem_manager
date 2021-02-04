@@ -1,9 +1,9 @@
 # tests for Grade
 
 import unittest
-from grade import Grade
+from models.grade import Grade
 
-class TestRIC(unittest.TestCase):
+class TestGrade(unittest.TestCase):
 
     def test_not_one_of_accepted_grades(self):
         with self.assertRaises(ValueError):
@@ -20,6 +20,5 @@ class TestRIC(unittest.TestCase):
         self.assertEqual(self.grade1.range, self.grade2.range)
         self.assertEqual(self.grade1.difficulty, self.grade2.difficulty)
 
-if __name__ == '__main__':
-    unittest.main()
+
     

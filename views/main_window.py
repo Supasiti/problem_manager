@@ -23,7 +23,7 @@ class MainView(QMainWindow):
         self.controller = MainController(self.presenter)   
         
         self.top_station = TopStation(self.controller)
-        self.work_station = WorkStation(self.controller)
+        self.work_station = WorkStation(self.controller, self.presenter)
         self.tool_station = ToolStation(self.controller)
         self.bottom_station = BottomStation(self.controller)
 
