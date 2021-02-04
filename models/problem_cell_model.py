@@ -1,9 +1,9 @@
 
 from collections import namedtuple 
 
-from presenters.dicts import GradeDict, ColourDict, SectorDict
-from models.problem import Problem 
-from models.colour import Colour
+from models.dicts import GradeDict, ColourDict, SectorDict
+from APImodels.problem import Problem 
+from APImodels.colour import Colour
 
 class ProblemCellModel(
     namedtuple('ProblemCellModel',
@@ -63,7 +63,6 @@ class ProblemCellModelBuidler():
         return Colour(R,G,B)
         
 
-    
     def build_from_row_col(self, row:int, col:int):
 
         bg_colour    = self.__extract_background_colour()

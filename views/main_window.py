@@ -8,7 +8,7 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
 from controllers.main_controller import MainController 
-from presenters.main_presenter import MainPresenter
+from models.main_model import MainModel
 
 from views.work_station import WorkStation
 from views.top_station import TopStation
@@ -19,13 +19,13 @@ class MainView(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.presenter = MainPresenter()
-        self.controller = MainController(self.presenter)   
+        self.model = MainModel()
+        self.controller = MainController(self.model)   
         
         self.top_station = TopStation(self.controller)
-        self.work_station = WorkStation(self.controller, self.presenter)
+        self.work_station = WorkStation(self.controller, self.model)
         self.tool_station = ToolStation(self.controller)
-        self.bottom_station = BottomStation(self.controller)
+        self.bottom_station = BottomStation(self.controller, self.model.bottom_model)
 
         self.__init_UI()
         

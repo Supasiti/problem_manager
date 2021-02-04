@@ -46,10 +46,10 @@ class ProblemScrollArea(ScrollArea):
     n_row: int
     n_col: int
 
-    def __init__(self, controller, presenter):
+    def __init__(self, controller, model):
         super().__init__()
         self.controller = controller
-        self.presenter  = presenter
+        self.model  = model
         
         self.__init__grid()
     
@@ -63,8 +63,8 @@ class ProblemScrollArea(ScrollArea):
     def __config_grid(self):
         self.grid.setSpacing(2)
         self.grid.setContentsMargins(0,0,0,0)
-        self.n_row = self.presenter.n_row
-        self.n_col = self.presenter.n_col
+        self.n_row = self.model.n_row
+        self.n_col = self.model.n_col
 
         for index in range(self.n_cells):
             self.__generate_problem_cell(index)
@@ -78,9 +78,9 @@ class ProblemScrollArea(ScrollArea):
         self.grid.addWidget(cell, row, col)
         
     def __get_cell_model(self, row, col):
-        if (row, col) in self.presenter.problem_cell_model_dict.keys():
-            return self.presenter.problem_cell_model_dict[(row,col)]     
-        return self.presenter.get_default_problem_cell_model(row, col)
+        if (row, col) in self.model.problem_cell_model_dict.keys():
+            return self.model.problem_cell_model_dict[(row,col)]     
+        return self.model.get_default_problem_cell_model(row, col)
         
     @property
     def n_cells(self):

@@ -1,6 +1,6 @@
 # tests for RIC
 import unittest
-from models.RIC import RIC
+from APImodels.RIC import RIC
 
 class TestRIC(unittest.TestCase):
 

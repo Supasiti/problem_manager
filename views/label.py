@@ -7,8 +7,8 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt 
 
-from models.colour import Colour
-from presenters.problem_cell_model import ProblemCellModel
+from APImodels.colour import Colour
+from models.problem_cell_model import ProblemCellModel
 
 class FixedSizeLabel(QLabel):
 

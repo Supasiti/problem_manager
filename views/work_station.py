@@ -10,14 +10,14 @@ from views.label import FixedSizeLabel
 
 class WorkStation(Frame):
 
-    def __init__(self, controller, presenter):
+    def __init__(self, controller, model):
         super().__init__()
         self.controller   = controller
-        self.presenter    = presenter
+        self.model        = model
         self.info         = FixedSizeLabel(160, 48)
         self.sector_view  = SectorScrollArea(14)
         self.grade_view   = GradeScrollArea(19)
-        self.problem_view = ProblemScrollArea(self.controller, self.presenter.problem_scroll_area_model)
+        self.problem_view = ProblemScrollArea(self.controller, self.model.problem_scroll_area_model)
         
         self.__config_layout()
         self.set_background_colour()

@@ -1,7 +1,7 @@
 # tests for Grade
 
 import unittest
-from models.grade import Grade
+from APImodels.grade import Grade
 
 class TestGrade(unittest.TestCase):
 

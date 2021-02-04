@@ -1,10 +1,10 @@
 
 import unittest
-from presenters.problem_cell_model import ProblemCellModelBuidler
-from models.problem import Problem
-from models.grade import Grade
-from models.RIC import RIC
-from models.colour import Colour
+from models.problem_cell_model import ProblemCellModelBuidler
+from APImodels.problem import Problem
+from APImodels.grade import Grade
+from APImodels.RIC import RIC
+from APImodels.colour import Colour
 from datetime import date
 
 class TestProblemCellModel(unittest.TestCase):

@@ -11,11 +11,12 @@ from views.frame import FixedHeightFrame
 
 class BottomStation(FixedHeightFrame):
 
-    def __init__(self, controller):
+    def __init__(self, controller, model):
         super().__init__(height=80)
         self.controller    = controller
+        self.model         = model
         self.path_label    = self.__create_path_label()
-        self.path_info     = QLabel('path here')
+        self.path_info     = QLabel(self.model.content_path)
         self.change_button = self.__create_change_button()
         self.__set_layout()
 

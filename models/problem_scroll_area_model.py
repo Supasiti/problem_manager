@@ -1,12 +1,12 @@
 from PyQt5.QtCore import QObject
-from presenters.dicts import GradeDict, SectorDict
-from presenters.problem_cell_model import ProblemCellModelBuidler
-from models.problem import Problem
-from models.grade import Grade
-from models.RIC import RIC
+from models.dicts import GradeDict, SectorDict
+from models.problem_cell_model import ProblemCellModelBuidler
+from APImodels.problem import Problem
+from APImodels.grade import Grade
+from APImodels.RIC import RIC
 from datetime import date
 
-class ProblemScrollAreaPresenter(QObject):
+class ProblemScrollAreaModel(QObject):
 
     def __init__(self, grade_setting: GradeDict, sector_setting: SectorDict):
         super().__init__()

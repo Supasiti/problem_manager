@@ -4,8 +4,8 @@
 
 from collections import namedtuple 
 from datetime import date
-from models.RIC import RIC
-from models.grade import Grade
+from APImodels.RIC import RIC
+from APImodels.grade import Grade
 
 class Problem(
     namedtuple(
