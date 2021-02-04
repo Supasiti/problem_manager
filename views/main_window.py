@@ -4,9 +4,6 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 
-from PyQt5.QtGui import QPalette
-from PyQt5.QtGui import QColor
-
 from controllers.main_controller import MainController 
 from models.main_model import MainModel
 

@@ -1,12 +1,12 @@
 from PyQt5.QtCore import QObject
+from PyQt5.QtCore import pyqtSignal
+
 from models.dicts import GradeDict, SectorDict
 from models.problem_cell_model import ProblemCellModelBuidler
-from APImodels.problem import Problem
-from APImodels.grade import Grade
-from APImodels.RIC import RIC
-from datetime import date
 
 class ProblemScrollAreaModel(QObject):
+
+    cellModelsChanged = pyqtSignal(bool)
 
     def __init__(self, grade_setting: GradeDict, sector_setting: SectorDict):
         super().__init__()
@@ -17,18 +17,18 @@ class ProblemScrollAreaModel(QObject):
         self.n_col = self.sector_setting.length()
         
         self.builder = ProblemCellModelBuidler()
-        self.problems = [Problem(
-            2, 
-            RIC(1,2,3), 
-            Grade('purple', 'mid'), 
-            'purple',  
-            'cave l', 
-            ['pop', 'layback', 'power'], 
-            'Thara', 
-            date.today(),
-            'on')]
-        self.problem_cell_model_dict = self.__generate_cell_model_dictionary()
-  
+        self._problems = []
+        self.cell_models = self.__generate_cell_model_dictionary()
+    
+    @property
+    def problems(self):
+        return self._problems
+
+    @problems.setter
+    def problems(self, value):
+        self._problems = value
+        self.cell_models = self.__generate_cell_model_dictionary()
+        self.cellModelsChanged.emit(True)
 
     def get_default_problem_cell_model(self, row:int, col:int):
         return self.builder.build_from_row_col(row,col)

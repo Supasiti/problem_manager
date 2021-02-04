@@ -51,9 +51,10 @@ class ProblemScrollArea(ScrollArea):
         self.controller = controller
         self.model  = model
         
-        self.__init__grid()
+        self.__init_grid()
+        self.__connect_with_model()
     
-    def __init__grid(self):
+    def __init_grid(self):
         self.widget     = QWidget()
         self.grid       = QGridLayout()
         self.__config_grid()
@@ -78,8 +79,8 @@ class ProblemScrollArea(ScrollArea):
         self.grid.addWidget(cell, row, col)
         
     def __get_cell_model(self, row, col):
-        if (row, col) in self.model.problem_cell_model_dict.keys():
-            return self.model.problem_cell_model_dict[(row,col)]     
+        if (row, col) in self.model.cell_models.keys():
+            return self.model.cell_models[(row,col)]     
         return self.model.get_default_problem_cell_model(row, col)
         
     @property
@@ -91,7 +92,10 @@ class ProblemScrollArea(ScrollArea):
     
     def connect_vertical_scroll_bar(self, command):
         self.verticalScrollBar().valueChanged.connect(command)
-
+    
+    def __connect_with_model(self):
+        self.model.cellModelsChanged.connect(self.__init_grid)
+    
 
 class SectorScrollArea(FixedHeightScrollArea):
     # area displaying sectors in the gym

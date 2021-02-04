@@ -1,0 +1,24 @@
+[
+    {
+        "id"   : 1,
+        "RIC"  : {"R": 4, "I":4, "C":3 },
+        "grade" : {"range": "red", "difficulty" : "mid"},
+        "colour": "red",
+        "sector" : "arch l",
+        "styles" : ["toe hook", "pop"],
+        "set_by" : "Thara",
+        "set_date" : "2021-02-02",
+        "status" :  "on"
+    },
+    {
+        "id"   : 2,
+        "RIC"  : {"R": 5, "I":2, "C":3 },
+        "grade" : {"range": "black", "difficulty" : "mid"},
+        "colour": "orange",
+        "sector" : "slab",
+        "styles" : ["run", "press"],
+        "set_by" : "Aaron",
+        "set_date" : "2021-02-02",
+        "status" :  "on"
+    }
+]
