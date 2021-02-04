@@ -1,8 +1,6 @@
-import json
-import os
 
 from services.path_builder import PathBuilder
-from APImodels.problem import Problem
+from services.repository_factory import RepositoryFactory
 
 class ProblemRequest():
     # handle all queries about problems
@@ -11,13 +9,10 @@ class ProblemRequest():
 
     def __init__(self):
         self.path_builder = PathBuilder()
+        self.repo_factory = RepositoryFactory()
 
     def get_all_current_problems(self, directory:str):
         
-        self.filepath = self.path_builder.get_latest_gym_filepath(directory)
-   
-        # parse the data
-        with open(self.filepath, 'r') as fid:
-            data = json.loads(fid.read())
-            result = [Problem.from_json(p) for p in data ]
-        return result
+        self.filepath = self.path_builder.get_latest_gym_filepath(directory)   
+        repository    = self.repo_factory.get(self.filepath)
+        return repository.get_all_problems()
