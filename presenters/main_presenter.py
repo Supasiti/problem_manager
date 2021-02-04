@@ -9,6 +9,7 @@ from models.problem import Problem
 from models.grade import Grade
 from models.RIC import RIC
 from datetime import date
+from presenters.problem_scroll_area_presenter import ProblemScrollAreaPresenter
 
 class MainPresenter(QObject):
     # store all the information on the view
@@ -17,31 +18,4 @@ class MainPresenter(QObject):
         super().__init__()
         self.grade_setting  = GradeDict()
         self.sector_setting = SectorDict()
-        self.n_row = self.grade_setting.length()
-        self.n_col = self.sector_setting.length()
-        
-        self.builder = ProblemCellModelBuidler()
-        self.problems = [Problem(
-            2, 
-            RIC(1,2,3), 
-            Grade('purple', 'mid'), 
-            'purple',  
-            'cave l', 
-            ['pop', 'layback', 'power'], 
-            'Thara', 
-            date.today(),
-            'on')]
-        self.problem_cell_model_dict = self.__generate_cell_model_dictionary()
-  
-
-    def get_default_problem_cell_model(self, row:int, col:int):
-        return self.builder.build_from_row_col(row,col)
-
-    def __generate_cell_model_dictionary(self):
-        # generate a dictionary containing (row, column) as keys, and problem cell models
-        # as values
-        models =  [self.__model(problem) for problem in self.problems]
-        return {(model.row, model.col): model for model in models}
-
-    def __model(self, problem):
-        return self.builder.build_from_problem(problem)
+        self.problem_scroll_area_model = ProblemScrollAreaPresenter(self.grade_setting, self.sector_setting)

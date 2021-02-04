@@ -17,7 +17,7 @@ class WorkStation(Frame):
         self.info         = FixedSizeLabel(160, 48)
         self.sector_view  = SectorScrollArea(14)
         self.grade_view   = GradeScrollArea(19)
-        self.problem_view = ProblemScrollArea(self.controller, self.presenter)
+        self.problem_view = ProblemScrollArea(self.controller, self.presenter.problem_scroll_area_model)
         
         self.__config_layout()
         self.set_background_colour()
