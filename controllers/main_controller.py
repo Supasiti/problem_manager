@@ -25,3 +25,5 @@ class MainController(QObject):
         self.model.bottom_model.content_path = directory
         problems = self.problem_request.get_all_current_problems(directory)
         self.model.problem_scroll_area_model.problems = problems
+
+        

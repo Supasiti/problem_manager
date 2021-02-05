@@ -1,6 +1,6 @@
 
 import unittest
-from models.problem_cell_model import ProblemCellModelBuidler
+from models.problem_cell_model import ProblemCellModelBuilder
 from APImodels.problem import Problem
 from APImodels.grade import Grade
 from APImodels.RIC import RIC
@@ -20,7 +20,7 @@ class TestProblemCellModel(unittest.TestCase):
             'Thara', 
             date.today(),
             'on')
-        self.builder = ProblemCellModelBuidler()
+        self.builder = ProblemCellModelBuilder()
 
     def test_build_from_problem(self):
         model = self.builder.build_from_problem(self.problem)

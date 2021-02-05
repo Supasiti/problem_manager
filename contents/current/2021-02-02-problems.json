@@ -7,7 +7,7 @@
         "sector" : "arch l",
         "styles" : ["toe hook", "pop"],
         "set_by" : "Thara",
-        "set_date" : "2021-02-02",
+        "set_date" : "2021-01-02",
         "status" :  "on"
     },
     {
@@ -15,7 +15,7 @@
         "RIC"  : {"R": 5, "I":2, "C":3 },
         "grade" : {"range": "black", "difficulty" : "mid"},
         "colour": "orange",
-        "sector" : "slab",
+        "sector" : "arch l",
         "styles" : ["run", "press"],
         "set_by" : "Aaron",
         "set_date" : "2021-02-02",

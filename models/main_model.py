@@ -16,3 +16,5 @@ class MainModel(QObject):
         self.sector_setting = SectorDict()
         self.problem_scroll_area_model = ProblemScrollAreaModel(self.grade_setting, self.sector_setting)
         self.bottom_model = BottomStationModel()
+
+        

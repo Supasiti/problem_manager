@@ -16,3 +16,9 @@ class ProblemRequest():
         self.filepath = self.path_builder.get_latest_gym_filepath(directory)   
         repository    = self.repo_factory.get(self.filepath)
         return repository.get_all_problems()
+
+    def get_all_sectors(self, directory:str):
+        
+        self.filepath = self.path_builder.get_latest_gym_filepath(directory)   
+        repository    = self.repo_factory.get(self.filepath)
+        return repository.get_all_sectors()

@@ -99,24 +99,34 @@ class ProblemScrollArea(ScrollArea):
 class SectorScrollArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
-    def __init__(self, n_columns:int, height:int=48,):
+    widget : QWidget
+    n_col : int 
+
+    def __init__(self, controller, model, height:int=48):
         super().__init__(height)
-        self.widget = QWidget()
-        self.n_col = n_columns
-        self.__set_layout()
+        self.controller = controller
+        self.model = model
+
+        self.__init_layout()
         self.__hide_scroll_bar()
     
-    def __set_layout(self):
-        layout = QHBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(0,0,0,0)
-
-        for index in range(self.n_col):
-            label = SectorCell(96, 48, '%s' % index )
-            layout.addWidget(label)
-        
-        self.widget.setLayout(layout)
+    def __init_layout(self):
+        self.widget = QWidget()
+        self.layout = QHBoxLayout()
+        self.__config_layout()
+        self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
+
+    def __config_layout(self):
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
+        self.n_col = self.model.n_col
+  
+        for index in range(self.n_col - 1 ):
+            label = SectorCell(96, 48, '%s' % index )
+            self.layout.addWidget(label)
+        label = SectorCell(110, 48, '%s' % index ) # account for missing scroll bar
+        self.layout.addWidget(label)
 
     def __hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")

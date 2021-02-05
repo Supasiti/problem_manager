@@ -15,4 +15,4 @@ class PathBuilder():
         return os.path.join(directory, 'current')
 
     def __json_filter(self, directory: str):
-        return [path for path in os.listdir(directory) if path.endswith('.json')]
+        return [path for path in os.listdir(directory) if path.endswith('-problems.json')]

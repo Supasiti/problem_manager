@@ -1,26 +1,48 @@
 # Python version 3.9.1
-# class containing all the information on each climbing sector
+# class containing global information on each climbing sector
 
-class Sector():
+from typing import NamedTuple
+from datetime import date
 
-    def __init__(self, name:str):
-        self._name = name
-        self._problem_ids = set()
-    
-    def add_problems(self, problem_ids=None):
-        if problem_ids is None:
-            raise ValueError('Must include at least 1 problem id')
-        if isinstance(problem_ids, int):
-            self._problem_ids.add(problem_ids)
-        if isinstance(problem_ids, (list, tuple, set)):
-            _problem_ids = {id for id in problem_ids if isinstance(id, int)}
-            self._problem_ids = self._problem_ids.union(_problem_ids)
-    
-    def contains_problem(self, id: int):
-        return id in self._problem_ids
+class Sector(NamedTuple):
+    name :str
+    count : int
+    problem_ids : tuple
+    setting : bool
 
-    def remove_problem(self, id: int):
-        self._problem_ids.remove(id)
+    def with_new_problem(self, problem_id:int):
+        p_set = set(self.problem_ids)
+        p_set.add(problem_id)
+        new_problem_ids = tuple(p_set)
+        new_count = len(new_problem_ids)
+        return Sector(self.name, new_count, new_problem_ids, self.setting)
 
-if __name__ == '__main__':
-    sector = Sector('Front')
+    def with_a_problem_removed(self, problem_id:int):
+        p_set = set(self.problem_ids)
+        if problem_id in p_set:
+            p_set.remove(problem_id)
+        new_problem_ids = tuple(p_set)
+        new_count = len(new_problem_ids)
+        return Sector(self.name, new_count, new_problem_ids, self.setting)
+
+    def with_new_set(self, new_set:str):
+        return Sector(self.name, self.count, self.problem_ids, new_set)
+
+    def with_problems_cleared(self):
+        return Sector(self.name, 0, tuple(), self.setting)
+
+    @classmethod
+    def from_problems(cls, name:str, problems:tuple, last_set_date:date):
+        
+        sector_problems = [p for p in problems if p.sector == name]
+        
+        count   = len(sector_problems)
+        ids     = tuple(p.id for p in sector_problems)
+        setting = cls.__is_setting(tuple(sector_problems), last_set_date)
+        return Sector(name, count, ids, setting)
+
+    @staticmethod
+    def __is_setting(sector_problems:tuple, last_set_date:date):
+        if len(sector_problems) == 0: 
+            raise ValueError('__is_setting() don\'t accept empty list')
+        return last_set_date in [p.set_date for p in sector_problems]
