@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt
 
 from APImodels.colour import Colour
 from models.problem_cell_model import ProblemCellModel
+from models.cell_model import SectorCellModel
 
 class FixedSizeLabel(QLabel):
 
@@ -90,8 +91,20 @@ class GradeCell(FixedSizeLabel):
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
 
-    def __init__(self, width:int, height:int, name:str):
+    def __init__(self, width:int, height:int, model:SectorCellModel):
         super().__init__(width, height)
-        self.name = name
-        self.set_colours(Colour(30,30,30), Colour(240,240,240))
+        self.model = model
+        self.set_colours(self.model.bg_colour, self.model.text_colour)
+        self.__add_text()
 
+    def __add_text(self):
+        layout = QVBoxLayout()
+        layout.setSpacing(2)
+        layout.setContentsMargins(2,2,2,2)
+        text_sector = QLabel(self.model.text)
+        text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        text_count = QLabel(self.model.problem_count)
+        text_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        layout.addWidget(text_sector)
+        layout.addWidget(text_count)
+        self.setLayout(layout)

@@ -5,6 +5,7 @@
 from PyQt5.QtCore import QObject
 from models.dicts import GradeDict, SectorDict
 from models.problem_scroll_area_model import ProblemScrollAreaModel
+from models.sector_scroll_area_model import SectorScrollAreaModel
 from models.bottom_model import BottomStationModel
 
 class MainModel(QObject):
@@ -15,6 +16,7 @@ class MainModel(QObject):
         self.grade_setting  = GradeDict()
         self.sector_setting = SectorDict()
         self.problem_scroll_area_model = ProblemScrollAreaModel(self.grade_setting, self.sector_setting)
+        self.sector_scroll_area_model  = SectorScrollAreaModel(self.sector_setting)
         self.bottom_model = BottomStationModel()
 
         

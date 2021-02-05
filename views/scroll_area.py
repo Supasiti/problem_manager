@@ -7,6 +7,8 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
 from views.label import ProblemCell, GradeCell, SectorCell
+from models.cell_model import SectorCellModel
+from APImodels.colour import Colour
 
 class ScrollArea(QScrollArea):
 
@@ -109,6 +111,7 @@ class SectorScrollArea(FixedHeightScrollArea):
 
         self.__init_layout()
         self.__hide_scroll_bar()
+        self.__connect_with_model()
     
     def __init_layout(self):
         self.widget = QWidget()
@@ -122,17 +125,30 @@ class SectorScrollArea(FixedHeightScrollArea):
         self.layout.setContentsMargins(0,0,0,0)
         self.n_col = self.model.n_col
   
-        for index in range(self.n_col - 1 ):
-            label = SectorCell(96, 48, '%s' % index )
+        for col in range(self.n_col - 1 ):
+            model = self.__get_cell_model(col)
+            
+            label = SectorCell(96, 48, model)
             self.layout.addWidget(label)
-        label = SectorCell(110, 48, '%s' % index ) # account for missing scroll bar
+            
+        model = self.__get_cell_model(self.n_col - 1)
+        label = SectorCell(110, 48, model ) # account for missing scroll bar
         self.layout.addWidget(label)
+
+    def __get_cell_model(self, col:int):
+        if col in self.model.cell_models.keys():
+            return self.model.cell_models[col]     
+        return self.model.get_default_sector_cell_model(col)
 
     def __hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
     
     def set_horizontal_bar_value(self, value: int):
         self.horizontalScrollBar().setValue(value)
+    
+    def __connect_with_model(self):
+        self.model.cellModelsChanged.connect(self.__init_layout)
+
 
 
 class GradeScrollArea(FixedWidthScrollArea):

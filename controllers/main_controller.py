@@ -23,7 +23,10 @@ class MainController(QObject):
     def open_directory(self, directory:str):
         
         self.model.bottom_model.content_path = directory
+        
         problems = self.problem_request.get_all_current_problems(directory)
         self.model.problem_scroll_area_model.problems = problems
 
+        sectors = self.problem_request.get_all_sectors(directory)
+        self.model.sector_scroll_area_model.sectors = sectors
         

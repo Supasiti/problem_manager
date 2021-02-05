@@ -86,6 +86,14 @@ class SectorDict():
     def get_col(self, name: str):
         if name.lower() in self.__sector_dict.keys():
             return self.__sector_dict[name]
+        raise ValueError('The sector name does not exist!')
+    
+    def get_sector(self, col:int):
+        keys   = list(self.__sector_dict.keys())
+        values = list(self.__sector_dict.values())
+        if col in values:
+            return keys[values.index(col)]
+        raise IndexError('index is out of range.')
 
     def length(self):
         return len(self.__sector_dict)

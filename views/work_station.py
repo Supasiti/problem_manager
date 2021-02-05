@@ -15,7 +15,7 @@ class WorkStation(Frame):
         self.controller   = controller
         self.model        = model
         self.info         = FixedSizeLabel(160, 48)
-        self.sector_view  = SectorScrollArea(self.controller, self.model.problem_scroll_area_model)
+        self.sector_view  = SectorScrollArea(self.controller, self.model.sector_scroll_area_model)
         self.grade_view   = GradeScrollArea(19)
         self.problem_view = ProblemScrollArea(self.controller, self.model.problem_scroll_area_model)
         

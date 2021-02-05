@@ -19,7 +19,8 @@ class ProblemScrollAreaModel(QObject):
         self.n_col = self.sector_setting.length()
         
         self._problems = []
-    
+
+
     @property
     def problems(self):
         return self._problems
@@ -37,7 +38,7 @@ class ProblemScrollAreaModel(QObject):
         # generate a dictionary containing (row, column) as keys, and problem cell models
         # as values
         models =  [self.__model(problem) for problem in self.problems]
-        return {(model.row, model.col): model for model in models}
+        return dict({(model.row, model.col): model for model in models})
 
     def __model(self, problem):
         return self.builder.build_from_problem(problem)
