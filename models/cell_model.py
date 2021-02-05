@@ -6,6 +6,7 @@ from APImodels.colour import Colour
 
 
 class SectorCellModel(NamedTuple):
+    # cell model containing data for sector cell
 
     col : int
     bg_colour : Colour
@@ -51,3 +52,15 @@ class SectorCellModelBuilder():
         text_colour  = self.__extract_text_colour(False)
 
         return SectorCellModel(col, bg_colour, text_colour, text, '0') 
+
+
+class GradeCellModel(NamedTuple):
+    # model for grade cell
+
+    row : int
+    bg_colour : Colour
+    text_colour : Colour
+    count_bg_colour: Colour
+    count_text_colour: Colour
+    aim : str
+    problem_count : str

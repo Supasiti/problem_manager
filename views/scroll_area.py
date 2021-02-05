@@ -7,8 +7,6 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
 from views.label import ProblemCell, GradeCell, SectorCell
-from models.cell_model import SectorCellModel
-from APImodels.colour import Colour
 
 class ScrollArea(QScrollArea):
 
@@ -17,13 +15,13 @@ class ScrollArea(QScrollArea):
         self.setFrameShape(QFrame.NoFrame)   
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.set_background_colour()
     
     def set_background_colour(self):
         pal = QPalette()
         pal.setColor(QPalette.Window, QColor(20, 20, 20))
         self.setAutoFillBackground(True)
         self.setPalette(pal)
+    
 
 class FixedWidthScrollArea(ScrollArea):
 
@@ -52,32 +50,32 @@ class ProblemScrollArea(ScrollArea):
         self.controller = controller
         self.model  = model
         
-        self.__init_grid()
+        self.__init_layout()
         self.__connect_with_model()
     
-    def __init_grid(self):
+    def __init_layout(self):
         self.widget     = QWidget()
-        self.grid       = QGridLayout()
-        self.__config_grid()
-        self.widget.setLayout(self.grid)
+        self.layout     = QGridLayout()
+        self.__config_layout()
+        self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
 
-    def __config_grid(self):
-        self.grid.setSpacing(2)
-        self.grid.setContentsMargins(0,0,0,0)
+    def __config_layout(self):
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
         self.n_row = self.model.n_row
         self.n_col = self.model.n_col
 
         for index in range(self.n_cells):
-            self.__generate_problem_cell(index)
+            self.__generate_cell(index, 96, 48)
             
-    def __generate_problem_cell(self, index:int):
+    def __generate_cell(self, index:int, width: int, height: int):
         row   = index//self.n_col
         col   = index % self.n_col
         model = self.__get_cell_model(row, col)
-        cell  = ProblemCell(96, 48, model, self.controller)
+        cell  = ProblemCell(width, height, model, self.controller)
         cell.set_clicked_command(self.controller.print_cell_info)
-        self.grid.addWidget(cell, row, col)
+        self.layout.addWidget(cell, row, col)
         
     def __get_cell_model(self, row, col):
         if (row, col) in self.model.cell_models.keys():
@@ -95,7 +93,7 @@ class ProblemScrollArea(ScrollArea):
         self.verticalScrollBar().valueChanged.connect(command)
     
     def __connect_with_model(self):
-        self.model.cellModelsChanged.connect(self.__init_grid)
+        self.model.cellModelsChanged.connect(self.__init_layout)
     
 
 class SectorScrollArea(FixedHeightScrollArea):
@@ -108,6 +106,7 @@ class SectorScrollArea(FixedHeightScrollArea):
         super().__init__(height)
         self.controller = controller
         self.model = model
+        self.height = height
 
         self.__init_layout()
         self.__hide_scroll_bar()
@@ -125,14 +124,13 @@ class SectorScrollArea(FixedHeightScrollArea):
         self.layout.setContentsMargins(0,0,0,0)
         self.n_col = self.model.n_col
   
-        for col in range(self.n_col - 1 ):
-            model = self.__get_cell_model(col)
-            
-            label = SectorCell(96, 48, model)
-            self.layout.addWidget(label)
-            
-        model = self.__get_cell_model(self.n_col - 1)
-        label = SectorCell(110, 48, model ) # account for missing scroll bar
+        for col in range(self.n_col - 1):
+            self.__generate_cell(col, 96, self.height)
+        self.__generate_cell(self.n_col - 1, 110, self.height) # account for missing scroll bar
+
+    def __generate_cell(self, col:int, width: int, height: int):
+        model = self.__get_cell_model(col)
+        label = SectorCell(width, height, model)
         self.layout.addWidget(label)
 
     def __get_cell_model(self, col:int):
@@ -150,28 +148,38 @@ class SectorScrollArea(FixedHeightScrollArea):
         self.model.cellModelsChanged.connect(self.__init_layout)
 
 
-
 class GradeScrollArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym
 
+    widget : QWidget
+    n_row  : int 
+
     def __init__(self, n_row:int, width:int=160 ):
         super().__init__(width)
-        self.widget = QWidget()
+        
+        self.width = width
         self.n_row = n_row
-        self.__set_layout()
+        self.__init_layout()
         self.__hide_scroll_bar()
     
-    def __set_layout(self):
-        layout = QVBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(0,0,0,0)
-
-        for index in range(self.n_row):
-            label = GradeCell(160, 48, '%s' % index )
-            layout.addWidget(label)
-        
-        self.widget.setLayout(layout)
+    def __init_layout(self):
+        self.widget = QWidget()
+        self.layout = QVBoxLayout()
+        self.__config_layout()
+        self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
+
+    def __config_layout(self):
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
+
+        for row in range(self.n_row - 1 ):
+            self.__generate_cell(row, self.width, 48)
+        self.__generate_cell(self.n_row - 1, self.width, 62)
+
+    def __generate_cell(self, row:int, width: int, height: int):
+        label = GradeCell(width, height, 'model' )
+        self.layout.addWidget(label)
 
     def __hide_scroll_bar(self):
         self.verticalScrollBar().setStyleSheet("QScrollBar {width:0px;}")

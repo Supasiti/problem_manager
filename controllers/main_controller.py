@@ -16,9 +16,8 @@ class MainController(QObject):
         self.model = model
         self.problem_request = ProblemRequest()
         
-
     def print_cell_info(self, problem_id):
-        print ('Id: %s' % (problem_id))
+        print('Problem id : %s' % problem_id)
 
     def open_directory(self, directory:str):
         
