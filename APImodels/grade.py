@@ -3,6 +3,8 @@
 #  - immutable
 #  - A grade consists of the range and the difficulity within that range
 
+from typing import NamedTuple
+
 class Grade():
 
     _accepted_ranges = ('yellow','blue','purple','green','red','black','white')
@@ -33,3 +35,9 @@ class Grade():
 
     def __repr__(self):
         return 'Grade(%s, %s)' % (self.range, self.difficulty)
+
+
+class GradeCount(NamedTuple):
+
+    grade: Grade
+    count: int

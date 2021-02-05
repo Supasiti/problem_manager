@@ -3,7 +3,7 @@ from typing import NamedTuple
 from models.dicts import SectorDict, ColourDict
 from APImodels.sector import Sector
 from APImodels.colour import Colour
-
+from APImodels.grade import GradeCount
 
 class SectorCellModel(NamedTuple):
     # cell model containing data for sector cell
@@ -15,7 +15,7 @@ class SectorCellModel(NamedTuple):
     problem_count : str
 
 class SectorCellModelBuilder():
-    # build problem cell model from either:
+    # build sector cell model from either:
     #  - sectors
     #  - col - in case there isn't one
 
@@ -64,3 +64,9 @@ class GradeCellModel(NamedTuple):
     count_text_colour: Colour
     aim : str
     problem_count : str
+
+class GradeCellModelBuilder():
+    # build grade cell model from either:
+    #  - grade count
+
+    pass
