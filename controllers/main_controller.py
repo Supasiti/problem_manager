@@ -3,29 +3,59 @@
 # Aims:
 #  - controls interactions with main view
 #
-from PyQt5.QtCore import QObject
+from services.dependency_service import DependencyService
+from models.main_model import MainModel, MainViewDynamicData
+from views.main_window import MainView
+from controllers.top_controller import TopController
+from controllers.tool_controller import ToolController
+from controllers.bottom_controller import BottomController
 
-from services.problem_request import ProblemRequest
+class MainController():    
 
-
-class MainController(QObject):    
-
-    def __init__(self, model):
-        super().__init__()
-
-        self.model = model
-        self.problem_request = ProblemRequest()
+    def __init__(self):
         
-    def print_cell_info(self, problem_id):
-        print('Problem id : %s' % problem_id)
+        self.dependency = DependencyService()
+        
+        # load other controllers
+        self.top_controller = TopController(self.dependency)
+        self.bottom_controller = BottomController(self.dependency)
+        self.tool_controller = ToolController(self.dependency)
 
-    def open_directory(self, directory:str):
+        # build MainViewDynamicData
+        view_data = MainViewDynamicData(
+            self.top_controller.view, 
+            None, 
+            self.bottom_controller.view, 
+            self.tool_controller.view)
+
+        # load model
+        self.model = MainModel(dynamic_data = view_data)
+
+        # load view
+        self.view  = MainView(self, self.model)
+        self.view.show()
         
-        self.model.bottom_model.content_path = directory
+        # self.grade_setting  = GradeDict()
+        # self.sector_setting = SectorDict()
+
+
+
+
+
+
+
+
+    # def print_cell_info(self, problem_id):
+    #     print('Problem id : %s' % problem_id)
+
+    # def open_directory(self, directory:str):
+    #     problem_request = self.dependency.problem_request
+
+    #     self.model.bottom_model.content_path = directory
         
-        problems = self.problem_request.get_all_current_problems(directory)
-        self.model.problem_scroll_area_model.add_problems(problems)
+    #     problems = problem_request.get_all_current_problems(directory)
+    #     self.model.problem_scroll_area_model.add_problems(problems)
         
-        sectors = self.problem_request.get_all_sectors(directory)
-        self.model.sector_scroll_area_model.sectors = sectors
+    #     sectors = problem_request.get_all_sectors(directory)
+    #     self.model.sector_scroll_area_model.sectors = sectors
         

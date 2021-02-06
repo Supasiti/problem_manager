@@ -1,0 +1,29 @@
+
+from models.bottom_model import BottomStationModel 
+from views.bottom_station import BottomStation
+
+class BottomController():
+    # controller all interaction the top station
+
+    def __init__(self, dependency):
+        
+        self.dependency = dependency
+        
+        # load other controllers
+
+        self.model = BottomStationModel()            # load model
+        self.view  = BottomStation(self, self.model) # load view
+
+
+    def open_directory(self, directory:str):
+        
+        self.model.dynamic_data = directory
+    #     problem_request = self.dependency.problem_request
+
+    #     self.model.bottom_model.content_path = directory
+        
+    #     problems = problem_request.get_all_current_problems(directory)
+    #     self.model.problem_scroll_area_model.add_problems(problems)
+        
+    #     sectors = problem_request.get_all_sectors(directory)
+    #     self.model.sector_scroll_area_model.sectors = sectors

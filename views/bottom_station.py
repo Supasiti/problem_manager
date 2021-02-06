@@ -12,34 +12,36 @@ from views.frame import FixedHeightFrame
 class BottomStation(FixedHeightFrame):
     
     def __init__(self, controller, model):
-        super().__init__(height=80)
         self.controller    = controller
-        self.model         = model
-        self.path_label    = self.__create_path_label()
-        self.path_info     = QLabel(self.model.content_path)
-        self.change_button = self.__create_change_button()
+        self.model         = model        
+        super().__init__(self.model.static_data.height)
+
+        self.__init_UI()
         self.__set_layout()
-        self.__connect_with_model()
+        self.__connect_model()
         self.controller.open_directory(self.path_info.text())
 
-    def __create_path_label(self):
-        path_label = QLabel('Content Path:')
-        path_label.setFixedWidth(100)
-        path_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)
-        return path_label
-    
+    def __init_UI(self):
+        data = self.model.static_data
+        self.path_label    = QLabel(data.label_text)
+        self.path_info     = QLabel(self.model.dynamic_data)
+        self.change_button = QPushButton(data.button_text) 
+        self.__config_UI()
+
+    def __config_UI(self):
+        data = self.model.static_data
+        self.path_label.setFixedWidth(data.label_width)
+        self.path_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)        
+
+        self.change_button.setFixedWidth(data.button_width)
+        self.change_button.mousePressEvent = self.__openFileNameDialog
+
     def __set_layout(self):
         layout = QHBoxLayout()
         layout.addWidget(self.path_label)
         layout.addWidget(self.path_info)
         layout.addWidget(self.change_button)
         self.setLayout(layout)
-
-    def __create_change_button(self):
-        button = QPushButton('Change')
-        button.setFixedWidth(100)
-        button.mousePressEvent = self.__openFileNameDialog
-        return button
 
     def __openFileNameDialog(self, event):
         # set up open file window
@@ -49,5 +51,5 @@ class BottomStation(FixedHeightFrame):
         if directory: 
             self.controller.open_directory(directory)
 
-    def __connect_with_model(self):
+    def __connect_model(self):
         self.model.contentPathChanged.connect(self.path_info.setText)
