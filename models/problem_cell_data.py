@@ -1,16 +1,21 @@
-from collections import namedtuple 
+from typing import NamedTuple
 
 from models.dicts import GradeDict, ColourDict, SectorDict
 from APImodels.problem import Problem 
 from APImodels.colour import Colour
 
-class ProblemCellModel(
-    namedtuple('ProblemCellModel',
-        ['row', 'col','bg_colour', 'text_colour', 'hover_colour', 'text', 'RIC', 'id']
-    )):
-    pass
+class ProblemCellData(NamedTuple):
 
-class ProblemCellModelBuilder():
+    row : int
+    col : int
+    bg_colour : Colour
+    text_colour : Colour
+    hover_colour : Colour
+    text : str
+    RIC : str
+    id : int
+
+class ProblemCellDataBuilder():
     # build problem cell model from either:
     #  - problem
     #  - row, col - in case there isn't one
@@ -34,7 +39,7 @@ class ProblemCellModelBuilder():
         RIC          = str(problem.RIC)
         problem_id   = problem.id
 
-        return ProblemCellModel(row, col, bg_colour, text_colour, hover_colour,
+        return ProblemCellData(row, col, bg_colour, text_colour, hover_colour,
             text, RIC, problem_id)
 
     def __extract_grade(self, problem: Problem):
@@ -71,5 +76,5 @@ class ProblemCellModelBuilder():
         text_colour  = self.__extract_text_colour()
         hover_colour = self.__extract_hover_colour()
 
-        return ProblemCellModel(row, col, bg_colour, text_colour, hover_colour,
+        return ProblemCellData(row, col, bg_colour, text_colour, hover_colour,
             '', '', 0)

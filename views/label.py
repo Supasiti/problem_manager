@@ -8,8 +8,8 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt 
 
 from APImodels.colour import Colour
-from models.problem_cell_model import ProblemCellModel
-from models.cell_model import SectorCellModel
+from models.problem_cell_data import ProblemCellData
+from models.cell_data import SectorCellData
 
 class FixedSizeLabel(QLabel):
 
@@ -34,15 +34,17 @@ class ProblemCell(FixedSizeLabel):
     # cell displaying info on problem if there is no problem on this particular
     # cell. This is the base problem cell.
 
-    def __init__(self, width:int, height:int, model: ProblemCellModel, controller):
+    def __init__(self, width:int, height:int, data: ProblemCellData, controller):
         super().__init__(width, height)
-        self.model           = model
+        self.data            = data
         self.controller      = controller
         self.clicked_command = None
         
-        self.set_colours(self.model.bg_colour, self.model.text_colour)
+        self.set_colours(self.data.bg_colour, self.data.text_colour)
         self.__add_mouse_effect()
         self.__add_text()
+
+    # TODO width, height in problem cell data
 
     def __add_mouse_effect(self):
         self.setFocusPolicy(Qt.StrongFocus)
@@ -54,21 +56,21 @@ class ProblemCell(FixedSizeLabel):
     
     def __on_mouse_clicked(self, event):
         if not self.clicked_command is None:
-            self.clicked_command(self.model.id)
+            self.clicked_command(self.data.id)
     
     def __add_hover_effect(self, event):
-        self.set_colours(self.model.hover_colour, self.model.text_colour)
+        self.set_colours(self.data.hover_colour, self.data.text_colour)
     
     def __remove_hover_effect(self, event):
-        self.set_colours(self.model.bg_colour, self.model.text_colour)
+        self.set_colours(self.data.bg_colour, self.data.text_colour)
 
     def __add_text(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
-        text_style = QLabel(self.model.text)
+        text_style = QLabel(self.data.text)
         text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        text_ric = QLabel(self.model.RIC)
+        text_ric = QLabel(self.data.RIC)
         text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         layout.addWidget(text_style)
         layout.addWidget(text_ric)
@@ -91,19 +93,21 @@ class GradeCell(FixedSizeLabel):
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
 
-    def __init__(self, width:int, height:int, model:SectorCellModel):
+    def __init__(self, width:int, height:int, data:SectorCellData):
         super().__init__(width, height)
-        self.model = model
-        self.set_colours(self.model.bg_colour, self.model.text_colour)
+        self.data = data
+        self.set_colours(self.data.bg_colour, self.data.text_colour)
         self.__add_text()
+
+    # TODO put width and height in SectorCellData
 
     def __add_text(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
-        text_sector = QLabel(self.model.text)
+        text_sector = QLabel(self.data.text)
         text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        text_count = QLabel(self.model.problem_count)
+        text_count = QLabel(self.data.problem_count)
         text_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         layout.addWidget(text_sector)
         layout.addWidget(text_count)

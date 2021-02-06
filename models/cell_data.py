@@ -5,7 +5,7 @@ from APImodels.sector import Sector
 from APImodels.colour import Colour
 from APImodels.grade import GradeCount
 
-class SectorCellModel(NamedTuple):
+class SectorCellData(NamedTuple):
     # cell model containing data for sector cell
 
     col : int
@@ -14,7 +14,7 @@ class SectorCellModel(NamedTuple):
     text : str
     problem_count : str
 
-class SectorCellModelBuilder():
+class SectorCellDataBuilder():
     # build sector cell model from either:
     #  - sectors
     #  - col - in case there isn't one
@@ -31,7 +31,7 @@ class SectorCellModelBuilder():
         bg_colour   = self.__extract_background_colour(sector.setting)
         text_colour = self.__extract_text_colour(sector.setting)
     
-        return SectorCellModel(col, bg_colour, text_colour, text, count)
+        return SectorCellData(col, bg_colour, text_colour, text, count)
 
     def __extract_background_colour(self, setting:bool):
         R,G,B = self.colour_setting.get_colours('default')[0:3]
@@ -51,10 +51,10 @@ class SectorCellModelBuilder():
         bg_colour    = self.__extract_background_colour(False)
         text_colour  = self.__extract_text_colour(False)
 
-        return SectorCellModel(col, bg_colour, text_colour, text, '0') 
+        return SectorCellData(col, bg_colour, text_colour, text, '0') 
 
 
-class GradeCellModel(NamedTuple):
+class GradeCellData(NamedTuple):
     # model for grade cell
 
     row : int
@@ -65,7 +65,7 @@ class GradeCellModel(NamedTuple):
     aim : str
     problem_count : str
 
-class GradeCellModelBuilder():
+class GradeCellDataBuilder():
     # build grade cell model from either:
     #  - grade count
 

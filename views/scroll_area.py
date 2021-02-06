@@ -129,14 +129,14 @@ class SectorScrollArea(FixedHeightScrollArea):
         self.__generate_cell(self.n_col - 1, 110, self.height) # account for missing scroll bar
 
     def __generate_cell(self, col:int, width: int, height: int):
-        model = self.__get_cell_model(col)
+        model = self.__get_cell_data(col)
         label = SectorCell(width, height, model)
         self.layout.addWidget(label)
 
-    def __get_cell_model(self, col:int):
-        if col in self.model.cell_models.keys():
-            return self.model.cell_models[col]     
-        return self.model.get_default_sector_cell_model(col)
+    def __get_cell_data(self, col:int):
+        if col in self.model.cell_data.keys():
+            return self.model.cell_data[col]     
+        return self.model.get_default_sector_cell_data(col)
 
     def __hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")

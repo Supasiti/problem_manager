@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
 from models.dicts import GradeDict, SectorDict
-from models.problem_cell_model import ProblemCellModelBuilder
+from models.problem_cell_data import ProblemCellDataBuilder
 from APImodels.problem import Problem
 
 class ProblemScrollAreaModel(QObject):
@@ -14,7 +14,7 @@ class ProblemScrollAreaModel(QObject):
         super().__init__()
         self.grade_setting = grade_setting
         self.sector_setting = sector_setting
-        self.builder = ProblemCellModelBuilder()
+        self.builder = ProblemCellDataBuilder()
 
         self.n_row = self.grade_setting.length()
         self.n_col = self.sector_setting.length()
