@@ -28,7 +28,7 @@ class SectorCellDataBuilder():
     def build_from_sector(self, sector:Sector):
 
         col   = self.sector_setting.get_col(sector.name)
-        width = 96 if col < self.max_col else 110
+        width = 96 if col < self.max_col - 1  else 110
         text  = sector.name.upper()
         count = str(sector.count)
         bg_colour   = self.__extract_background_colour(sector.setting)
@@ -49,7 +49,7 @@ class SectorCellDataBuilder():
         return Colour(R,G,B)
     
     def build_from_col(self, col:int):
-        width        = 96 if col < self.max_col else 110
+        width        = 96 if col < self.max_col - 1  else 110
         text         = self.sector_setting.get_sector(col).upper()
         bg_colour    = self.__extract_background_colour(False)
         text_colour  = self.__extract_text_colour(False)

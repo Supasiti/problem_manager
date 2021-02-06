@@ -23,20 +23,6 @@ class ProblemAreaDataBuilder(QObject):
         self.builder = ProblemCellDataBuilder(
                         self.grade_setting, self.colour_setting, self.sector_setting)
 
-        # self.n_row = self.grade_setting.length()
-        # self.n_col = self.sector_setting.length()
-        
-        # self.cells = tuple()
-
-    # @property
-    # def problems(self):
-    #     return self._problems
-
-    # @problems.setter
-    # def problems(self, value:tuple[Problem,...]):
-    #     self._problems = value
-    #     self.cell_models = self.__generate_cell_model_dictionary()
-
     def no_problems(self):
         n_row = self.grade_setting.length()
         n_col = self.sector_setting.length()
@@ -71,8 +57,6 @@ class ProblemAreaDataBuilder(QObject):
     #     self.problems = tuple(new_prob)
     
 
-
-
 class ProblemAreaModel(QObject):
 
     cellsChanged = pyqtSignal(bool)
@@ -95,4 +79,11 @@ class ProblemAreaModel(QObject):
 
 
     def __update_data(self, value: ProblemAreaData):
-        pass
+        old_data  = list(self._data.cells)
+        new_data  = list(value.cells)
+        new_cells = [(d.row, d.col) for d in new_data]
+        old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
+        new_data += old_data_to_retain
+        # print(len(new_data))
+        self._data = ProblemAreaData(tuple(new_data))
+        

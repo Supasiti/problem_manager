@@ -23,18 +23,8 @@ class SectorAreaDataBuilder():
         n_col   = self.sector_setting.length()
         cells = [self.builder.build_from_col(index) for index in range(n_col)]
         cells.sort(key= lambda x : x.col)
-        print(len(cells))
         return SectorAreaData(48, tuple(cells))
 
-    # @property
-    # def sectors(self):
-    #     return self._sectors
-
-    # @sectors.setter
-    # def sectors(self, value):
-    #     self._sectors    = value
-    #     self.cell_data = self.__generate_cell_data_dictionary()
-    #     self.cellModelsChanged.emit(True)
     
     # def get_default_sector_cell_data(self, col:int):
     #     return self.builder.build_from_col(col)
@@ -71,4 +61,10 @@ class SectorAreaModel(QObject):
 
 
     def __update_data(self, value: SectorAreaData):
-        pass
+        old_data  = list(self._data.cells)
+        new_data  = list(value.cells)
+        new_cells = [d.col for d in new_data]
+        old_data_to_retain = [ d for d in old_data if not d.col in new_cells]
+        new_data += old_data_to_retain
+        # print(len(new_data))
+        self._data = SectorAreaData(48, tuple(new_data))
