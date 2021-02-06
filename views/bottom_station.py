@@ -19,7 +19,6 @@ class BottomStation(FixedHeightFrame):
         self.__init_UI()
         self.__set_layout()
         self.__connect_model()
-        self.controller.open_directory(self.path_info.text())
 
     def __init_UI(self):
         data = self.model.static_data

@@ -47,7 +47,7 @@ class MainView(QMainWindow):
         self.model.dataChanged.connect(self.__init_dynamic_UI)
     
     def __init_dynamic_UI(self):
-        data = self.model.dynamic_data
+        data        = self.model.dynamic_data
         self.layout = QGridLayout()
         self.layout.setSpacing(4)
         
@@ -56,8 +56,6 @@ class MainView(QMainWindow):
         self.tool_station   = data.tool_station 
         self.bottom_station = data.bottom_station 
         
-        
-
         self.layout.addWidget(self.top_station,    0, 0)
         self.layout.addWidget(self.work_station,   1, 0)
         self.layout.addWidget(self.bottom_station, 2, 0)
@@ -78,6 +76,3 @@ class MainView(QMainWindow):
         
     #     window_area.setLayout(self.layout)
     #     self.setCentralWidget(window_area)
-
-
-

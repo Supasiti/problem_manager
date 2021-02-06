@@ -16,14 +16,17 @@ class ProblemCellData(NamedTuple):
     id : int
 
 class ProblemCellDataBuilder():
-    # build problem cell model from either:
+    # build problem cell model from either:se
     #  - problem
     #  - row, col - in case there isn't one
 
-    def __init__(self):
-        self.grade_setting = GradeDict()
-        self.colour_setting = ColourDict()
-        self.sector_setting = SectorDict()
+    def __init__(self, 
+        grade_setting : GradeDict, 
+        colour_setting: ColourDict, 
+        sector_setting: SectorDict):
+        self.grade_setting  = grade_setting
+        self.colour_setting = colour_setting
+        self.sector_setting = sector_setting
 
     def build_from_problem(self, problem:Problem):
         
@@ -70,7 +73,7 @@ class ProblemCellDataBuilder():
         return Colour(R,G,B)
         
 
-    def build_from_row_col(self, row:int, col:int):
+    def empty_cell(self, row:int, col:int):
 
         bg_colour    = self.__extract_background_colour()
         text_colour  = self.__extract_text_colour()

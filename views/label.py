@@ -34,10 +34,9 @@ class ProblemCell(FixedSizeLabel):
     # cell displaying info on problem if there is no problem on this particular
     # cell. This is the base problem cell.
 
-    def __init__(self, width:int, height:int, data: ProblemCellData, controller):
+    def __init__(self, width:int, height:int, data: ProblemCellData):
         super().__init__(width, height)
         self.data            = data
-        self.controller      = controller
         self.clicked_command = None
         
         self.set_colours(self.data.bg_colour, self.data.text_colour)

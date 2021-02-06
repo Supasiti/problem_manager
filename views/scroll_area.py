@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
 from views.label import ProblemCell, GradeCell, SectorCell
+from models.problem_cell_data import ProblemCellData
 
 class ScrollArea(QScrollArea):
 
@@ -37,7 +38,7 @@ class FixedHeightScrollArea(ScrollArea):
         self.setFixedHeight(height)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-class ProblemScrollArea(ScrollArea):
+class ProblemArea(ScrollArea):
     # area similar to excel sheet to display problem cells
 
     widget: QWidget
@@ -48,55 +49,66 @@ class ProblemScrollArea(ScrollArea):
     def __init__(self, controller, model):
         super().__init__()
         self.controller = controller
-        self.model  = model
+        self.model      = model
         
-        self.__init_layout()
-        self.__connect_with_model()
+        self.__init_static_UI()
+        self.__config_dynamic_UI()
+
+        # self.__init_layout()
+        # self.__connect_with_model()
     
-    def __init_layout(self):
+    def __init_static_UI(self):
         self.widget     = QWidget()
         self.layout     = QGridLayout()
-        self.__config_layout()
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
 
-    def __config_layout(self):
-        self.layout.setSpacing(2)
-        self.layout.setContentsMargins(0,0,0,0)
-        self.n_row = self.model.n_row
-        self.n_col = self.model.n_col
+    def __config_dynamic_UI(self):
+        for cell_data in self.model.changes.cells:
+            self.__generate_cell(cell_data, 96, 48)
 
-        for index in range(self.n_cells):
-            self.__generate_cell(index, 96, 48)
+
+    def __generate_cell(self, cell_data: ProblemCellData, width: int, height:int):
+        cell  = ProblemCell(width, height, cell_data)
+    #     cell.set_clicked_command(self.controller.print_cell_info)
+        self.layout.addWidget(cell, cell_data.row, cell_data.col)
+
+    # def __config_layout(self):
+        
+    #     self.n_row = self.model.n_row
+    #     self.n_col = self.model.n_col
+
+    #     for index in range(self.n_cells):
+    #         self.__generate_cell(index, 96, 48)
             
-    def __generate_cell(self, index:int, width: int, height: int):
-        row   = index//self.n_col
-        col   = index % self.n_col
-        model = self.__get_cell_model(row, col)
-        cell  = ProblemCell(width, height, model, self.controller)
-        cell.set_clicked_command(self.controller.print_cell_info)
-        self.layout.addWidget(cell, row, col)
+    # def __generate_cell(self, index:int, width: int, height: int):
+    #     row   = index//self.n_col
+    #     col   = index % self.n_col
+    #     model = self.__get_cell_model(row, col)
+    #     cell  = ProblemCell(width, height, model, self.controller)
+    #     cell.set_clicked_command(self.controller.print_cell_info)
+    #     self.layout.addWidget(cell, row, col)
         
-    def __get_cell_model(self, row, col):
-        if (row, col) in self.model.cell_models.keys():
-            return self.model.cell_models[(row,col)]     
-        return self.model.get_default_problem_cell_model(row, col)
+    # def __get_cell_model(self, row, col):
+    #     if (row, col) in self.model.cell_models.keys():
+    #         return self.model.cell_models[(row,col)]     
+    #     return self.model.get_default_problem_cell_model(row, col)
         
-    @property
-    def n_cells(self):
-        return self.n_row * self.n_col
 
-    def connect_horizontal_scroll_bar(self, command):
-        self.horizontalScrollBar().valueChanged.connect(command)
+
+    # def connect_horizontal_scroll_bar(self, command):
+    #     self.horizontalScrollBar().valueChanged.connect(command)
     
-    def connect_vertical_scroll_bar(self, command):
-        self.verticalScrollBar().valueChanged.connect(command)
+    # def connect_vertical_scroll_bar(self, command):
+    #     self.verticalScrollBar().valueChanged.connect(command)
     
-    def __connect_with_model(self):
-        self.model.cellModelsChanged.connect(self.__init_layout)
+    # def __connect_with_model(self):
+    #     self.model.cellModelsChanged.connect(self.__init_layout)
     
 
-class SectorScrollArea(FixedHeightScrollArea):
+class SectorArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
     widget : QWidget
@@ -148,7 +160,7 @@ class SectorScrollArea(FixedHeightScrollArea):
         self.model.cellModelsChanged.connect(self.__init_layout)
 
 
-class GradeScrollArea(FixedWidthScrollArea):
+class GradeArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym
 
     widget : QWidget

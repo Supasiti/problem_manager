@@ -3,7 +3,7 @@ from models.bottom_model import BottomStationModel
 from views.bottom_station import BottomStation
 
 class BottomController():
-    # controller all interaction the top station
+    # controller all interaction the bottom station
 
     def __init__(self, dependency):
         
@@ -13,14 +13,12 @@ class BottomController():
 
         self.model = BottomStationModel()            # load model
         self.view  = BottomStation(self, self.model) # load view
-
+        self.open_directory(self.model.dynamic_data) 
 
     def open_directory(self, directory:str):
-        
         self.model.dynamic_data = directory
-    #     problem_request = self.dependency.problem_request
 
-    #     self.model.bottom_model.content_path = directory
+    #     problem_request = self.dependency.problem_request
         
     #     problems = problem_request.get_all_current_problems(directory)
     #     self.model.problem_scroll_area_model.add_problems(problems)

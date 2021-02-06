@@ -7,6 +7,7 @@ from services.dependency_service import DependencyService
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from controllers.top_controller import TopController
+from controllers.work_controller import WorkController
 from controllers.tool_controller import ToolController
 from controllers.bottom_controller import BottomController
 
@@ -18,13 +19,14 @@ class MainController():
         
         # load other controllers
         self.top_controller = TopController(self.dependency)
+        self.work_controller = WorkController(self.dependency)
         self.bottom_controller = BottomController(self.dependency)
         self.tool_controller = ToolController(self.dependency)
 
         # build MainViewDynamicData
         view_data = MainViewDynamicData(
             self.top_controller.view, 
-            None, 
+            self.work_controller.view, 
             self.bottom_controller.view, 
             self.tool_controller.view)
 
