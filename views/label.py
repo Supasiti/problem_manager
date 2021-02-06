@@ -18,7 +18,6 @@ class FixedSizeLabel(QLabel):
         self.setFixedWidth(width) 
         self.setFixedHeight(height) 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed) 
-        self.set_colours(Colour(20,20,20), Colour(240,240,240))
 
     def set_colours(self, 
         colour:Colour, text_colour: Colour):
@@ -92,8 +91,8 @@ class GradeCell(FixedSizeLabel):
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
 
-    def __init__(self, width:int, height:int, data:SectorCellData):
-        super().__init__(width, height)
+    def __init__(self, height:int, data:SectorCellData):
+        super().__init__(data.width, height)
         self.data = data
         self.set_colours(self.data.bg_colour, self.data.text_colour)
         self.__add_text()

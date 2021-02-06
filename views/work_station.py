@@ -28,14 +28,15 @@ class WorkStation(Frame):
 
     def __init_static_UI(self):
         data        = self.model.static_data
-        self.layout = QGridLayout()
-        self.layout.setContentsMargins(2,2,2,2)
-        self.layout.setSpacing(4)
-        self.setLayout(self.layout)
         self.set_background_colour(data.bg_colour)
+        
 
     def __init_dynamic_UI(self):
         data              = self.model.dynamic_data
+        self.layout = QGridLayout()
+        self.layout.setContentsMargins(2,2,2,2)
+        self.layout.setSpacing(4)
+
         self.info         = data.info_view   # 160 48
         self.sector_view  = data.sector_view
         self.grade_view   = data.grade_view  # 19
@@ -45,7 +46,7 @@ class WorkStation(Frame):
         self.layout.addWidget(self.sector_view,  0, 1)
         self.layout.addWidget(self.grade_view,   1, 0)
         self.layout.addWidget(self.problem_view, 1, 1)
-
+        self.setLayout(self.layout)
 
     # def __config_layout(self):
     #     # private method to config the station layout

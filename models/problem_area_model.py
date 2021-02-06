@@ -76,7 +76,7 @@ class ProblemAreaDataBuilder(QObject):
 class ProblemAreaModel(QObject):
 
     cellsChanged = pyqtSignal(bool)
-    _changes     = ProblemAreaData
+    _changes : ProblemAreaData
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
