@@ -30,3 +30,4 @@ class WorkController():
     def on_content_path_changed(self, directory:str):
         # call when content path changes
         self.problem_controller.update_all_cells(directory)
+        self.sector_controller.update_all_cells(directory)

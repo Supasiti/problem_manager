@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QScrollArea
 from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QGridLayout, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import QPalette

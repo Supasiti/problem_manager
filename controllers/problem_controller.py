@@ -22,13 +22,9 @@ class ProblemAreaController():
         self.view  = ProblemArea(self, self.model) # load view
 
     def update_all_cells(self, directory:str):
+        # update every problem cell when get new list of problems from database 
         problem_request = self.dependency.problem_request
-
         problems = problem_request.get_all_current_problems(directory)
-        print('problem controller: problems tuple length = %s' % len(problems))
-
-        # build view data 
-        data = self.builder.build_from_problems(problems)
-        # set model
-        self.model.changes = data
+        view_data = self.builder.build_from_problems(problems)
+        self.model.changes = view_data
         

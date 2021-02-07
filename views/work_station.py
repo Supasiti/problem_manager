@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
+from views.label import FixedSizeLabel
 from views.frame import Frame
 from views.scroll_area import ProblemArea, SectorArea, GradeArea
 from views.info_area import InfoArea
@@ -28,6 +29,8 @@ class WorkStation(Frame):
 
     def __init_static_UI(self):
         data        = self.model.static_data
+        self.top_right_pad = FixedSizeLabel(10, 48)
+        self.bottom_left_pad = FixedSizeLabel(160, 10)
         self.set_background_colour(data.bg_colour)
         
     def __init_dynamic_UI(self):
@@ -39,12 +42,14 @@ class WorkStation(Frame):
         self.info         = data.info_view   # 160 48
         self.sector_view  = data.sector_view
         self.grade_view   = data.grade_view  # 19
-        self.problem_view = data.problem_view
+        self.problem_view = data.problem_view   
 
-        self.layout.addWidget(self.info,         0, 0)
-        self.layout.addWidget(self.sector_view,  0, 1)
-        self.layout.addWidget(self.grade_view,   1, 0)
-        self.layout.addWidget(self.problem_view, 1, 1)
+        self.layout.addWidget(self.info,           0, 0)
+        self.layout.addWidget(self.sector_view,    0, 1)
+        self.layout.addWidget(self.grade_view,     1, 0)
+        self.layout.addWidget(self.problem_view,   1, 1, 2, 2)
+        self.layout.addWidget(self.top_right_pad,  0, 2)
+        self.layout.addWidget(self.bottom_left_pad,2, 0)
         self.setLayout(self.layout)
 
     def set_background_colour(self, colour:Colour):

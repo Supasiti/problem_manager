@@ -18,11 +18,3 @@ class BottomController():
     def open_directory(self, directory:str):
         self.model.dynamic_data = directory
         self.__parent.on_content_path_changed(directory)
-
-    #     problem_request = self.dependency.problem_request
-        
-    #     problems = problem_request.get_all_current_problems(directory)
-    #     self.model.problem_scroll_area_model.add_problems(problems)
-        
-    #     sectors = problem_request.get_all_sectors(directory)
-    #     self.model.sector_scroll_area_model.sectors = sectors

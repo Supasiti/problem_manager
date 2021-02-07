@@ -17,26 +17,18 @@ class SectorAreaDataBuilder():
         self.sector_setting = sector_setting
         self.colour_setting = colour_setting
         self.builder = SectorCellDataBuilder(self.sector_setting, self.colour_setting)
-        self._sectors = []
+
+        self.n_col   = self.sector_setting.length()
 
     def default(self):
-        n_col   = self.sector_setting.length()
-        cells = [self.builder.build_from_col(index) for index in range(n_col)]
+        cells = [self.builder.build_from_col(index) for index in range(self.n_col)]
         cells.sort(key= lambda x : x.col)
         return SectorAreaData(48, tuple(cells))
 
-    
-    # def get_default_sector_cell_data(self, col:int):
-    #     return self.builder.build_from_col(col)
-
-    # def __generate_cell_data_dictionary(self):
-    #     # generate a dictionary containing column as keys, and sector cell data
-    #     # as values
-    #     data =  [self.__data(sector) for sector in self.sectors]
-    #     return dict({d.col: d for d in data})
-
-    # def __data(self, sector: Sector):
-    #     return self.builder.build_from_sector(sector)
+    def build_from_sectors(self, sectors:Tuple[Sector,...]):
+        cells = [self.builder.build_from_sector(s) for s in sectors]
+        cells.sort(key= lambda x : x.col)
+        return SectorAreaData(48, tuple(cells))
 
     
 class SectorAreaModel(QObject):
@@ -66,5 +58,4 @@ class SectorAreaModel(QObject):
         new_cells = [d.col for d in new_data]
         old_data_to_retain = [ d for d in old_data if not d.col in new_cells]
         new_data += old_data_to_retain
-        # print(len(new_data))
         self._data = SectorAreaData(48, tuple(new_data))

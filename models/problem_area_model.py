@@ -47,15 +47,6 @@ class ProblemAreaDataBuilder(QObject):
         new_cell_data += empty_cells
         return ProblemAreaData(tuple(new_cell_data))
 
-    # def get_default_problem_cell_model(self, row:int, col:int):
-    #     return self.builder.build_from_row_col(row,col)
-
-    # def __generate_cell_model_dictionary(self):
-    #     # generate a dictionary containing (row, column) as keys, and problem cell models
-    #     # as values
-    #     models =  [self.__model(problem) for problem in self.problems]
-    #     return dict({(model.row, model.col): model for model in models})
-
     def __cell_data(self, problem:Problem):
         return self.builder.build_from_problem(problem)
 
@@ -100,6 +91,5 @@ class ProblemAreaModel(QObject):
         new_cells = [(d.row, d.col) for d in new_data]
         old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
         new_data += old_data_to_retain
-        # print(len(new_data))
         self._data = ProblemAreaData(tuple(new_data))
         
