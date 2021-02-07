@@ -5,8 +5,8 @@ from views.top_station import TopStation
 class TopController():
     # controller all interaction the top station
 
-    def __init__(self, dependency):
-        
+    def __init__(self, dependency, parent):
+        self.__parent   = parent
         self.dependency = dependency
         
         # load other controllers

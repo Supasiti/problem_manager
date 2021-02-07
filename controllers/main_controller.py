@@ -18,10 +18,10 @@ class MainController():
         self.dependency = DependencyService()
         
         # load other controllers
-        self.top_controller = TopController(self.dependency)
-        self.work_controller = WorkController(self.dependency)
-        self.bottom_controller = BottomController(self.dependency)
-        self.tool_controller = ToolController(self.dependency)
+        self.top_controller = TopController(self.dependency, self)
+        self.work_controller = WorkController(self.dependency, self)
+        self.bottom_controller = BottomController(self.dependency, self)
+        self.tool_controller = ToolController(self.dependency, self)
 
         # build MainViewDynamicData
         view_data = MainViewDynamicData(
@@ -36,9 +36,11 @@ class MainController():
         # load view
         self.view  = MainView(self, self.model)
         self.view.show()
-        
-        # self.grade_setting  = GradeDict()
-        # self.sector_setting = SectorDict()
+    
+    def on_content_path_changed(self, directory:str):
+        # call when content path changes
+        self.work_controller.on_content_path_changed(directory)
+
 
 
 

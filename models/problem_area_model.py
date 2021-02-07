@@ -22,14 +22,30 @@ class ProblemAreaDataBuilder(QObject):
         self.sector_setting = sector_setting
         self.builder = ProblemCellDataBuilder(
                         self.grade_setting, self.colour_setting, self.sector_setting)
+        
+        self.n_row = self.grade_setting.length()
+        self.n_col = self.sector_setting.length()
+
+    @property 
+    def n_cell(self):
+        return self.n_row * self.n_col
+    
+    def __cell_coord(self, index:int):
+        return (index // self.n_col, index % self.n_col)
 
     def no_problems(self):
-        n_row = self.grade_setting.length()
-        n_col = self.sector_setting.length()
-        n_cell = n_row * n_col
-        cells = [self.builder.empty_cell(index // n_col, index % n_col) for index in range(n_cell)]
+        cells = [self.builder.empty_cell(index // self.n_col, index % self.n_col) for index in range(self.n_cell)]
         return ProblemAreaData(tuple(cells))
 
+    def build_from_problems(self, problems:Tuple[Problem,...]):
+        data = list(problems)
+        new_cell_data  = [self.__cell_data(p) for p in data]
+        new_cell_coord = [(d.row, d.col) for d in new_cell_data]
+        empty_cells    = [self.builder.empty_cell(*self.__cell_coord(index)) 
+                            for index in range(self.n_cell) 
+                            if not self.__cell_coord(index) in new_cell_coord]
+        new_cell_data += empty_cells
+        return ProblemAreaData(tuple(new_cell_data))
 
     # def get_default_problem_cell_model(self, row:int, col:int):
     #     return self.builder.build_from_row_col(row,col)
@@ -40,8 +56,8 @@ class ProblemAreaDataBuilder(QObject):
     #     models =  [self.__model(problem) for problem in self.problems]
     #     return dict({(model.row, model.col): model for model in models})
 
-    # def __model(self, problem:Problem):
-    #     return self.builder.build_from_problem(problem)
+    def __cell_data(self, problem:Problem):
+        return self.builder.build_from_problem(problem)
 
     # def add_problems(self, problems:Tuple[Problem,...]):
     #     # can't just add problems

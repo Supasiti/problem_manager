@@ -6,8 +6,8 @@ from views.scroll_area import SectorArea
 class SectorAreaController():
     # controller all interaction the top station
 
-    def __init__(self, dependency):
-        
+    def __init__(self, dependency, parent):
+        self.__parent   = parent
         self.dependency = dependency
         self.colour_setting = ColourDict()
         self.sector_setting = SectorDict()

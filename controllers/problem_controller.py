@@ -6,8 +6,8 @@ from views.scroll_area import ProblemArea
 class ProblemAreaController():
     # controller all interaction the top station
 
-    def __init__(self, dependency):
-        
+    def __init__(self, dependency, parent):
+        self.__parent   = parent
         self.dependency = dependency
         self.grade_setting  = GradeDict()
         self.colour_setting = ColourDict()
@@ -20,3 +20,15 @@ class ProblemAreaController():
 
         self.model = ProblemAreaModel(view_data)   # load model
         self.view  = ProblemArea(self, self.model) # load view
+
+    def update_all_cells(self, directory:str):
+        problem_request = self.dependency.problem_request
+
+        problems = problem_request.get_all_current_problems(directory)
+        print('problem controller: problems tuple length = %s' % len(problems))
+
+        # build view data 
+        data = self.builder.build_from_problems(problems)
+        # set model
+        self.model.changes = data
+        
