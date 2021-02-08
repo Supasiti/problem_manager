@@ -23,7 +23,6 @@ class ScrollArea(QScrollArea):
         self.setAutoFillBackground(True)
         self.setPalette(pal)
     
-
 class FixedWidthScrollArea(ScrollArea):
 
     def __init__(self, width):
@@ -85,7 +84,6 @@ class SectorArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
     widget : QWidget
-    n_col : int 
 
     def __init__(self, controller, model, height:int=48):
         self.controller = controller

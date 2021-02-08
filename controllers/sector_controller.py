@@ -26,4 +26,3 @@ class SectorAreaController():
         sectors = problem_request.get_all_sectors(directory)
         view_data = self.builder.build_from_sectors(sectors)
         self.model.changes = view_data
-    #     self.model.sector_scroll_area_model.sectors = sectors

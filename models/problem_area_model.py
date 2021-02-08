@@ -9,7 +9,6 @@ from APImodels.problem import Problem
 class ProblemAreaData(NamedTuple):
     cells : Tuple[ProblemCellData,...]
 
-
 class ProblemAreaDataBuilder(QObject):
 
     def __init__(self, 
@@ -34,7 +33,8 @@ class ProblemAreaDataBuilder(QObject):
         return (index // self.n_col, index % self.n_col)
 
     def no_problems(self):
-        cells = [self.builder.empty_cell(index // self.n_col, index % self.n_col) for index in range(self.n_cell)]
+        cells = [self.builder.empty_cell(*self.__cell_coord(index))
+                for index in range(self.n_cell)]
         return ProblemAreaData(tuple(cells))
 
     def build_from_problems(self, problems:Tuple[Problem,...]):
@@ -49,6 +49,8 @@ class ProblemAreaDataBuilder(QObject):
 
     def __cell_data(self, problem:Problem):
         return self.builder.build_from_problem(problem)
+
+    
 
     # def add_problems(self, problems:Tuple[Problem,...]):
     #     # can't just add problems
@@ -66,12 +68,16 @@ class ProblemAreaDataBuilder(QObject):
 
 class ProblemAreaModel(QObject):
 
-    cellsChanged = pyqtSignal(bool)
+    cellsChanged       = pyqtSignal(bool)
+    sectorCellsChanged = pyqtSignal(dict)
     _changes : ProblemAreaData
+    sector_count : dict[int: int]
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
         self._data   = data
+        self.n_row   = max([d.row for d in self._data.cells ])+ 1
+        self.n_col   = max([d.col for d in self._data.cells ])+ 1
         self.changes = data
 
     @property
@@ -84,7 +90,6 @@ class ProblemAreaModel(QObject):
         self._changes = value
         self.cellsChanged.emit(True)
 
-
     def __update_data(self, value: ProblemAreaData):
         old_data  = list(self._data.cells)
         new_data  = list(value.cells)
@@ -92,4 +97,15 @@ class ProblemAreaModel(QObject):
         old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
         new_data += old_data_to_retain
         self._data = ProblemAreaData(tuple(new_data))
+        self.sector_count = self.__count_sectors()
+
         
+    def __count_sectors(self):
+        counts = { sector_id : self.__n_problems_in_sector(sector_id, self._data.cells) 
+                    for sector_id in range(self.n_col)} 
+        return dict(counts)
+
+    def __n_problems_in_sector(self, sector_id:int, cells: Tuple[ProblemCellData,...]) -> int:
+        cells_in_sector = [cell for cell in cells if cell.col == sector_id]
+        non_empty_cells = [cell for cell in cells_in_sector if cell.id != 0]
+        return len(non_empty_cells)  
