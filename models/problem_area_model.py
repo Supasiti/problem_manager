@@ -70,8 +70,11 @@ class ProblemAreaModel(QObject):
 
     cellsChanged       = pyqtSignal(bool)
     sectorCellsChanged = pyqtSignal(dict)
-    _changes : ProblemAreaData
+    gradeCellsChanged  = pyqtSignal(dict)
+
+    _changes     : ProblemAreaData
     sector_count : dict[int: int]
+    grade_count  : dict[int: int]
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
@@ -98,8 +101,8 @@ class ProblemAreaModel(QObject):
         new_data += old_data_to_retain
         self._data = ProblemAreaData(tuple(new_data))
         self.sector_count = self.__count_sectors()
+        self.grade_count  = self.__count_grade()
 
-        
     def __count_sectors(self):
         counts = { sector_id : self.__n_problems_in_sector(sector_id, self._data.cells) 
                     for sector_id in range(self.n_col)} 
@@ -108,4 +111,14 @@ class ProblemAreaModel(QObject):
     def __n_problems_in_sector(self, sector_id:int, cells: Tuple[ProblemCellData,...]) -> int:
         cells_in_sector = [cell for cell in cells if cell.col == sector_id]
         non_empty_cells = [cell for cell in cells_in_sector if cell.id != 0]
+        return len(non_empty_cells)  
+
+    def __count_grade(self):
+        counts = { grade_id : self.__n_problems_of_grade(grade_id, self._data.cells) 
+                    for grade_id in range(self.n_row)} 
+        return dict(counts)
+    
+    def __n_problems_of_grade(self, grade_id:int, cells: Tuple[ProblemCellData,...]) -> int:
+        cells_of_grade  = [cell for cell in cells if cell.row == grade_id]
+        non_empty_cells = [cell for cell in cells_of_grade if cell.id != 0]
         return len(non_empty_cells)  
