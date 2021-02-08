@@ -3,6 +3,7 @@ from models.work_model import WorkStationModel, WorkDynamicData
 from views.work_station import WorkStation
 from controllers.problem_controller import ProblemAreaController
 from controllers.sector_controller import SectorAreaController
+from controllers.grade_controller import GradeAreaController
 
 class WorkController():
     # controller all interaction the work station
@@ -14,13 +15,14 @@ class WorkController():
         # load other controllers
         # self.info_controller    = None
         self.sector_controller = SectorAreaController(self.dependency, self)
+        self.grade_controller  = GradeAreaController(self.dependency, self)
         self.problem_controller = ProblemAreaController(self.dependency, self)
 
         # build view data 
         view_data = WorkDynamicData(
             None,
             self.sector_controller.view,
-            None,
+            self.grade_controller.view,
             self.problem_controller.view
         )
 

@@ -36,8 +36,3 @@ class Grade():
     def __repr__(self):
         return 'Grade(%s, %s)' % (self.range, self.difficulty)
 
-
-class GradeCount(NamedTuple):
-
-    grade: Grade
-    count: int

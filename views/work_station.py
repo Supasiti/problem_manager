@@ -29,8 +29,8 @@ class WorkStation(Frame):
 
     def __init_static_UI(self):
         data        = self.model.static_data
-        self.top_right_pad = FixedSizeLabel(10, 48)
-        self.bottom_left_pad = FixedSizeLabel(160, 10)
+        self.top_right_pad   = FixedSizeLabel(10, 48)
+        self.bottom_left_pad = FixedSizeLabel(154, 10)
         self.set_background_colour(data.bg_colour)
         
     def __init_dynamic_UI(self):
@@ -60,13 +60,15 @@ class WorkStation(Frame):
 
     def __connect_scroll_bars(self):
         self.problem_view.connect_horizontal_scroll_bar(self.__set_horizontal_bar_value)
-    #     self.problem_view.connect_vertical_scroll_bar(self.__set_vertical_bar_value)
+        self.problem_view.connect_vertical_scroll_bar(self.__set_vertical_bar_value)
+        self.grade_view.connect_vertical_scroll_bar(self.__set_vertical_bar_value)
 
     def __set_horizontal_bar_value(self, value:int):
         self.sector_view.set_horizontal_bar_value(value)
 
-    # def __set_vertical_bar_value(self, value:int):
-    #     self.grade_view.set_vertical_bar_value(value)
+    def __set_vertical_bar_value(self, value:int):
+        self.grade_view.set_vertical_bar_value(value)
+        self.problem_view.set_vertical_bar_value(value)
 
     def __connect_model(self):
         self.model.dataChanged.connect(self.__init_dynamic_UI)

@@ -1,33 +1,50 @@
 
 class GradeDict():
+    # row , aim
 
     __grade_dict = {
-        'yellow mid'  : 0,  
-        'yellow hard' : 1,  
-        'blue easy'   : 2,  
-        'blue mid'    : 3,  
-        'blue hard'   : 4,   
-        'purple easy' : 5,  
-        'purple mid'  : 6,  
-        'purple hard' : 7,  
-        'green easy'  : 8,  
-        'green mid'   : 9,  
-        'green hard'  : 10, 
-        'red easy'    : 11, 
-        'red mid'     : 12, 
-        'red hard'    : 13, 
-        'black easy'  : 14, 
-        'black mid'   : 15, 
-        'black hard'  : 16, 
-        'white easy'  : 17, 
-        'white mid'   : 18
+        'yellow mid'  : (0, 4), 
+        'yellow hard' : (1, 1), 
+        'blue easy'   : (2, 1), 
+        'blue mid'    : (3, 4), 
+        'blue hard'   : (4, 1),  
+        'purple easy' : (5, 2), 
+        'purple mid'  : (6, 4), 
+        'purple hard' : (7, 2), 
+        'green easy'  : (8, 2), 
+        'green mid'   : (9, 6), 
+        'green hard'  : (10, 2), 
+        'red easy'    : (11, 2),
+        'red mid'     : (12, 5),
+        'red hard'    : (13, 2),
+        'black easy'  : (14, 2),
+        'black mid'   : (15, 4),
+        'black hard'  : (16, 1),
+        'white easy'  : (17, 2),
+        'white mid'   : (18, 2),
     }
 
     
     def get_row(self, name: str):
         if name.lower() in self.__grade_dict.keys():
-            return self.__grade_dict[name]
+            return self.__grade_dict[name][0]
     
+    def get_grade(self, row:int):
+        keys   = list(self.__grade_dict.keys())
+        values = list(self.__grade_dict.values())
+        rows   = [value[0] for value in values]
+        if row in rows:
+            return keys[rows.index(row)]
+        raise IndexError('index is out of range.')
+    
+    def get_aim(self, row:int):
+        values = list(self.__grade_dict.values())
+        rows   = [value[0] for value in values]
+        aims   = [value[1] for value in values]
+        if row in rows:
+            return aims[rows.index(row)]
+        raise IndexError('index is out of range.')
+
     def length(self):
         return len(self.__grade_dict)
     
@@ -56,8 +73,9 @@ class ColourDict():
         'white easy'  : (237, 237, 237,   0,   0,   0, 241, 241, 241),
         'white mid'   : (212, 212, 212,   0,   0,   0, 237, 237, 237),
         'orange'      : (255, 142,   0,   0,   0,   0, 245, 169,  96),
-        'default'     : ( 30,  30,  30, 240, 240, 240, 60,  60,  60),
-        'setting'     : (231, 142, 142,   0,   0,   0, 231, 142, 142)
+        'default'     : ( 30,  30,  30, 240, 240, 240,  60,  60,  60),
+        'setting'     : (231, 142, 142,   0,   0,   0, 231, 142, 142),
+        'alert'       : (255,   0 ,  0, 240, 240, 240, 219,  91,  91),
     }
 
     def get_colours(self, name: str):

@@ -2,14 +2,14 @@
 
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout, QGridLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt 
 
 from APImodels.colour import Colour
 from models.problem_cell_data import ProblemCellData
-from models.cell_data import SectorCellData
+from models.cell_data import SectorCellData, GradeCellData, GradeCountData
 
 class FixedSizeLabel(QLabel):
 
@@ -20,7 +20,7 @@ class FixedSizeLabel(QLabel):
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed) 
 
     def set_colours(self, 
-        colour:Colour, text_colour: Colour):
+        colour: Colour, text_colour: Colour):
         
         self.setAutoFillBackground(True)
         pal = QPalette()
@@ -82,11 +82,50 @@ class ProblemCell(FixedSizeLabel):
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade
 
-    def __init__(self, width:int, height:int, name:str):
-        super().__init__(width, height)
-        self.name = name
-        self.set_colours(Colour(30,30,30), Colour(240,240,240))
+    def __init__(self, data : GradeCellData):
+        super().__init__(data.width, data.height)
+        self.data  = data
 
+        self.__init_UI()
+
+    def __init_UI(self):
+        self.layout = QGridLayout()
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
+
+        self.text_style = FixedSizeLabel(self.data.inner_width, self.data.inner_height)
+        self.text_style.setText('Style')
+        self.text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.text_style.set_colours(self.data.bg_colour, self.data.text_colour)
+
+        self.text_ric = FixedSizeLabel(self.data.inner_width, self.data.inner_height)
+        self.text_ric.setText('RIC')
+        self.text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.text_ric.set_colours(self.data.bg_colour, self.data.text_colour)
+
+        self.text_aim = FixedSizeLabel(self.data.inner_width, self.data.height)
+        self.text_aim.setText(self.data.aim)
+        self.text_aim.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.text_aim.set_colours(self.data.bg_colour, self.data.text_colour)
+
+        self.layout.addWidget(self.text_style, 0, 0)
+        self.layout.addWidget(self.text_ric,   1, 0)
+        self.layout.addWidget(self.text_aim,   0, 1, 1, 2)
+        self.setLayout(self.layout)
+
+class GradeCountCell(FixedSizeLabel):
+
+    def __init__(self, data : GradeCountData):
+        super().__init__(data.width, data.height)
+        self.data  = data
+
+        self.__init_UI()
+
+    def __init_UI(self):
+        self.setText(self.data.text)
+        self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.set_colours(Colour(255,0,0), self.data.text_colour)
+        self.show()
 
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
