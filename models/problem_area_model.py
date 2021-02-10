@@ -38,8 +38,8 @@ class ProblemAreaDataBuilder(QObject):
         return ProblemAreaData(tuple(cells))
 
     def build_from_problems(self, problems:Tuple[Problem,...]):
-        data = list(problems)
-        new_cell_data  = [self.__cell_data(p) for p in data]
+
+        new_cell_data  = [self.__cell_data(p) for p in problems]
         new_cell_coord = [(d.row, d.col) for d in new_cell_data]
         empty_cells    = [self.builder.empty_cell(*self.__cell_coord(index)) 
                             for index in range(self.n_cell) 

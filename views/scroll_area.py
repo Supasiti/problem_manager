@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QScrollArea
 from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import QPalette
@@ -8,7 +8,7 @@ from PyQt5.QtGui import QColor
 
 from views.label import ProblemCell, GradeCell, GradeCountCell, SectorCell
 from models.problem_cell_data import ProblemCellData
-from models.cell_data import SectorCellData, GradeCellData, GradeCountData
+from models.cell_data import SectorCellData
 
 class ScrollArea(QScrollArea):
 
@@ -79,7 +79,7 @@ class ProblemArea(ScrollArea):
     
     def set_vertical_bar_value(self, value: int):
         self.verticalScrollBar().setValue(value)
-        
+
     def __connect_with_model(self):
         self.model.cellsChanged.connect(self.__config_dynamic_UI)
     
@@ -167,3 +167,5 @@ class GradeArea(FixedWidthScrollArea):
 
     def connect_vertical_scroll_bar(self, command):
         self.verticalScrollBar().valueChanged.connect(command)
+
+    # TODO - connect with model

@@ -14,11 +14,15 @@ class ProblemRequest():
     def get_all_current_problems(self, directory:str):
         
         self.filepath = self.path_builder.get_latest_gym_filepath(directory)   
-        repository    = self.repo_factory.get(self.filepath)
-        return repository.get_all_problems()
+        if self.filepath != "":
+            repository    = self.repo_factory.get(self.filepath)
+            return repository.get_all_problems()
+        return tuple()
 
     def get_all_sectors(self, directory:str):
         
         self.filepath = self.path_builder.get_latest_gym_filepath(directory)   
-        repository    = self.repo_factory.get(self.filepath)
-        return repository.get_all_sectors()
+        if self.filepath != "":
+            repository    = self.repo_factory.get(self.filepath)
+            return repository.get_all_sectors()
+        return tuple()

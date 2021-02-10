@@ -43,23 +43,6 @@ class MainController():
 
 
 
-
-
-
-
-
-
     # def print_cell_info(self, problem_id):
     #     print('Problem id : %s' % problem_id)
 
-    # def open_directory(self, directory:str):
-    #     problem_request = self.dependency.problem_request
-
-    #     self.model.bottom_model.content_path = directory
-        
-    #     problems = problem_request.get_all_current_problems(directory)
-    #     self.model.problem_scroll_area_model.add_problems(problems)
-        
-    #     sectors = problem_request.get_all_sectors(directory)
-    #     self.model.sector_scroll_area_model.sectors = sectors
-        

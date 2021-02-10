@@ -26,7 +26,12 @@ class SectorAreaDataBuilder():
         return SectorAreaData(48, tuple(cells))
 
     def build_from_sectors(self, sectors:Tuple[Sector,...]):
-        cells = [self.builder.build_from_sector(s) for s in sectors]
+        new_cells = [self.builder.build_from_sector(s) for s in sectors]
+        new_col   = [c.col for c in new_cells]
+        default_cells = [ self.builder.build_from_col(col) 
+                            for col in range(self.n_col)
+                            if not col in new_col]
+        cells = new_cells + default_cells                    
         cells.sort(key= lambda x : x.col)
         return SectorAreaData(48, tuple(cells))
 

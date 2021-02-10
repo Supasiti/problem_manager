@@ -39,9 +39,9 @@ class WorkStation(Frame):
         self.layout.setContentsMargins(2,2,2,2)
         self.layout.setSpacing(4)
 
-        self.info         = data.info_view   # 160 48
+        self.info         = data.info_view   
         self.sector_view  = data.sector_view
-        self.grade_view   = data.grade_view  # 19
+        self.grade_view   = data.grade_view  
         self.problem_view = data.problem_view   
 
         self.layout.addWidget(self.info,           0, 0)
