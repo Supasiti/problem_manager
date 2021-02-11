@@ -4,6 +4,7 @@ import unittest
 from services.dependency_service import DependencyService
 from services.path_builder import PathBuilder
 from services.problem_request import ProblemRequest
+from services.problem_repository import ProblemRepository
 
 class TestDependencyService(unittest.TestCase):
 
@@ -23,6 +24,10 @@ class TestDependencyService(unittest.TestCase):
 
         self.assertEqual(len(self.service.dependency_dict), 1)
         self.assertEqual(result.__class__, PathBuilder)
+    
+    def test_register_class_with_non_default_args(self):
+        with self.assertRaises(TypeError):
+            self.service.register(ProblemRepository)
     
     def test_register_twice(self):
         self.service.register(PathBuilder)

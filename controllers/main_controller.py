@@ -14,9 +14,9 @@ from controllers.bottom_controller import BottomController
 
 class MainController():    
 
-    def __init__(self):
+    def __init__(self, dependency:DependencyService):
         
-        self.dependency = DependencyService()
+        self.dependency = dependency
         self.dependency.register(ProblemRequest)
 
         # load other controllers

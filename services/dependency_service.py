@@ -1,6 +1,7 @@
 # Control all dependencies that controllers will need
 from typing import Dict
 from threading import Lock
+from inspect import signature
 
 # from path_builder import PathBuilder
 
@@ -17,8 +18,14 @@ class DependencyService():
     def register(self, class_type: type, dependency:object = None):
         
         with self.padlock:
-            if not class_type in self.dependency_dict.keys():
-                self.dependency_dict[class_type] = dependency if dependency != None else class_type()
+            if class_type in self.dependency_dict.keys():
+                return
+            if dependency != None:
+                self.dependency_dict[class_type] = dependency
+            if self.__n_non_default_args(class_type) == 0:
+                self.dependency_dict[class_type] = class_type()
+            else:
+                raise TypeError('__init__() requires positional arguments')
                 
     def get(self, class_type:type) -> object:
         if class_type in self.dependency_dict.keys():
@@ -37,3 +44,9 @@ class DependencyService():
             if class_type in self.dependency_dict.keys():
                     self.dependency_dict.pop(class_type) 
 
+
+    def __n_non_default_args(self, class_type:type):
+        sig = signature(class_type)
+        non_default_args = [arg for arg in sig.parameters.values() if arg.default is arg.empty]
+        print('%s : %s' % (str(class_type), non_default_args))
+        return len(non_default_args)
