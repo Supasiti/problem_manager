@@ -11,7 +11,7 @@ class Problem(
     namedtuple(
         'Problem',
         ['id', 'RIC', 'grade', 'colour', 'sector','styles', 'set_by', 'set_date', 'status'],
-        defaults = (-1, RIC(1,1,1), Grade('yellow','mid'), 'yellow','front l', [], '', date.today(), 'on')
+        defaults = ('', RIC(1,1,1), Grade('yellow','mid'), '','', (), '', None, 'on')
     )):
 
     @staticmethod

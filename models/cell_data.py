@@ -35,15 +35,15 @@ class SectorCellDataBuilder():
         return SectorCellData(col, width, bg_colour, text_colour, text, count)
 
     def __extract_background_colour(self, setting:bool):
-        R,G,B = self.colour_setting.get_colours('default')[0:3]
+        R,G,B = self.colour_setting.get_colour('default')[0:3]
         if setting:
-            R,G,B =  self.colour_setting.get_colours('setting')[0:3]
+            R,G,B =  self.colour_setting.get_colour('setting')[0:3]
         return Colour(R,G,B)
 
     def __extract_text_colour(self, setting:bool):
-        R,G,B = self.colour_setting.get_colours('default')[3:6]
+        R,G,B = self.colour_setting.get_colour('default')[3:6]
         if setting:
-            R,G,B =  self.colour_setting.get_colours('setting')[3:6]
+            R,G,B =  self.colour_setting.get_colour('setting')[3:6]
         return Colour(R,G,B)
     
     def build_from_col(self, col:int):
@@ -88,12 +88,12 @@ class GradeCellDataBuilder():
 
     def __extract_background_colour(self, row:int):
         grade_str = self.grade_setting.get_grade(row)
-        R,G,B = self.colour_setting.get_colours(grade_str)[0:3]
+        R,G,B = self.colour_setting.get_colour(grade_str)[0:3]
         return Colour(R,G,B)
 
     def __extract_text_colour(self, row:int):
         grade_str = self.grade_setting.get_grade(row)
-        R,G,B = self.colour_setting.get_colours(grade_str)[3:6]
+        R,G,B = self.colour_setting.get_colour(grade_str)[3:6]
         return Colour(R,G,B)
     
 
@@ -131,9 +131,9 @@ class GradeCountDataBuilder():
         aim = self.grade_setting.get_aim(row)
 
         if count < aim:
-            R,G,B = self.colour_setting.get_colours('alert')[0:3]
+            R,G,B = self.colour_setting.get_colour('alert')[0:3]
         else:
-            R,G,B = self.colour_setting.get_colours('default')[0:3]
+            R,G,B = self.colour_setting.get_colour('default')[0:3]
         return Colour(R,G,B)
 
     def __extract_text_colour(self, row:int, count:int):
@@ -142,7 +142,7 @@ class GradeCountDataBuilder():
         aim = self.grade_setting.get_aim(row)
 
         if count < aim:
-            R,G,B = self.colour_setting.get_colours('alert')[3:6]
+            R,G,B = self.colour_setting.get_colour('alert')[3:6]
         else:
-            R,G,B = self.colour_setting.get_colours('default')[3:6]
+            R,G,B = self.colour_setting.get_colour('default')[3:6]
         return Colour(R,G,B)   

@@ -13,7 +13,7 @@ class ProblemAreaController():
     sector_setting : SectorDict
 
     def __init__(self, dependency:DependencyService, parent):
-        self.__parent   = parent
+        self.__parent = parent
         self.__setup_dependencies(dependency)
 
         self.builder = ProblemAreaDataBuilder(
@@ -36,4 +36,5 @@ class ProblemAreaController():
         view_data = self.builder.build_from_problems(problems)
         self.model.changes = view_data
         
-    
+    def on_cell_clicked(self, problem_id:int, row:int, col:int):
+        self.__parent.on_problem_cell_clicked(problem_id, row, col)

@@ -16,14 +16,13 @@ class WorkStaticData(NamedTuple):
         return WorkStaticData(Colour(45,45,45))
 
 class WorkDynamicData(NamedTuple):
-    info_view    : InfoArea
     sector_view  : SectorArea
     grade_view   : GradeArea
     problem_view : ProblemArea
 
     @staticmethod
     def default():
-        return WorkDynamicData(None, None, None, None)
+        return WorkDynamicData(None, None, None)
 
 class WorkStationModel(QObject):
 

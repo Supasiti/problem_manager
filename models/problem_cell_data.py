@@ -55,21 +55,21 @@ class ProblemCellDataBuilder():
             return problem.colour
 
     def __extract_background_colour(self, hold_colour=None):
-        R,G,B = self.colour_setting.get_colours('default')[0:3]
+        R,G,B = self.colour_setting.get_colour('default')[0:3]
         if not hold_colour is None:
-            R,G,B =  self.colour_setting.get_colours(hold_colour)[0:3]
+            R,G,B =  self.colour_setting.get_colour(hold_colour)[0:3]
         return Colour(R,G,B)
        
     def __extract_text_colour(self, hold_colour=None):
-        R,G,B =  self.colour_setting.get_colours('default')[3:6]
+        R,G,B =  self.colour_setting.get_colour('default')[3:6]
         if not hold_colour is None:
-            R,G,B =  self.colour_setting.get_colours(hold_colour)[3:6]
+            R,G,B =  self.colour_setting.get_colour(hold_colour)[3:6]
         return Colour(R,G,B)
     
     def __extract_hover_colour(self, hold_colour=None):
-        R,G,B = self.colour_setting.get_colours('default')[6:9]
+        R,G,B = self.colour_setting.get_colour('default')[6:9]
         if not hold_colour is None:
-            R,G,B =  self.colour_setting.get_colours(hold_colour)[6:9]
+            R,G,B =  self.colour_setting.get_colour(hold_colour)[6:9]
         return Colour(R,G,B)
         
 

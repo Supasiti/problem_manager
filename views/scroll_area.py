@@ -68,7 +68,7 @@ class ProblemArea(ScrollArea):
 
     def __generate_cell(self, cell_data: ProblemCellData, width: int, height:int):
         cell  = ProblemCell(width, height, cell_data)
-    #     cell.set_clicked_command(self.controller.print_cell_info)
+        cell.set_clicked_command(self.controller.on_cell_clicked)
         self.layout.addWidget(cell, cell_data.row, cell_data.col)
 
     def connect_horizontal_scroll_bar(self, command):

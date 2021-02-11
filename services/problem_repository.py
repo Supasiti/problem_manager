@@ -38,3 +38,9 @@ class ProblemRepository():
 
     def get_all_sectors(self):
         return self.sectors
+
+    def get_problem_by_id(self, _id:int):
+        prob_list = [p for p in self.problems if p.id == _id]
+        if len(prob_list) > 0:
+            return prob_list[0]
+        return None

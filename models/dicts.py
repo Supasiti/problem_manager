@@ -78,9 +78,13 @@ class ColourDict():
         'alert'       : (255,   0 ,  0, 240, 240, 240, 219,  91,  91),
     }
 
-    def get_colours(self, name: str):
+    def get_colour(self, name: str):
         if name.lower() in self.__colours.keys():
             return self.__colours[name]
+    
+    def get_hold_colours(self, name: str):
+        if name.lower() in self.__colours.keys():
+            return (name.split(' ')[0], 'orange')
 
 
 class SectorDict():
@@ -115,3 +119,4 @@ class SectorDict():
 
     def length(self):
         return len(self.__sector_dict)
+

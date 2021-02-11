@@ -43,7 +43,9 @@ class MainController():
         # call when content path changes
         self.work_controller.on_content_path_changed(directory)
 
-
+    def on_problem_cell_clicked(self, problem_id:int, row:int, col:int):
+        if not self.tool_controller is None:
+            self.tool_controller.update_from_cell_area(problem_id, row, col)
 
     # def print_cell_info(self, problem_id):
     #     print('Problem id : %s' % problem_id)

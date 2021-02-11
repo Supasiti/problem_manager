@@ -26,3 +26,9 @@ class ProblemRequest():
             repository    = self.repo_factory.get(self.filepath)
             return repository.get_all_sectors()
         return tuple()
+
+    def get_problem_by_id(self, problem_id:int):
+        if self.filepath != '':
+            repository    = self.repo_factory.get(self.filepath)
+            return repository.get_problem_by_id(problem_id)
+        return None

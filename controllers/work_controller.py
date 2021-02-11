@@ -20,7 +20,6 @@ class WorkController():
 
         # build view data 
         view_data = WorkDynamicData(
-            None,
             self.sector_controller.view,
             self.grade_controller.view,
             self.problem_controller.view
@@ -33,3 +32,6 @@ class WorkController():
         # call when content path changes
         self.problem_controller.update_all_cells(directory)
         self.sector_controller.update_all_cells(directory)
+
+    def on_problem_cell_clicked(self, problem_id:int, row:int, col:int):
+        self.__parent.on_problem_cell_clicked(problem_id, row, col)

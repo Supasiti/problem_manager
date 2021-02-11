@@ -13,8 +13,8 @@ from models.cell_data import SectorCellData, GradeCellData, GradeCountData
 
 class FixedSizeLabel(QLabel):
 
-    def __init__(self, width:int, height:int):
-        super().__init__()
+    def __init__(self, width:int, height:int, text:str=''):
+        super().__init__(text)
         self.setFixedWidth(width) 
         self.setFixedHeight(height) 
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed) 
@@ -54,7 +54,7 @@ class ProblemCell(FixedSizeLabel):
     
     def __on_mouse_clicked(self, event):
         if not self.clicked_command is None:
-            self.clicked_command(self.data.id)
+            self.clicked_command(self.data.id, self.data.row, self.data.col)
     
     def __add_hover_effect(self, event):
         self.set_colours(self.data.hover_colour, self.data.text_colour)

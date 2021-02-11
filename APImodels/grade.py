@@ -12,7 +12,7 @@ class Grade():
     _range: str
     _difficulty:str
 
-    def __init__(self, grade:str, difficulty:str):
+    def __init__(self, grade:str , difficulty:str ):
         self.validate('_range', grade, self._accepted_ranges)
         self.validate('_difficulty', difficulty, self._accepted_difficulties)
 
