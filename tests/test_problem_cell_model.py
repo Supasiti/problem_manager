@@ -1,10 +1,12 @@
 
 import unittest
-from models.problem_cell_model import ProblemCellModelBuilder
+from models.problem_cell_data import ProblemCellDataBuilder
+from models.dicts import GradeDict, ColourDict, SectorDict
 from APImodels.problem import Problem
 from APImodels.grade import Grade
 from APImodels.RIC import RIC
 from APImodels.colour import Colour
+
 from datetime import date
 
 class TestProblemCellModel(unittest.TestCase):
@@ -20,7 +22,7 @@ class TestProblemCellModel(unittest.TestCase):
             'Thara', 
             date.today(),
             'on')
-        self.builder = ProblemCellModelBuilder()
+        self.builder = ProblemCellDataBuilder(GradeDict(), ColourDict(), SectorDict() )
 
     def test_build_from_problem(self):
         model = self.builder.build_from_problem(self.problem)
@@ -35,8 +37,8 @@ class TestProblemCellModel(unittest.TestCase):
         self.assertEqual(model.id, 2)
         
     
-    def test_build_from_row_col(self):
-        model = self.builder.build_from_row_col(1,2)
+    def test_build_empty_cell(self):
+        model = self.builder.empty_cell(1,2)
 
         self.assertEqual(model.row, 1)
         self.assertEqual(model.col, 2)

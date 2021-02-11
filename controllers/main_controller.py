@@ -4,6 +4,7 @@
 #  - controls interactions with main view
 #
 from services.dependency_service import DependencyService
+from services.problem_request import ProblemRequest
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from controllers.top_controller import TopController
@@ -16,7 +17,8 @@ class MainController():
     def __init__(self):
         
         self.dependency = DependencyService()
-        
+        self.dependency.register(ProblemRequest)
+
         # load other controllers
         self.top_controller = TopController(self.dependency, self)
         self.work_controller = WorkController(self.dependency, self)
