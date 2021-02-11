@@ -78,9 +78,9 @@ class ProblemAreaModel(QObject):
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
-        self._data   = data
-        self.n_row   = max([d.row for d in self._data.cells ])+ 1
-        self.n_col   = max([d.col for d in self._data.cells ])+ 1
+        self.data    = data
+        self.n_row   = max([d.row for d in self.data.cells ])+ 1
+        self.n_col   = max([d.col for d in self.data.cells ])+ 1
         self.changes = data
 
     @property
@@ -94,17 +94,17 @@ class ProblemAreaModel(QObject):
         self.cellsChanged.emit(True)
 
     def __update_data(self, value: ProblemAreaData):
-        old_data  = list(self._data.cells)
+        old_data  = list(self.data.cells)
         new_data  = list(value.cells)
         new_cells = [(d.row, d.col) for d in new_data]
         old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
         new_data += old_data_to_retain
-        self._data = ProblemAreaData(tuple(new_data))
+        self.data = ProblemAreaData(tuple(new_data))
         self.sector_count = self.__count_sectors()
         self.grade_count  = self.__count_grade()
 
     def __count_sectors(self):
-        counts = { sector_id : self.__n_problems_in_sector(sector_id, self._data.cells) 
+        counts = { sector_id : self.__n_problems_in_sector(sector_id, self.data.cells) 
                     for sector_id in range(self.n_col)} 
         return dict(counts)
 
@@ -114,7 +114,7 @@ class ProblemAreaModel(QObject):
         return len(non_empty_cells)  
 
     def __count_grade(self):
-        counts = { grade_id : self.__n_problems_of_grade(grade_id, self._data.cells) 
+        counts = { grade_id : self.__n_problems_of_grade(grade_id, self.data.cells) 
                     for grade_id in range(self.n_row)} 
         return dict(counts)
     

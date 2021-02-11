@@ -1,4 +1,4 @@
-
+from APImodels.problem import Problem
 from models.work_model import WorkStationModel, WorkDynamicData 
 from views.work_station import WorkStation
 from controllers.problem_controller import ProblemAreaController
@@ -33,5 +33,5 @@ class WorkController():
         self.problem_controller.update_all_cells(directory)
         self.sector_controller.update_all_cells(directory)
 
-    def on_problem_cell_clicked(self, problem_id:int, row:int, col:int):
-        self.__parent.on_problem_cell_clicked(problem_id, row, col)
+    def on_problem_cell_clicked(self, problem: Problem):
+        self.__parent.on_problem_cell_clicked(problem)

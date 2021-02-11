@@ -5,6 +5,7 @@
 #
 from services.dependency_service import DependencyService
 from services.problem_request import ProblemRequest
+from APImodels.problem import Problem
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from controllers.top_controller import TopController
@@ -43,10 +44,8 @@ class MainController():
         # call when content path changes
         self.work_controller.on_content_path_changed(directory)
 
-    def on_problem_cell_clicked(self, problem_id:int, row:int, col:int):
+    def on_problem_cell_clicked(self, problem:Problem):
         if not self.tool_controller is None:
-            self.tool_controller.update_from_cell_area(problem_id, row, col)
+            self.tool_controller.update_from_problem(problem)
 
-    # def print_cell_info(self, problem_id):
-    #     print('Problem id : %s' % problem_id)
 

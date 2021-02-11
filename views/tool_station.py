@@ -138,15 +138,6 @@ class ToolStation(FixedWidthFrame):
         return True
 
     def __set_lineedit_styles(self, styles:Tuple[str,...]):
-        # length = len(styles)
-
-        # if length >= 1:
-        #     self.lineedit_styles_1.setText(styles[0])
-        # if length >= 2:
-        #     self.lineedit_styles_2.setText(styles[1])
-        # if length >= 3:
-        #     self.lineedit_styles_3.setText(styles[2])
-
         for index, style in enumerate(styles):
             setattr(self, 'lineedit_styles_' + str(index), style)
 

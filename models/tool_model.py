@@ -44,6 +44,5 @@ class ToolStationModel(QObject):
     
     @dynamic_data.setter
     def dynamic_data(self, data: str):
-        print('Tool model: data change!')
         self._dynamic_data = data
         self.dataChanged.emit(True)

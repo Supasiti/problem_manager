@@ -1,7 +1,7 @@
 from services.problem_request import ProblemRequest
 from services.dependency_service import DependencyService
 from models.problem_area_model import ProblemAreaModel, ProblemAreaDataBuilder 
-from models.dicts import GradeDict,SectorDict,ColourDict
+from models.dicts import GradeDict, SectorDict, ColourDict
 from views.scroll_area import ProblemArea
 
 class ProblemAreaController():
@@ -37,4 +37,15 @@ class ProblemAreaController():
         self.model.changes = view_data
         
     def on_cell_clicked(self, problem_id:int, row:int, col:int):
-        self.__parent.on_problem_cell_clicked(problem_id, row, col)
+        
+        if problem_id != 0:
+            problem_request = self.dependency.get(ProblemRequest)
+            result = problem_request.get_problem_by_id(problem_id)
+            if not result is None:
+                self.__parent.on_problem_cell_clicked(result)
+                return True
+        # use row and col to make a new problem
+            # self.model.
+        print(' to do ')
+        # self.__parent.on_problem_cell_clicked(result)
+        return True
