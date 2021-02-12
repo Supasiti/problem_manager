@@ -36,3 +36,9 @@ class Grade():
     def __repr__(self):
         return 'Grade(%s, %s)' % (self.range, self.difficulty)
 
+    @staticmethod
+    def from_str(data: str):
+        _txt = data.split(' ')
+        if len(_txt) != 2: 
+            raise ValueError('Incorrect value format. Expected a string of format: "range difficulty"')
+        return Grade(_txt[0], _txt[1])
