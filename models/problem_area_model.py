@@ -78,10 +78,10 @@ class ProblemAreaModel(QObject):
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
-        self.data    = data
-        self.n_row   = max([d.row for d in self.data.cells ])+ 1
-        self.n_col   = max([d.col for d in self.data.cells ])+ 1
-        self.changes = data
+        self.data     = data
+        self.n_row    = max([d.row for d in self.data.cells ])+ 1
+        self.n_col    = max([d.col for d in self.data.cells ])+ 1
+        self.changes  = data
 
     @property
     def changes(self):
