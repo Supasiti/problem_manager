@@ -19,5 +19,4 @@ class BottomController():
     def open_directory(self, directory:str):
         self.model.dynamic_data = directory
         problem_request = self._dependency.get(ProblemRequest)
-        problem_request.get_problems_from_directory(directory)
-        # self._parent.on_content_path_changed(directory)
+        problem_request.open_directory(directory)

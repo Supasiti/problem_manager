@@ -10,13 +10,12 @@ class WorkController():
 
     def __init__(self, dependency, parent):
         self._parent    = parent
-        self.dependency = dependency
+        self._dependency = dependency
         
         # load other controllers
-        # self.info_controller    = None
-        self.sector_controller = SectorAreaController(self.dependency, self)
-        self.grade_controller  = GradeAreaController(self.dependency, self)
-        self.problem_controller = ProblemAreaController(self.dependency, self)
+        self.sector_controller  = SectorAreaController(self._dependency, self)
+        self.grade_controller   = GradeAreaController(self._dependency, self)
+        self.problem_controller = ProblemAreaController(self._dependency, self)
 
         # build view data 
         view_data = WorkDynamicData(
@@ -26,9 +25,6 @@ class WorkController():
         )
 
         self.model = WorkStationModel(dynamic_data = view_data) # load model
-        self.view  = WorkStation(self, self.model) # load view
+        self.view  = WorkStation(self, self.model)              # load view
     
-    # def on_content_path_changed(self, directory:str):
-    #     # call when content path changes
-    #     self.problem_controller.update_all_cells(directory)
-    #     self.sector_controller.update_all_cells(directory)
+

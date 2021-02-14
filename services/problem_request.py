@@ -8,12 +8,14 @@ class ProblemRequest():
     
     problemToEditChanged = Signal(bool)
     problemsChanged      = Signal(bool)
+    sectorsChanged       = Signal(bool)
     _filepath :str
 
     def __init__(self):
         self._path_builder = PathBuilder()
-        self._problems_to_edit = dict()
+        self._problems_to_edit = dict()    # id : problem
         self._problem_to_edit  = None
+        self._sectors_to_edit  = dict()    # name : sector
         self._repo_factory = RepositoryFactory()
  
     @property
@@ -34,28 +36,22 @@ class ProblemRequest():
         self._problem_to_edit = problem
         self.problemToEditChanged.emit(True)
 
+    @property
+    def sectors(self):
+        return self._sectors_to_edit.values()
 
-    def get_problems_from_directory(self, directory:str):
+    @sectors.setter
+    def sectors(self, sectors:dict):
+        self._sectors_to_edit = sectors
+        self.sectorsChanged.emit(True)
+    
+    def open_directory(self, directory:str):
         self._filepath = self._path_builder.get_latest_gym_filepath(directory)   
-        if self._filepath != "":
+        if self._filepath != '':
             repository    = self._repo_factory.get(self._filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
-
-
-    # def get_all_current_problems(self, directory:str):
-    #     self._filepath = self._path_builder.get_latest_gym_filepath(directory)   
-    #     if self._filepath != "":
-    #         repository    = self._repo_factory.get(self._filepath)
-    #         self.problems = dict({p.id: p for p in repository.get_all_problems()})
-    #         # return self.problems
-    #     return tuple()
-
-    def get_all_sectors(self, directory:str):
-        self._filepath = self._path_builder.get_latest_gym_filepath(directory)   
-        if self._filepath != "":
-            repository    = self._repo_factory.get(self._filepath)
-            return repository.get_all_sectors()
-        return tuple()
+            self.sectors  = dict({p.name: p for p in repository.get_all_sectors()})
+        return True
 
     def get_problem_by_id(self, problem_id:int):
         assert (type(problem_id) == int)

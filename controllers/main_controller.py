@@ -40,7 +40,4 @@ class MainController():
         self.view  = MainView(self, self.model)
         self.view.show()
     
-    # def on_content_path_changed(self, directory:str):
-    #     # call when content path changes
-    #     self.work_controller.on_content_path_changed(directory)
-
+ 

@@ -8,29 +8,29 @@ from views.scroll_area import SectorArea
 class SectorAreaController():
     # controller all interaction the top station
 
-    dependency : DependencyService
-    colour_setting : ColourDict
-    sector_setting : SectorDict
+    _dependency : DependencyService
+    _colour_setting : ColourDict
+    _sector_setting : SectorDict
 
     def __init__(self, dependency : DependencyService, parent):
-        self.__parent   = parent
-        self.__setup_dependencies(dependency)
-
-        self.builder = SectorAreaDataBuilder(
-                        self.sector_setting, self.colour_setting)
-        view_data = self.builder.default()
-
-        self.model = SectorAreaModel(view_data)   # load model
-        self.view  = SectorArea(self, self.model) # load view
+        self._parent  = parent
+        self._setup_dependencies(dependency)
+        self._builder = SectorAreaDataBuilder(self._sector_setting, self._colour_setting)
+        self.model    = SectorAreaModel(self._builder.default())   # load model
+        self.view     = SectorArea(self, self.model) # load view
+        self._connect_problem_request()
     
-    def __setup_dependencies(self, dependency:DependencyService):
-        self.dependency = dependency
-        self.colour_setting = self.dependency.get_or_register(ColourDict) 
-        self.sector_setting = self.dependency.get_or_register(SectorDict)
+    def _setup_dependencies(self, dependency:DependencyService):
+        self._dependency = dependency
+        self._colour_setting = self._dependency.get_or_register(ColourDict) 
+        self._sector_setting = self._dependency.get_or_register(SectorDict)
 
-    def update_all_cells(self, directory:str):
-        # update every sector cell when get new list of problems from database 
-        problem_request = self.dependency.get(ProblemRequest)
-        sectors = problem_request.get_all_sectors(directory)
-        view_data = self.builder.build_from_sectors(sectors)
+    def _connect_problem_request(self):
+        problem_request = self._dependency.get(ProblemRequest)
+        problem_request.sectorsChanged.connect(self._on_sectors_changed)
+
+    def _on_sectors_changed(self, arg:bool):
+        problem_request = self._dependency.get(ProblemRequest)
+        view_data       = self._builder.build_from_sectors(problem_request.sectors)
         self.model.changes = view_data
+

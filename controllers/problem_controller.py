@@ -39,22 +39,14 @@ class ProblemAreaController():
         problem_request.problemsChanged.connect(self._on_problems_changed)
 
     def _on_problems_changed(self, arg:bool):
-        problem_request = self._dependency.get(ProblemRequest)
-        problems        = problem_request.problems
-        view_data       = self.builder.build_from_problems(problems)
-        self.model.changes = view_data
-
-
-    def update_all_cells(self, directory:str):
-        # update every problem cell when get new list of problems from database 
-        problem_request = self._dependency.get(ProblemRequest)
-        problems        = problem_request.problems
-        view_data       = self.builder.build_from_problems(problems)
+        problem_request    = self._dependency.get(ProblemRequest)
+        problems           = problem_request.problems
+        view_data          = self.builder.build_from_problems(problems)
         self.model.changes = view_data
         
     def on_cell_clicked(self, problem_id:int, row:int, col:int) -> bool:
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_to_edit = problem_request.get_problem_by_id(problem_id)
+        problem_request     = self._dependency.get(ProblemRequest)
+        problem_to_edit     = problem_request.get_problem_by_id(problem_id)
         if problem_to_edit is None:
             problem_to_edit = self._make_new_problem(row, col)
         problem_request.problem_to_edit = problem_to_edit
