@@ -1,13 +1,14 @@
 
 from models.bottom_model import BottomStationModel 
 from views.bottom_station import BottomStation
+from services.problem_request import ProblemRequest
 
 class BottomController():
     # controller all interaction the bottom station
 
     def __init__(self, dependency, parent):
-        self.__parent   = parent
-        self.dependency = dependency
+        self._parent   = parent
+        self._dependency = dependency
         
         # load other controllers
 
@@ -17,4 +18,6 @@ class BottomController():
 
     def open_directory(self, directory:str):
         self.model.dynamic_data = directory
-        self.__parent.on_content_path_changed(directory)
+        problem_request = self._dependency.get(ProblemRequest)
+        problem_request.get_problems_from_directory(directory)
+        # self._parent.on_content_path_changed(directory)

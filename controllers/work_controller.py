@@ -9,7 +9,7 @@ class WorkController():
     # controller all interaction the work station
 
     def __init__(self, dependency, parent):
-        self.__parent   = parent
+        self._parent    = parent
         self.dependency = dependency
         
         # load other controllers
@@ -28,10 +28,7 @@ class WorkController():
         self.model = WorkStationModel(dynamic_data = view_data) # load model
         self.view  = WorkStation(self, self.model) # load view
     
-    def on_content_path_changed(self, directory:str):
-        # call when content path changes
-        self.problem_controller.update_all_cells(directory)
-        self.sector_controller.update_all_cells(directory)
-
-    def on_problem_cell_clicked(self, problem: Problem):
-        self.__parent.on_problem_cell_clicked(problem)
+    # def on_content_path_changed(self, directory:str):
+    #     # call when content path changes
+    #     self.problem_controller.update_all_cells(directory)
+    #     self.sector_controller.update_all_cells(directory)

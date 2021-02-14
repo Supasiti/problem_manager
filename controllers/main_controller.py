@@ -40,12 +40,7 @@ class MainController():
         self.view  = MainView(self, self.model)
         self.view.show()
     
-    def on_content_path_changed(self, directory:str):
-        # call when content path changes
-        self.work_controller.on_content_path_changed(directory)
-
-    def on_problem_cell_clicked(self, problem:Problem):
-        if not self.tool_controller is None:
-            self.tool_controller.update_from_problem(problem)
-
+    # def on_content_path_changed(self, directory:str):
+    #     # call when content path changes
+    #     self.work_controller.on_content_path_changed(directory)
 

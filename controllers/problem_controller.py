@@ -1,5 +1,4 @@
 from datetime import date
-from typing import List
 
 from services.problem_request import ProblemRequest
 from services.dependency_service import DependencyService
@@ -18,7 +17,6 @@ class ProblemAreaController():
     _grade_setting  : GradeDict
     _colour_setting : ColourDict
     _sector_setting : SectorDict
-    _problems       : List[Problem]
 
     def __init__(self, dependency:DependencyService, parent):
         self._parent = parent
@@ -28,6 +26,7 @@ class ProblemAreaController():
 
         self.model = ProblemAreaModel(view_data)   # load model
         self.view  = ProblemArea(self, self.model) # load view
+        self._connect_problem_request()
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
@@ -35,22 +34,37 @@ class ProblemAreaController():
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._sector_setting = self._dependency.get_or_register(SectorDict) 
 
+    def _connect_problem_request(self):
+        problem_request = self._dependency.get(ProblemRequest)
+        problem_request.problemsChanged.connect(self._on_problems_changed)
+
+    def _on_problems_changed(self, arg:bool):
+        problem_request = self._dependency.get(ProblemRequest)
+        problems        = problem_request.problems
+        view_data       = self.builder.build_from_problems(problems)
+        self.model.changes = view_data
+
+
     def update_all_cells(self, directory:str):
         # update every problem cell when get new list of problems from database 
         problem_request = self._dependency.get(ProblemRequest)
-        self._problems  = problem_request.get_all_current_problems(directory)
-        view_data = self.builder.build_from_problems(self._problems)
+        problems        = problem_request.problems
+        view_data       = self.builder.build_from_problems(problems)
         self.model.changes = view_data
         
     def on_cell_clicked(self, problem_id:int, row:int, col:int) -> bool:
-        _problems = [p for p in self._problems if p.id == problem_id]
-        result    = _problems[0] if len(_problems) > 0 else self._make_new_problem(row, col)
-        self._parent.on_problem_cell_clicked(result)
+        problem_request = self._dependency.get(ProblemRequest)
+        problem_to_edit = problem_request.get_problem_by_id(problem_id)
+        if problem_to_edit is None:
+            problem_to_edit = self._make_new_problem(row, col)
+        problem_request.problem_to_edit = problem_to_edit
         return True
 
     def _make_new_problem(self, row:int, col:int):
         # return a new problem with new auto increment id
-        _id     = max([p.id for p in self._problems]) + 1
+        problem_request = self._dependency.get(ProblemRequest)
+
+        _id     = problem_request.get_next_available_problem_id()
         _grade  = self._grade_setting.get_grade(row)
         _hold   = _grade.split(' ')[0]
         _sector = self._sector_setting.get_sector(col)
