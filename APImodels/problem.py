@@ -16,12 +16,12 @@ class Problem(
 
     @staticmethod
     def from_json(data):
-        _id      = data['id']
-        ric      = RIC(data['RIC']['R'], data['RIC']['I'], data['RIC']['C'])
+        _id      = int(data['id'])
+        ric      = RIC(int(data['RIC']['R']), int(data['RIC']['I']), int(data['RIC']['C']))
         grade    = Grade(data['grade']['range'], data['grade']['difficulty'])
         colour   = data['colour']
         sector   = data['sector']
-        styles   = data['styles']
+        styles   = tuple(data['styles'])
         set_by   = data['set_by']
         set_date = date.fromisoformat(data['set_date'])
         status   = data['status']

@@ -39,30 +39,30 @@ class ProblemCell(FixedSizeLabel):
         self.clicked_command = None
         
         self.set_colours(self.data.bg_colour, self.data.text_colour)
-        self.__add_mouse_effect()
-        self.__add_text()
+        self._add_mouse_effect()
+        self._add_text()
 
     # TODO width, height in problem cell data
 
-    def __add_mouse_effect(self):
+    def _add_mouse_effect(self):
         self.setFocusPolicy(Qt.StrongFocus)
-        self.enterEvent  = self.__add_hover_effect
-        self.leaveEvent  = self.__remove_hover_effect
+        self.enterEvent  = self._add_hover_effect
+        self.leaveEvent  = self._remove_hover_effect
 
         if not self.clicked_command is None:
-            self.mousePressEvent = self.__on_mouse_clicked
+            self.mousePressEvent = self._on_mouse_clicked
     
-    def __on_mouse_clicked(self, event):
+    def _on_mouse_clicked(self, event):
         if not self.clicked_command is None:
             self.clicked_command(self.data.id, self.data.row, self.data.col)
     
-    def __add_hover_effect(self, event):
+    def _add_hover_effect(self, event):
         self.set_colours(self.data.hover_colour, self.data.text_colour)
     
-    def __remove_hover_effect(self, event):
+    def _remove_hover_effect(self, event):
         self.set_colours(self.data.bg_colour, self.data.text_colour)
 
-    def __add_text(self):
+    def _add_text(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
@@ -76,7 +76,7 @@ class ProblemCell(FixedSizeLabel):
 
     def set_clicked_command(self, command):
         self.clicked_command = command
-        self.mousePressEvent = self.__on_mouse_clicked
+        self.mousePressEvent = self._on_mouse_clicked
 
 
 class GradeCell(FixedSizeLabel):
@@ -86,9 +86,9 @@ class GradeCell(FixedSizeLabel):
         super().__init__(data.width, data.height)
         self.data  = data
 
-        self.__init_UI()
+        self._init_UI()
 
-    def __init_UI(self):
+    def _init_UI(self):
         self.layout = QGridLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
@@ -119,13 +119,13 @@ class GradeCountCell(FixedSizeLabel):
         super().__init__(data.width, data.height)
         self.data  = data
 
-        self.__init_UI()
+        self._init_UI()
 
-    def __init_UI(self):
+    def _init_UI(self):
         self.setText(self.data.text)
         self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.set_colours(Colour(255,0,0), self.data.text_colour)
-        self.show()
+        self.set_colours(self.data.bg_colour, self.data.text_colour)
+
 
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
@@ -134,11 +134,11 @@ class SectorCell(FixedSizeLabel):
         super().__init__(data.width, height)
         self.data = data
         self.set_colours(self.data.bg_colour, self.data.text_colour)
-        self.__add_text()
+        self._add_text()
 
     # TODO put width and height in SectorCellData
 
-    def __add_text(self):
+    def _add_text(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)

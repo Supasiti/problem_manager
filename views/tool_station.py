@@ -2,8 +2,8 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import Qt 
-from typing import Tuple
 from datetime import date
 
 from models.tool_model import ToolDynamicData
@@ -19,11 +19,11 @@ class ToolStation(FixedWidthFrame):
         self.width = self.model.static_data.width
         super().__init__(self.width)
     
-        self.__init__UI()
-        self.__set_data()
-        self.__connect_model()
+        self._init__UI()
+        self._set_data()
+        self._connect_model()
 
-    def __init__UI(self):
+    def _init__UI(self):
         label_title = FixedSizeLabel(self.width -6, 40, 'Problem Editor')
         label_title.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
         label_title.set_colours(Colour(30,30,30), Colour(240,240,240))
@@ -57,6 +57,9 @@ class ToolStation(FixedWidthFrame):
 
         label_buffer = QLabel()
 
+        self.button_update = QPushButton('Update')
+        self.button_update.mousePressEvent = self._update_problem
+
         # editing side
         self.text_id = FixedSizeLabel(190, 28)
         self.text_id.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -85,6 +88,7 @@ class ToolStation(FixedWidthFrame):
         self.lineedit_styles_2 = QLineEdit()
         self.lineedit_set_by   = QLineEdit()
         self.lineedit_set_date = QLineEdit()
+        self.lineedit_set_date.setPlaceholderText('YYYY-MM-DD')
 
         self.layout = QGridLayout()
         self.layout.setContentsMargins(2,2,2,2)
@@ -99,7 +103,7 @@ class ToolStation(FixedWidthFrame):
         self.layout.addWidget(label_set_by,   9, 0)
         self.layout.addWidget(label_set_date,10, 0)
         self.layout.addWidget(label_status,  11, 0)
-        self.layout.addWidget(label_buffer,  12, 0)
+        self.layout.addWidget(label_buffer,  13, 0)
 
         self.layout.addWidget(self.text_id,       1, 1, 1, 3)
         self.layout.addWidget(self.dropdown_r,    2, 1)
@@ -114,9 +118,10 @@ class ToolStation(FixedWidthFrame):
         self.layout.addWidget(self.lineedit_set_by,   9, 1, 1, 3)
         self.layout.addWidget(self.lineedit_set_date,10, 1, 1, 3)
         self.layout.addWidget(self.dropdown_status,  11, 1, 1, 3)
+        self.layout.addWidget(self.button_update,    12, 2, 1, 2)   
         self.setLayout(self.layout)
 
-    def __set_data(self):
+    def _set_data(self):
         data = self.model.dynamic_data
         _problem = data.problem
         self.text_id.setText(str(_problem.id))
@@ -124,30 +129,35 @@ class ToolStation(FixedWidthFrame):
         self.dropdown_i.setCurrentText(str(_problem.RIC.I))
         self.dropdown_c.setCurrentText(str(_problem.RIC.C))
         self.text_grade.setText(str(_problem.grade))
-        self.__set_dropdown_hold(data)
+        self._set_dropdown_hold(data)
         self.text_sector.setText(_problem.sector.upper())
-        self.__set_lineedit_styles(_problem.styles)
+        self._set_lineedit_styles(_problem.styles)
         self.lineedit_set_by.setText(_problem.set_by)
-        self.__set_lineedit_set_date(_problem.set_date)
+        self._set_lineedit_set_date(_problem.set_date)
         self.dropdown_status.setCurrentText(_problem.status)
 
-    def __set_dropdown_hold(self, data:ToolDynamicData):
+    def _set_dropdown_hold(self, data:ToolDynamicData):
         self.dropdown_hold.clear()
         self.dropdown_hold.addItems(data.holds)
         self.dropdown_hold.setCurrentText(data.problem.colour)
         return True
 
-    def __set_lineedit_styles(self, styles:Tuple[str,...]):
-        for index, style in enumerate(styles):
-            setattr(self, 'lineedit_styles_' + str(index), style)
+    def _set_lineedit_styles(self, styles:tuple[str,...]):
+        for index in range(3):
+            _lineedit = getattr(self, 'lineedit_styles_' + str(index))
+            _lineedit.setText(styles[index]) if len(styles) > index else _lineedit.setText('')
 
-    def __set_lineedit_set_date(self, _date:date = None):
+    def _set_lineedit_set_date(self, _date:date = None):
         if _date is None:
             self.lineedit_set_date.setText('')
             return True
         self.lineedit_set_date.setText(_date.isoformat())
         return True
 
-    def __connect_model(self):
-        self.model.dataChanged.connect(self.__set_data)
+    def _connect_model(self):
+        self.model.dataChanged.connect(self._set_data)
         return True
+
+    def _update_problem(self, event):
+        self.controller.update_problem()
+        

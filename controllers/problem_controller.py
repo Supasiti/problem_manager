@@ -46,7 +46,7 @@ class ProblemAreaController():
         
     def on_cell_clicked(self, problem_id:int, row:int, col:int) -> bool:
         problem_request     = self._dependency.get(ProblemRequest)
-        problem_to_edit     = problem_request.get_problem_by_id(problem_id)
+        problem_to_edit     = problem_request.get_problem_by_id(int(problem_id))
         if problem_to_edit is None:
             problem_to_edit = self._make_new_problem(row, col)
         problem_request.problem_to_edit = problem_to_edit

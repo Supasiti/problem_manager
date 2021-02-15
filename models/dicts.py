@@ -2,7 +2,7 @@
 class GradeDict():
     # row , aim
 
-    __grade_dict = {
+    _grade_dict = {
         'yellow mid'  : (0, 4), 
         'yellow hard' : (1, 1), 
         'blue easy'   : (2, 1), 
@@ -26,19 +26,22 @@ class GradeDict():
 
     
     def get_row(self, name: str):
-        if name.lower() in self.__grade_dict.keys():
-            return self.__grade_dict[name][0]
+        if name.lower() in self._grade_dict.keys():
+            return self._grade_dict[name][0]
     
     def get_grade(self, row:int):
-        keys   = list(self.__grade_dict.keys())
-        values = list(self.__grade_dict.values())
+        keys   = list(self._grade_dict.keys())
+        values = list(self._grade_dict.values())
         rows   = [value[0] for value in values]
         if row in rows:
             return keys[rows.index(row)]
         raise IndexError('index is out of range.')
     
+    def get_all_grades(self):
+        return tuple(self._grade_dict.keys())
+        
     def get_aim(self, row:int):
-        values = list(self.__grade_dict.values())
+        values = list(self._grade_dict.values())
         rows   = [value[0] for value in values]
         aims   = [value[1] for value in values]
         if row in rows:
@@ -46,13 +49,13 @@ class GradeDict():
         raise IndexError('index is out of range.')
 
     def length(self):
-        return len(self.__grade_dict)
+        return len(self._grade_dict)
     
 
 class ColourDict():
     # background colour (R G B), text colour (R G B), hover colour (R G B)
 
-    __colours = {
+    _colours = {
         'yellow mid'  : (255, 225, 142,   0,   0,   0, 255, 240, 197),
         'yellow hard' : (255, 212,  91,   0,   0,   0, 255, 225, 142),
         'blue easy'   : (154, 186, 242,   0,   0,   0, 194, 213, 247),
@@ -79,17 +82,17 @@ class ColourDict():
     }
 
     def get_colour(self, name: str):
-        if name.lower() in self.__colours.keys():
-            return self.__colours[name]
+        if name.lower() in self._colours.keys():
+            return self._colours[name]
     
     def get_hold_colours(self, name: str):
-        if name.lower() in self.__colours.keys():
+        if name.lower() in self._colours.keys():
             return (name.split(' ')[0], 'orange')
 
 
 class SectorDict():
 
-    __sector_dict = {
+    _sector_dict = {
         'front l' : 0,
         'front r' : 1,
         'mid'     : 2,
@@ -106,17 +109,20 @@ class SectorDict():
     }
 
     def get_col(self, name: str):
-        if name.lower() in self.__sector_dict.keys():
-            return self.__sector_dict[name]
+        if name.lower() in self._sector_dict.keys():
+            return self._sector_dict[name]
         raise ValueError('The sector name does not exist!')
     
     def get_sector(self, col:int):
-        keys   = list(self.__sector_dict.keys())
-        values = list(self.__sector_dict.values())
+        keys   = list(self._sector_dict.keys())
+        values = list(self._sector_dict.values())
         if col in values:
             return keys[values.index(col)]
         raise IndexError('index is out of range.')
 
+    def get_all_sectors(self):
+        return tuple(self._sector_dict.keys())
+        
     def length(self):
-        return len(self.__sector_dict)
+        return len(self._sector_dict)
 

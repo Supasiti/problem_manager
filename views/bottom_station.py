@@ -16,33 +16,33 @@ class BottomStation(FixedHeightFrame):
         self.model         = model        
         super().__init__(self.model.static_data.height)
 
-        self.__init_UI()
-        self.__set_layout()
-        self.__connect_model()
+        self._init_UI()
+        self._set_layout()
+        self._connect_model()
 
-    def __init_UI(self):
+    def _init_UI(self):
         data = self.model.static_data
         self.path_label    = QLabel(data.label_text)
         self.path_info     = QLabel(self.model.dynamic_data)
         self.change_button = QPushButton(data.button_text) 
-        self.__config_UI()
+        self._config_UI()
 
-    def __config_UI(self):
+    def _config_UI(self):
         data = self.model.static_data
         self.path_label.setFixedWidth(data.label_width)
         self.path_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)        
 
         self.change_button.setFixedWidth(data.button_width)
-        self.change_button.mousePressEvent = self.__openFileNameDialog
+        self.change_button.mousePressEvent = self._openFileNameDialog
 
-    def __set_layout(self):
+    def _set_layout(self):
         layout = QHBoxLayout()
         layout.addWidget(self.path_label)
         layout.addWidget(self.path_info)
         layout.addWidget(self.change_button)
         self.setLayout(layout)
 
-    def __openFileNameDialog(self, event):
+    def _openFileNameDialog(self, event):
         # set up open file window
         
         directory = QFileDialog.getExistingDirectory(self, "Open Directory",
@@ -50,5 +50,5 @@ class BottomStation(FixedHeightFrame):
         if directory: 
             self.controller.open_directory(directory)
 
-    def __connect_model(self):
+    def _connect_model(self):
         self.model.contentPathChanged.connect(self.path_info.setText)

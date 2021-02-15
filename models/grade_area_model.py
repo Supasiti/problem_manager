@@ -4,6 +4,7 @@ from typing import Tuple, NamedTuple
 
 from models.dicts import GradeDict, ColourDict
 from models.cell_data import GradeCellData, GradeCellDataBuilder, GradeCountData, GradeCountDataBuilder
+from APImodels.problem import Problem
 
 class GradeAreaData(NamedTuple):
     width : int
@@ -32,44 +33,44 @@ class GradeCountsDataBuilder():
 
     def __init__(self, grade_setting: GradeDict, colour_setting:ColourDict):
         super().__init__()
-        self.grade_setting  = grade_setting
-        self.colour_setting = colour_setting
-        self.builder = GradeCountDataBuilder(self.grade_setting, self.colour_setting )
+        self._grade_setting  = grade_setting
+        self._colour_setting = colour_setting
+        self._builder = GradeCountDataBuilder(self._grade_setting, self._colour_setting )
 
-        self.n_row   = self.grade_setting.length()
+        self.n_row   = self._grade_setting.length()
+        self._grades = self._grade_setting.get_all_grades()
 
     def default(self):
-        cells = [self.builder.build(row, 0) for row in range(self.n_row)] ## need to change
+        cells = [self._builder.build(row, 0) for row in range(self.n_row)] ## need to change
         cells.sort(key= lambda x : x.row)
         return GradeCountsData(tuple(cells))
 
+    def from_problems(self, problems:tuple[Problem,...]):
+        prob = tuple(problems)
+        if len(prob) == 0 :
+            return self.default()
+        cell_data = [(self._grade_setting.get_row(g), self._counts(g, prob) ) for g in self._grades]
+        cells     = [self._builder.build(d[0], d[1]) for d in cell_data]
+        cells.sort(key= lambda x : x.row)
+        return GradeCountsData(tuple(cells))
+
+    def _counts(self, grade:str, problems:tuple[Problem,...]):
+        return len([p for p in problems if str(p.grade) == grade])
 
 class GradeAreaModel(QObject):
     
     countsChanged = pyqtSignal(bool)
-    _changes : GradeCountsData
-
+    
     def __init__(self, data : GradeAreaData, counts : GradeCountsData):
         super().__init__()
         self.static  = data
         self._counts = counts
-        self.changes = counts
 
     @property
-    def changes(self):
-        return self._changes
+    def counts(self):
+        return self._counts
 
-    @changes.setter
-    def changes(self, value: GradeCountsData):
-        # self.__update_data(value)
-        self._changes = value
+    @counts.setter
+    def counts(self, value: GradeCountsData):
+        self._counts = value
         self.countsChanged.emit(True)
-
-
-    # def __update_data(self, value: SectorAreaData):
-    #     old_data  = list(self._data.cells)
-    #     new_data  = list(value.cells)
-    #     new_cells = [d.col for d in new_data]
-    #     old_data_to_retain = [ d for d in old_data if not d.col in new_cells]
-    #     new_data += old_data_to_retain
-    #     self._data = SectorAreaData(48, tuple(new_data))

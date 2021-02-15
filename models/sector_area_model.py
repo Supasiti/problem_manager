@@ -5,6 +5,7 @@ from typing import Tuple, NamedTuple
 from models.dicts import SectorDict, ColourDict
 from models.cell_data import SectorCellData, SectorCellDataBuilder
 from APImodels.sector import Sector
+from APImodels.problem import Problem
 
 class SectorAreaData(NamedTuple):
     height : int
@@ -14,28 +15,35 @@ class SectorAreaDataBuilder():
    
     def __init__(self, sector_setting: SectorDict, colour_setting:ColourDict):
         super().__init__()
-        self.sector_setting = sector_setting
-        self.colour_setting = colour_setting
-        self.builder = SectorCellDataBuilder(self.sector_setting, self.colour_setting)
+        self._sector_setting = sector_setting
+        self._colour_setting = colour_setting
+        self._builder        = SectorCellDataBuilder(self._sector_setting, self._colour_setting)
 
-        self.n_col   = self.sector_setting.length()
+        self.n_col           = self._sector_setting.length()
+        self._sectors        = self._sector_setting.get_all_sectors()
 
     def default(self):
-        cells = [self.builder.build_from_col(index) for index in range(self.n_col)]
+        cells = [self._builder.from_col(index) for index in range(self.n_col)]
         cells.sort(key= lambda x : x.col)
         return SectorAreaData(48, tuple(cells))
 
-    def build_from_sectors(self, sectors:Tuple[Sector,...]):
-        new_cells = [self.builder.build_from_sector(s) for s in sectors]
-        new_col   = [c.col for c in new_cells]
-        default_cells = [ self.builder.build_from_col(col) 
-                            for col in range(self.n_col)
-                            if not col in new_col]
-        cells = new_cells + default_cells                    
+
+    def from_problems(self, problems:tuple[Problem,...]):
+        prob = tuple(problems)
+        if len(prob) == 0 :
+            return self.default()
+        set_date = self._last_setting_date(prob)
+        sectors  = [Sector.from_problems(s, prob, set_date) for s in self._sectors]
+        cells    = list([self._builder.from_sector(s) for s in sectors ])
         cells.sort(key= lambda x : x.col)
         return SectorAreaData(48, tuple(cells))
 
-    
+    def _last_setting_date(self, problems:tuple[Problem,...]):
+        prob = tuple(problems)
+        if len(prob) == 0: 
+            raise ValueError('_get_last_setting_date() don\'t accept empty generator')
+        return max([p.set_date for p in prob]) 
+
 class SectorAreaModel(QObject):
     
     cellsChanged = pyqtSignal(bool)
