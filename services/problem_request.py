@@ -15,6 +15,7 @@ class ProblemRequest():
         self._problems_to_edit = dict()    # id (int): problem
         self._problem_to_edit  = None
         self._repo_factory = RepositoryFactory()
+        self.next_id = 1
  
     @property
     def problems(self):
@@ -39,7 +40,11 @@ class ProblemRequest():
         if self._filepath != '':
             repository    = self._repo_factory.get(self._filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
+            self.next_id  = self._next_available_problem_id()
         return True
+
+    def _next_available_problem_id(self) -> int:
+        return max(max(self._problems_to_edit.keys()) + 1, self.next_id) 
 
     def get_problem_by_id(self, problem_id:int) -> Problem:
         assert (type(problem_id) == int)
@@ -59,5 +64,14 @@ class ProblemRequest():
         _id = int(problem.id) 
         self._problems_to_edit[_id] = problem
         self.problemsChanged.emit(True)
+        self.problem_to_edit = None
+        self.next_id = self._next_available_problem_id()
+        return True
+
+    def delete_problem(self, problem_id:int) -> bool:
+        assert(type(problem_id)==int)
+        if problem_id in self._problems_to_edit.keys():
+            self._problems_to_edit.pop(problem_id)
+            self.problemsChanged.emit(True)
         self.problem_to_edit = None
         return True

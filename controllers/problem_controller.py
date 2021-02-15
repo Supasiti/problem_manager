@@ -56,7 +56,7 @@ class ProblemAreaController():
         # return a new problem with new auto increment id
         problem_request = self._dependency.get(ProblemRequest)
 
-        _id     = problem_request.get_next_available_problem_id()
+        _id     = problem_request.next_id
         _grade  = self._grade_setting.get_grade(row)
         _hold   = _grade.split(' ')[0]
         _sector = self._sector_setting.get_sector(col)

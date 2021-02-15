@@ -60,6 +60,9 @@ class ToolStation(FixedWidthFrame):
         self.button_update = QPushButton('Update')
         self.button_update.mousePressEvent = self._update_problem
 
+        self.button_delete = QPushButton('&Delete')
+        self.button_delete.mousePressEvent = self._delete_problem
+
         # editing side
         self.text_id = FixedSizeLabel(190, 28)
         self.text_id.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -119,6 +122,7 @@ class ToolStation(FixedWidthFrame):
         self.layout.addWidget(self.lineedit_set_date,10, 1, 1, 3)
         self.layout.addWidget(self.dropdown_status,  11, 1, 1, 3)
         self.layout.addWidget(self.button_update,    12, 2, 1, 2)   
+        self.layout.addWidget(self.button_delete,    12, 0, 1, 2)
         self.setLayout(self.layout)
 
     def _set_data(self):
@@ -160,4 +164,7 @@ class ToolStation(FixedWidthFrame):
 
     def _update_problem(self, event):
         self.controller.update_problem()
+
+    def _delete_problem(self, event):
+        self.controller.delete_problem()
         

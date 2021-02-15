@@ -100,3 +100,11 @@ class ToolController():
         self.view.lineedit_styles_0.setPlaceholderText('')
         self.view.lineedit_set_by.setPlaceholderText('')
         self.view.lineedit_set_date.setPlaceholderText('YYYY-MM-DD')
+
+    def delete_problem(self):
+        problem_request = self._dependency.get(ProblemRequest)
+        _id = self.view.text_id.text()
+        if _id != '':
+            _id = int(_id)
+            problem_request.delete_problem(_id)
+            
