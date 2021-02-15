@@ -8,6 +8,8 @@ class ProblemRequest():
     
     problemToEditChanged = Signal(bool)
     problemsChanged      = Signal(bool)
+    problemAdded         = Signal(Problem)
+    problemRemoved       = Signal(Problem)
     _filepath :str
 
     def __init__(self):
@@ -63,7 +65,7 @@ class ProblemRequest():
         assert (type(problem) == Problem)
         _id = int(problem.id) 
         self._problems_to_edit[_id] = problem
-        self.problemsChanged.emit(True)
+        self.problemAdded.emit(problem)
         self.problem_to_edit = None
         self.next_id = self._next_available_problem_id()
         return True
@@ -71,7 +73,7 @@ class ProblemRequest():
     def delete_problem(self, problem_id:int) -> bool:
         assert(type(problem_id)==int)
         if problem_id in self._problems_to_edit.keys():
-            self._problems_to_edit.pop(problem_id)
-            self.problemsChanged.emit(True)
+            to_remove = self._problems_to_edit.pop(problem_id)
+            self.problemRemoved.emit(to_remove)
         self.problem_to_edit = None
         return True

@@ -37,12 +37,21 @@ class ProblemAreaController():
     def _connect_problem_request(self):
         problem_request = self._dependency.get(ProblemRequest)
         problem_request.problemsChanged.connect(self._on_problems_changed)
+        problem_request.problemAdded.connect(self._on_problem_added)
+        problem_request.problemRemoved.connect(self._on_problem_removed)
 
     def _on_problems_changed(self, arg:bool):
         problem_request    = self._dependency.get(ProblemRequest)
         problems           = problem_request.problems
-        view_data          = self.builder.build_from_problems(problems)
-        self.model.changes = view_data
+        self.model.changes = self.builder.from_problems(problems)
+
+    def _on_problem_added(self, problem:Problem):
+        self.model.changes = self.builder.from_problem(problem)
+
+    def _on_problem_removed(self, problem:Problem):
+        assert(type(problem) == Problem)
+        self.model.changes = self.builder.empty_cell(problem)
+
         
     def on_cell_clicked(self, problem_id:int, row:int, col:int) -> bool:
         problem_request     = self._dependency.get(ProblemRequest)

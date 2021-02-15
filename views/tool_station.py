@@ -58,10 +58,11 @@ class ToolStation(FixedWidthFrame):
         label_buffer = QLabel()
 
         self.button_update = QPushButton('Update')
-        self.button_update.mousePressEvent = self._update_problem
+        self.button_update.clicked.connect(self._update_problem)
 
         self.button_delete = QPushButton('&Delete')
-        self.button_delete.mousePressEvent = self._delete_problem
+        self.button_delete.clicked.connect(self._delete_problem)
+        self.button_delete.setShortcut('Ctrl+D')
 
         # editing side
         self.text_id = FixedSizeLabel(190, 28)

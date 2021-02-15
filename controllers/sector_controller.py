@@ -28,6 +28,8 @@ class SectorAreaController():
     def _connect_problem_request(self):
         problem_request = self._dependency.get(ProblemRequest)
         problem_request.problemsChanged.connect(self._on_problems_changed)
+        problem_request.problemAdded.connect(self._on_problems_changed)
+        problem_request.problemRemoved.connect(self._on_problems_changed)
 
     def _on_problems_changed(self, arg:bool):
         problem_request    = self._dependency.get(ProblemRequest)
