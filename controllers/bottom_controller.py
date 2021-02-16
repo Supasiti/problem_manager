@@ -1,7 +1,7 @@
 
 from models.bottom_model import BottomStationModel 
 from views.bottom_station import BottomStation
-from services.problems_editor import ProblemsEditor
+from services.problems_editor import ProblemsEditor, EditingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
 
 class BottomController():
@@ -20,6 +20,7 @@ class BottomController():
             directory = self.get_directory()
         path_manager  = self._dependency.get(ContentsPathManager)  
         editor        = self._dependency.get(ProblemsEditor)  
+        editor.change_to_state(EditingProblemsEditor())
         self.model.dynamic_data = directory
         path_manager.directory  = directory
         editor.load_problems_from_filepath(path_manager.filepath)

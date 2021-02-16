@@ -68,3 +68,4 @@ class MainController():
   
     def open_previous_set(self):
         self._editor.change_to_state(ViewingProblemsEditor())
+        # do something
