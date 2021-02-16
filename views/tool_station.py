@@ -140,6 +140,12 @@ class ToolStation(FixedWidthFrame):
         self.lineedit_set_by.setText(_problem.set_by)
         self._set_lineedit_set_date(_problem.set_date)
         self.dropdown_status.setCurrentText(_problem.status)
+        if data.are_buttons_visible:
+            self.button_delete.show()
+            self.button_update.show()
+        else:
+            self.button_delete.hide()
+            self.button_update.hide()
 
     def _set_dropdown_hold(self, data:ToolDynamicData):
         self.dropdown_hold.clear()
@@ -159,9 +165,25 @@ class ToolStation(FixedWidthFrame):
         self.lineedit_set_date.setText(_date.isoformat())
         return True
 
+    # def _create_buttons(self):
+    #     self.button_update = QPushButton('Update')
+    #     self.button_update.clicked.connect(self._update_problem)
+
+    #     self.button_delete = QPushButton('&Delete')
+    #     self.button_delete.clicked.connect(self._delete_problem)
+    #     self.button_delete.setShortcut('Ctrl+D')
+
+    #     self.layout.addWidget(self.button_update,    12, 2, 1, 2)   
+    #     self.layout.addWidget(self.button_delete,    12, 0, 1, 2)
+    
+    # def destroy_buttons(self):
+    #     if not self.button_delete is None:
+    #         self.la
+
     def _connect_model(self):
         self.model.dataChanged.connect(self._set_data)
         return True
+
 
     def _update_problem(self, event):
         self.controller.update_problem()

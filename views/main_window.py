@@ -59,6 +59,9 @@ class MainView(QMainWindow):
         self.window.setLayout(self.layout)
 
     def _init_menu_bars(self):
+        action_open_previous = MenuAction(
+            'Open Set', 'Ctrl+Shift+O', 'Open to view previous set', 
+            self.controller.open_previous_set, parent=self)
         action_open_current = MenuAction(
             'Open Current Set', 'Ctrl+O', 'Open the last set', 
             self.controller.open_current_set, parent=self)
@@ -75,6 +78,7 @@ class MainView(QMainWindow):
         self.statusBar()
         menuBar    = self.menuBar()
         fileMenu   = menuBar.addMenu('&File')
+        fileMenu.addAction(action_open_previous)
         fileMenu.addAction(action_open_current)
         fileMenu.addSeparator()
         fileMenu.addAction(action_save)

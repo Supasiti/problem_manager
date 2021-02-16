@@ -9,7 +9,7 @@ from APImodels.problem import Problem
 
 class ToolStaticData(NamedTuple):
 
-    width      : int
+    width      :  int
     
     @staticmethod
     def default():
@@ -19,7 +19,7 @@ class ToolDynamicData(NamedTuple):
 
     holds : Tuple[str]
     problem : Problem
-
+    are_buttons_visible : bool
 
 class ToolStationModel(QObject):
     

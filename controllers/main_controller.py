@@ -1,5 +1,5 @@
 from services.dependency_service import DependencyService
-from services.problems_editor import ProblemsEditor, EditingProblemsEditor
+from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
@@ -63,5 +63,8 @@ class MainController():
         self._editor.save_this_set(path)
 
     def open_current_set(self):
+        self._editor.change_to_state(EditingProblemsEditor())
         self.bottom_controller.open_directory()
   
+    def open_previous_set(self):
+        self._editor.change_to_state(ViewingProblemsEditor())

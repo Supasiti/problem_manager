@@ -11,31 +11,44 @@ from APImodels.grade import Grade
 
 class ToolController():
     # controller all interaction the tool station
+    
+    _colour_setting : ColourDict
+    _editor         : ProblemsEditor
 
-    def __init__(self, dependency: DependencyService, parent:object =None):
-        self._parent         = parent
+    def __init__(self, dependency: DependencyService):
+        self._setup_dependencies(dependency)
+        self._is_updatable = True
+        self.model         = ToolStationModel(dynamic_data = self.view_data()) # load model
+        self.view          = ToolStation(self, self.model)  # load view
+        self._connect_other()
+
+    def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
         self._colour_setting = self._dependency.get_or_register(ColourDict)
-        
-        self.model = ToolStationModel(dynamic_data = self._view_data()) # load model
-        self.view  = ToolStation(self, self.model)                      # load view
-        self._connect_editor()
+        self._editor         = self._dependency.get(ProblemsEditor)
 
-    def _connect_editor(self):
-        editor = self._dependency.get(ProblemsEditor)
-        editor.problemToEditChanged.connect(self._on_problem_to_edit_changed)
+    def _connect_other(self):
+        self._editor.problemToEditChanged.connect(self._on_problem_to_edit_changed)
+        self._editor.stateChanged.connect(self._on_state_changed)
 
     def _on_problem_to_edit_changed(self, arg:bool):
-        editor                  = self._dependency.get(ProblemsEditor)
-        problem_to_edit         = editor.problem_to_edit
-        self.model.dynamic_data = self._view_data(problem_to_edit)
+        self.model.dynamic_data = self.view_data(self._editor.problem_to_edit)
         return True
 
-    def _view_data(self, problem:Problem = None):
+    def view_data(self, problem:Problem = None):
         _problem  = Problem() if problem is None else problem
         grade_str = str(_problem.grade)
         holds     = self._colour_setting.get_hold_colours(grade_str)
-        return ToolDynamicData(holds, _problem)
+        return ToolDynamicData(holds, _problem, self._is_updatable)
+
+    def _on_state_changed(self, name:str):
+        if name == 'editing':
+            self._is_updatable = True
+        elif name == 'viewing':
+            self._is_updatable = False
+        else:
+            raise ValueError('incorrect state')
+        self.model.dynamic_data = self.view_data()
 
     def update_problem(self):
         _is_updatable = True
@@ -44,8 +57,7 @@ class ToolController():
         _problem      = self._make_problem() if _is_updatable else None
  
         if not _problem is None: 
-            editor = self._dependency.get(ProblemsEditor)
-            editor.save_new_problem(_problem)
+            self._editor.save_new_problem(_problem)
             self._reset_placeholder_texts()
 
     def _cell_selected(self):
@@ -102,9 +114,7 @@ class ToolController():
         self.view.lineedit_set_date.setPlaceholderText('YYYY-MM-DD')
 
     def delete_problem(self):
-        editor = self._dependency.get(ProblemsEditor)
         _id    = self.view.text_id.text()
         if _id != '':
             _id = int(_id)
-            editor.delete_problem(_id)
-            
+            self._editor.delete_problem(_id)

@@ -9,23 +9,25 @@ from APImodels.problem import Problem
 
 class ProblemsEditor():
     # handle all problems editing 
-       
+
+    stateChanged         = Signal(str)
     problemToEditChanged = Signal(bool)
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
     _state = None
 
-    def __init__(self, state:State):
+    def __init__(self, state:ProblemsEditorState):
         self.change_to_state(state)
         self._problems_to_edit = dict()    # id (int): problem
         self._problem_to_edit  = None
         self._repo_factory     = RepositoryFactory()
         self.next_id = 1
     
-    def change_to_state(self, state:State):
+    def change_to_state(self, state:ProblemsEditorState):
         self._state = state
         self._state.context = self
+        self.stateChanged.emit(state.name)
     
     @property
     def problems(self):
@@ -70,13 +72,6 @@ class ProblemsEditor():
     def save_new_problem(self, problem:Problem) -> bool:
         assert (type(problem) == Problem)
         self._state.save_new_problem(problem, self._problems_to_edit)
-        print(len(self._problems_to_edit))
-        # _id = int(problem.id) 
-        # self._problems_to_edit[_id] = problem
-        # self.problemAdded.emit(problem)
-        # self.problem_to_edit = None
-        # self.next_id = self._next_available_problem_id()
-        # return True
 
     def delete_problem(self, problem_id:int) -> bool:
         assert(type(problem_id)==int)
@@ -91,7 +86,7 @@ class ProblemsEditor():
 
 class ProblemsEditorState(ABC):
 
-    _context : ProblemsEditor
+    _context     : ProblemsEditor
 
     @property
     def context(self) -> ProblemsEditor:
@@ -117,10 +112,14 @@ class ProblemsEditorState(ABC):
     def save_as_new_set(self, filepath:str):
         pass
 
-    
 
 class EditingProblemsEditor(ProblemsEditorState):
+    # can edit the problems
 
+    def __init__(self):
+        super().__init__()
+        self.name = 'editing'
+    
     def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
         _id = int(problem.id) 
         problems[_id] = problem
@@ -149,10 +148,15 @@ class EditingProblemsEditor(ProblemsEditorState):
 
 
 class ViewingProblemsEditor(ProblemsEditorState):
+    # can only view problems
+
+    def __init__(self):
+        super().__init__()
+        self.name = 'viewing'
 
     def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
         return True
-        
+
     def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
         return True
 
