@@ -26,12 +26,24 @@ class ContentsPathManager():
         self.filepathChanged.emit(value)
     
     @property
+    def filename(self):
+        return self.get_filename(self.filepath)
+
+    @property
     def filename_to_save(self):
         return self._filename_to_save
 
     @filename_to_save.setter
     def filename_to_save(self, value:str):
         self._filename_to_save = value
+
+    @property
+    def filepath_to_save(self):
+        filename = self.filename_to_save
+        if filename != '':
+            _filename = filename + '.json'
+            return os.path.join(self.current_dir, _filename)
+        return ''
 
     @property
     def directory(self):
@@ -64,12 +76,6 @@ class ContentsPathManager():
             return [path for path in os.listdir(directory) if path.endswith('.json')]
         return []
 
-    def filepath_to_save(self):
-        filename = self.filename_to_save
-        if filename != '':
-            _filename = filename + '.json'
-            return os.path.join(self.current_dir, _filename)
-            
     def get_filename(self, filepath:str):
         filename = os.path.basename(filepath)
         return filename.split('.')[0]

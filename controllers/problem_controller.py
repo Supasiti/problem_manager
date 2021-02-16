@@ -30,7 +30,7 @@ class ProblemAreaController():
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
-        self._grade_setting = self._dependency.get_or_register(GradeDict)  
+        self._grade_setting  = self._dependency.get_or_register(GradeDict)  
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._sector_setting = self._dependency.get_or_register(SectorDict) 
 

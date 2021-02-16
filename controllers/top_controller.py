@@ -1,7 +1,7 @@
 from datetime import date
 
 from services.dependency_service import DependencyService
-from services.problems_editor import ProblemsEditor
+from services.contents_path_manager import ContentsPathManager
 from services.path_builder import PathBuilder
 from models.top_model import TopStationModel 
 from views.top_station import TopStation
@@ -19,22 +19,22 @@ class TopController():
         self._connect_editor()
 
     def _connect_editor(self):
-        editor = self._dependency.get(ProblemsEditor)
-        editor.filepathChanged.connect(self._on_filepath_changed)
+        path_manager = self._dependency.get(ContentsPathManager)
+        path_manager.filepathChanged.connect(self._on_filepath_changed)
 
     def _on_filepath_changed(self, filepath:str):
-        builder = self._dependency.get(PathBuilder)
-        self.model.date_str = builder.get_filename(filepath)
-    
+        path_manager = self._dependency.get(ContentsPathManager)
+        self.model.date_str = path_manager.filename
+
     def get_filename(self):
         return self.view.date_lineedit.text()
 
     def update_filename_to_save(self):
         # return false if date is empty / incorrect format / same as current file
-        editor    = self._dependency.get(ProblemsEditor)
-        date_str  = self.view.date_lineedit.text()
+        path_manager = self._dependency.get(ContentsPathManager)
+        date_str     = self.view.date_lineedit.text()
         if self._verify_date_string(date_str):
-            editor.filename_to_save = date_str    
+            path_manager.filename_to_save = date_str
             return True
         return False
         
@@ -65,8 +65,5 @@ class TopController():
             return False
         
     def _same_as_current_file(self, date_str:str):
-        # return true if it is same as current file
-        builder          = self._dependency.get(PathBuilder)
-        editor           = self._dependency.get(ProblemsEditor)
-        current_filename = builder.get_filename(editor.filepath)
-        return date_str == current_filename
+        path_manager    = self._dependency.get(ContentsPathManager)
+        return date_str == path_manager.filename

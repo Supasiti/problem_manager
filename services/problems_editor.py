@@ -13,14 +13,9 @@ class ProblemsEditor():
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
-    filepathChanged      = Signal(str)
-    _filepath :str
-    _directory :str
-    _filename_to_save : str
 
     def __init__(self):
         # self._state            = None
-        self._path_builder     = PathBuilder()
         self._problems_to_edit  = dict()    # id (int): problem
         self._problem_to_edit   = None
         self._repo_factory     = RepositoryFactory()
@@ -44,33 +39,13 @@ class ProblemsEditor():
         self._problem_to_edit = problem
         self.problemToEditChanged.emit(True)
 
-    @property
-    def filepath(self):
-        return self._filepath
-
-    @filepath.setter
-    def filepath(self, value:str):
-        self._filepath = value
-        self.filepathChanged.emit(value)
-    
-    @property
-    def filename_to_save(self):
-        return self._filename_to_save
-
-    @filename_to_save.setter
-    def filename_to_save(self, value:str):
-        self._filename_to_save = value
-
     # def change_state(self):
     #     pass
 
-    def open_directory(self, directory:str):
-        self._directory = self._path_builder.current_dir(directory)
-        self.filepath   = self._path_builder.get_latest_gym_filepath(directory)   
-        if self.filepath != '':
-            repository    = self._repo_factory.get(self._filepath)
+    def load_problems_from_filepath(self, filepath:str):  
+        if filepath != '':
+            repository    = self._repo_factory.get(filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
-
             self.next_id  = self._next_available_problem_id()
         return True
 
@@ -106,13 +81,14 @@ class ProblemsEditor():
         self.problem_to_edit = None
         return True
     
-    def save_this_set(self):
+    def save_this_set(self, filepath:str):
         # update the current file with new data
-        writer   = JsonWriter(self.filepath, self.problems)
+        # assume path is already been verified
+        writer   = JsonWriter(filepath, self.problems)
         writer.write()
 
-    def save_as_new_set(self):
-        filepath = self._path_builder.new_gym_filepath(self._directory, self.filename_to_save)
+    def save_as_new_set(self, filepath:str):
+        # assume path is already been verified
         writer   = JsonWriter(filepath, self.problems)
         writer.write()
 

@@ -5,7 +5,6 @@
 #
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
-from services.path_builder import PathBuilder
 from services.contents_path_manager import ContentsPathManager
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
@@ -17,11 +16,12 @@ from controllers.bottom_controller import BottomController
 
 class MainController():    
 
+    _dependency   : DependencyService
+    _editor       : ProblemsEditor
+    _path_manager : ContentsPathManager
+
     def __init__(self, dependency:DependencyService):
-        
-        self._dependency = dependency
-        self._dependency.register(ProblemsEditor)
-        self._dependency.register(ContentsPathManager)
+        self._setup_dependencies(dependency)
 
         # load other controllers
         self.top_controller    = TopController(self._dependency)
@@ -40,24 +40,30 @@ class MainController():
         self.view  = MainView(self, self.model)          # load view
         self.view.show()
     
-    def save_as_new_set(self):
+    def _setup_dependencies(self, dependency: DependencyService):
+        self._dependency   = dependency
+        self._editor       = self._dependency.get_or_register(ProblemsEditor)
+        self._path_manager = self._dependency.get_or_register(ContentsPathManager)
+
+    def _save_as_new_set(self):
         is_savable = self.top_controller.update_filename_to_save()
         if is_savable:
-            editor = self._dependency.get(ProblemsEditor)
-            editor.save_as_new_set()
+            path         = self._path_manager.filepath_to_save
+            self._editor.save_as_new_set(path)
     
     def show_save_as_dialog(self):
         filename = self.top_controller.get_filename()
-        dialog = SaveAsDialog(filename, self.save_as_new_set)
+        dialog = SaveAsDialog(filename, self._save_as_new_set)
         dialog.show()
 
     def show_save_dialog(self):
-        editor           = self._dependency.get(ProblemsEditor)
-        builder          = self._dependency.get(PathBuilder)
-        current_filename = builder.get_filename(editor.filepath)
-        dialog = SaveDialog(current_filename, editor.save_this_set)
+        dialog = SaveDialog(self._path_manager.filename, self._save_this_set)
         dialog.show()
     
+    def _save_this_set(self):
+        path = self._path_manager.filepath  
+        self._editor.save_this_set(path)
+
     def open_current_set(self):
         self.bottom_controller.open_directory()
   
