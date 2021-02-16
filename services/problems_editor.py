@@ -1,7 +1,6 @@
 from abc import abstractmethod, ABC
 
 from services.signal import Signal
-from services.path_builder import PathBuilder
 from services.repository_factory import RepositoryFactory
 from services.json_writer import JsonWriter
 from APImodels.problem import Problem
@@ -16,8 +15,8 @@ class ProblemsEditor():
 
     def __init__(self):
         # self._state            = None
-        self._problems_to_edit  = dict()    # id (int): problem
-        self._problem_to_edit   = None
+        self._problems_to_edit = dict()    # id (int): problem
+        self._problem_to_edit  = None
         self._repo_factory     = RepositoryFactory()
         self.next_id = 1
  
