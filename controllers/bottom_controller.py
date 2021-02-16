@@ -16,7 +16,9 @@ class BottomController():
         self.view  = BottomStation(self, self.model) # load view
         self.open_directory(self.model.dynamic_data) 
 
-    def open_directory(self, directory:str):
+    def open_directory(self, directory:str =None):
+        if directory is None:
+            directory = self.get_directory()
         self.model.dynamic_data = directory
         editor = self._dependency.get(ProblemsEditor)
         editor.open_directory(directory)

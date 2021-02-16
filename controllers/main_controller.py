@@ -6,6 +6,7 @@
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
 from services.path_builder import PathBuilder
+from services.contents_path_manager import ContentsPathManager
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog
@@ -20,6 +21,7 @@ class MainController():
         
         self._dependency = dependency
         self._dependency.register(ProblemsEditor)
+        self._dependency.register(ContentsPathManager)
 
         # load other controllers
         self.top_controller    = TopController(self._dependency)
@@ -57,6 +59,5 @@ class MainController():
         dialog.show()
     
     def open_current_set(self):
-        directory = self.bottom_controller.get_directory()
-        editor    = self._dependency.get(ProblemsEditor)
-        editor.open_directory(directory)
+        self.bottom_controller.open_directory()
+  
