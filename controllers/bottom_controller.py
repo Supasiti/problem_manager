@@ -6,7 +6,7 @@ from services.problems_editor import ProblemsEditor
 class BottomController():
     # controller all interaction the bottom station
 
-    def __init__(self, dependency, parent):
+    def __init__(self, dependency, parent=None):
         self._parent   = parent
         self._dependency = dependency
         
@@ -20,3 +20,6 @@ class BottomController():
         self.model.dynamic_data = directory
         editor = self._dependency.get(ProblemsEditor)
         editor.open_directory(directory)
+
+    def get_directory(self):
+        return self.view.path_info.text()

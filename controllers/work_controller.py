@@ -8,14 +8,14 @@ from controllers.grade_controller import GradeAreaController
 class WorkController():
     # controller all interaction the work station
 
-    def __init__(self, dependency, parent):
+    def __init__(self, dependency, parent=None):
         self._parent     = parent
         self._dependency = dependency
         
         # load other controllers
-        self.sector_controller  = SectorAreaController(self._dependency, self)
-        self.grade_controller   = GradeAreaController(self._dependency, self)
-        self.problem_controller = ProblemAreaController(self._dependency, self)
+        self.sector_controller  = SectorAreaController(self._dependency)
+        self.grade_controller   = GradeAreaController(self._dependency)
+        self.problem_controller = ProblemAreaController(self._dependency)
 
         # build view data 
         view_data = WorkDynamicData(

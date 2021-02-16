@@ -12,7 +12,7 @@ from APImodels.grade import Grade
 class ToolController():
     # controller all interaction the tool station
 
-    def __init__(self, dependency: DependencyService, parent:object):
+    def __init__(self, dependency: DependencyService, parent:object =None):
         self._parent         = parent
         self._dependency     = dependency
         self._colour_setting = self._dependency.get_or_register(ColourDict)

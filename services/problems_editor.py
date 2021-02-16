@@ -1,3 +1,5 @@
+from abc import abstractmethod, ABC
+
 from services.signal import Signal
 from services.path_builder import PathBuilder
 from services.repository_factory import RepositoryFactory
@@ -6,7 +8,7 @@ from APImodels.problem import Problem
 
 class ProblemsEditor():
     # handle all problems editing 
-    #     
+       
     problemToEditChanged = Signal(bool)
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
@@ -17,10 +19,11 @@ class ProblemsEditor():
     _filename_to_save : str
 
     def __init__(self):
-        self._path_builder = PathBuilder()
-        self._problems_to_edit = dict()    # id (int): problem
-        self._problem_to_edit  = None
-        self._repo_factory = RepositoryFactory()
+        # self._state            = None
+        self._path_builder     = PathBuilder()
+        self._problems_to_edit  = dict()    # id (int): problem
+        self._problem_to_edit   = None
+        self._repo_factory     = RepositoryFactory()
         self.next_id = 1
  
     @property
@@ -58,12 +61,16 @@ class ProblemsEditor():
     def filename_to_save(self, value:str):
         self._filename_to_save = value
 
+    # def change_state(self):
+    #     pass
+
     def open_directory(self, directory:str):
         self._directory = self._path_builder.current_dir(directory)
         self.filepath   = self._path_builder.get_latest_gym_filepath(directory)   
         if self.filepath != '':
             repository    = self._repo_factory.get(self._filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
+
             self.next_id  = self._next_available_problem_id()
         return True
 
@@ -108,3 +115,64 @@ class ProblemsEditor():
         filepath = self._path_builder.new_gym_filepath(self._directory, self.filename_to_save)
         writer   = JsonWriter(filepath, self.problems)
         writer.write()
+
+
+# class State(ABC):
+
+#     _context : ProblemsEditor
+
+#     @property
+#     def context(self) -> ProblemsEditor:
+#         return self._context
+
+#     @context.setter
+#     def context(self, context: ProblemsEditor) -> None:
+#         self._context = context
+
+#     @abstractmethod
+#     def save_new_problem(self, problem:Problem) -> bool:
+#         pass
+
+#     @abstractmethod
+#     def delete_problem(self, problem_id:int) -> bool:
+#         pass
+
+#     @abstractmethod
+#     def save_this_set(self):
+#         pass
+
+#     @abstractmethod
+#     def save_as_new_set(self):
+#         pass
+
+    
+
+# class EditingState(State):
+
+
+#     def save_new_problem(self, problem:Problem) -> bool:
+#         assert (type(problem) == Problem)
+#         _id = int(problem.id) 
+#         self._context.problems_to_edit[_id] = problem
+#         self._context.problemAdded.emit(problem)
+#         self._context.problem_to_edit = None
+#         self._context.next_id = self._context.next_available_problem_id()
+#         return True
+
+#     def delete_problem(self, problem_id:int) -> bool:
+#         assert(type(problem_id)==int)
+#         if problem_id in self._context.problems_to_edit.keys():
+#             to_remove = self._context.problems_to_edit.pop(problem_id)
+#             self._context.problemRemoved.emit(to_remove)
+#         self.problem_to_edit = None
+#         return True
+    
+#     def save_this_set(self):
+#         # update the current file with new data
+#         writer   = JsonWriter(self.filepath, self.problems)
+#         writer.write()
+
+#     def save_as_new_set(self):
+#         filepath = self._path_builder.new_gym_filepath(self._directory, self.filename_to_save)
+#         writer   = JsonWriter(filepath, self.problems)
+#         writer.write()

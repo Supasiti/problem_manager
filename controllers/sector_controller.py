@@ -12,7 +12,7 @@ class SectorAreaController():
     _colour_setting : ColourDict
     _sector_setting : SectorDict
 
-    def __init__(self, dependency : DependencyService, parent):
+    def __init__(self, dependency : DependencyService, parent=None):
         self._parent  = parent
         self._setup_dependencies(dependency)
         self._builder = SectorAreaDataBuilder(self._sector_setting, self._colour_setting)

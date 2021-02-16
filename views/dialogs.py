@@ -13,10 +13,8 @@ class SaveAsDialog(QMessageBox):
         self.setDefaultButton(QMessageBox.Save)
         self.on_save_clicked = save_command
 
-
     def show(self):
         ret = self.exec()
-
         if ret == QMessageBox.Save:
             self.on_save_clicked()
 
@@ -34,9 +32,7 @@ class SaveDialog(QMessageBox):
         self.setDefaultButton(QMessageBox.Save)
         self.on_save_clicked = save_command
 
-
     def show(self):
         ret = self.exec()
-
         if ret == QMessageBox.Save:
             self.on_save_clicked()

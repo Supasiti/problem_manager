@@ -22,10 +22,10 @@ class MainController():
         self._dependency.register(ProblemsEditor)
 
         # load other controllers
-        self.top_controller = TopController(self._dependency, self)
-        self.work_controller = WorkController(self._dependency, self)
-        self.bottom_controller = BottomController(self._dependency, self)
-        self.tool_controller = ToolController(self._dependency, self)
+        self.top_controller    = TopController(self._dependency)
+        self.work_controller   = WorkController(self._dependency)
+        self.bottom_controller = BottomController(self._dependency)
+        self.tool_controller   = ToolController(self._dependency)
 
         # build MainViewDynamicData
         view_data = MainViewDynamicData(
@@ -35,7 +35,7 @@ class MainController():
             self.tool_controller.view)
 
         self.model = MainModel(dynamic_data = view_data) # load model
-        self.view  = MainView(self, self.model)   # load view
+        self.view  = MainView(self, self.model)          # load view
         self.view.show()
     
     def save_as_new_set(self):
@@ -55,3 +55,8 @@ class MainController():
         current_filename = builder.get_filename(editor.filepath)
         dialog = SaveDialog(current_filename, editor.save_this_set)
         dialog.show()
+    
+    def open_current_set(self):
+        directory = self.bottom_controller.get_directory()
+        editor    = self._dependency.get(ProblemsEditor)
+        editor.open_directory(directory)

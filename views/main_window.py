@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QAction
-from PyQt5.QtWidgets import QMessageBox
 
 from views.work_station import WorkStation
 from views.top_station import TopStation
@@ -60,18 +59,27 @@ class MainView(QMainWindow):
         self.window.setLayout(self.layout)
 
     def _init_menu_bars(self):
-        
-        action_exit = MenuAction('Close', 'Ctrl+Shift+X', 'Close window',  qApp.quit, parent=self)
-        action_save = MenuAction('&Save', 'Ctrl+S', 'Save current set', self.controller.show_save_dialog, parent=self)
-        action_save_as = MenuAction('&Save as', 'Ctrl+Shift+S', 'Save as new set', self.controller.show_save_as_dialog, parent=self)
+        action_open_current = MenuAction(
+            'Open Current Set', 'Ctrl+O', 'Open the last set', 
+            self.controller.open_current_set, parent=self)
+        action_exit = MenuAction(
+            'Close', 'Ctrl+Shift+X', 'Close window', 
+            qApp.quit, parent=self)
+        action_save = MenuAction(
+            '&Save', 'Ctrl+S', 'Save current set', 
+            self.controller.show_save_dialog, parent=self)
+        action_save_as = MenuAction(
+            '&Save as', 'Ctrl+Shift+S', 'Save as new set', 
+            self.controller.show_save_as_dialog, parent=self)
 
         self.statusBar()
-
         menuBar    = self.menuBar()
-
         fileMenu   = menuBar.addMenu('&File')
+        fileMenu.addAction(action_open_current)
+        fileMenu.addSeparator()
         fileMenu.addAction(action_save)
         fileMenu.addAction(action_save_as)
+        fileMenu.addSeparator()
         fileMenu.addAction(action_exit)
 
 

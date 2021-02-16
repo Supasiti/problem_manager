@@ -11,7 +11,7 @@ class GradeAreaController():
     _colour_setting : ColourDict
     _grade_setting : GradeDict
 
-    def __init__(self, dependency, parent):
+    def __init__(self, dependency, parent=None):
         self._parent         = parent
         self._setup_dependencies(dependency)
         self._builder        = GradeAreaDataBuilder(self._grade_setting, self._colour_setting)
