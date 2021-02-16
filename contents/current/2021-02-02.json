@@ -2,27 +2,6 @@
     {
         "RIC": {
             "C": 3,
-            "I": 4,
-            "R": 4
-        },
-        "colour": "red",
-        "grade": {
-            "difficulty": "mid",
-            "range": "red"
-        },
-        "id": 1,
-        "sector": "arch l",
-        "set_by": "Thara",
-        "set_date": "2021-01-02",
-        "status": "on",
-        "styles": [
-            "toe hook",
-            "pop"
-        ]
-    },
-    {
-        "RIC": {
-            "C": 3,
             "I": 2,
             "R": 5
         },
@@ -39,26 +18,6 @@
         "styles": [
             "run",
             "press"
-        ]
-    },
-    {
-        "RIC": {
-            "C": 1,
-            "I": 1,
-            "R": 1
-        },
-        "colour": "purple",
-        "grade": {
-            "difficulty": "easy",
-            "range": "purple"
-        },
-        "id": 3,
-        "sector": "cave r",
-        "set_by": "s",
-        "set_date": "2021-02-16",
-        "status": "on",
-        "styles": [
-            "s"
         ]
     }
 ]

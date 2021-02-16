@@ -1,10 +1,5 @@
-# Main controller
-# 
-# Aims:
-#  - controls interactions with main view
-#
 from services.dependency_service import DependencyService
-from services.problems_editor import ProblemsEditor
+from services.problems_editor import ProblemsEditor, EditingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
@@ -15,6 +10,8 @@ from controllers.tool_controller import ToolController
 from controllers.bottom_controller import BottomController
 
 class MainController():    
+# Aims:
+#  - controls interactions with main view
 
     _dependency   : DependencyService
     _editor       : ProblemsEditor
@@ -42,18 +39,19 @@ class MainController():
     
     def _setup_dependencies(self, dependency: DependencyService):
         self._dependency   = dependency
-        self._editor       = self._dependency.get_or_register(ProblemsEditor)
+        self._editor       = ProblemsEditor(EditingProblemsEditor())
+        self._dependency.register(ProblemsEditor, self._editor)
         self._path_manager = self._dependency.get_or_register(ContentsPathManager)
 
     def _save_as_new_set(self):
         is_savable = self.top_controller.update_filename_to_save()
         if is_savable:
-            path         = self._path_manager.filepath_to_save
+            path   = self._path_manager.filepath_to_save
             self._editor.save_as_new_set(path)
     
     def show_save_as_dialog(self):
         filename = self.top_controller.get_filename()
-        dialog = SaveAsDialog(filename, self._save_as_new_set)
+        dialog  = SaveAsDialog(filename, self._save_as_new_set)
         dialog.show()
 
     def show_save_dialog(self):

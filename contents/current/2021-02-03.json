@@ -40,5 +40,25 @@
             "run",
             "press"
         ]
+    },
+    {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "green",
+        "grade": {
+            "difficulty": "easy",
+            "range": "green"
+        },
+        "id": 3,
+        "sector": "tower r",
+        "set_by": "s",
+        "set_date": "2021-02-16",
+        "status": "on",
+        "styles": [
+            "s"
+        ]
     }
 ]

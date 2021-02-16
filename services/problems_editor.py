@@ -1,9 +1,11 @@
+from __future__ import annotations
 from abc import abstractmethod, ABC
 
 from services.signal import Signal
 from services.repository_factory import RepositoryFactory
 from services.json_writer import JsonWriter
 from APImodels.problem import Problem
+
 
 class ProblemsEditor():
     # handle all problems editing 
@@ -12,14 +14,19 @@ class ProblemsEditor():
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
+    _state = None
 
-    def __init__(self):
-        # self._state            = None
+    def __init__(self, state:State):
+        self.change_to_state(state)
         self._problems_to_edit = dict()    # id (int): problem
         self._problem_to_edit  = None
         self._repo_factory     = RepositoryFactory()
         self.next_id = 1
- 
+    
+    def change_to_state(self, state:State):
+        self._state = state
+        self._state.context = self
+    
     @property
     def problems(self):
         return tuple(self._problems_to_edit.values())
@@ -38,17 +45,14 @@ class ProblemsEditor():
         self._problem_to_edit = problem
         self.problemToEditChanged.emit(True)
 
-    # def change_state(self):
-    #     pass
-
     def load_problems_from_filepath(self, filepath:str):  
         if filepath != '':
             repository    = self._repo_factory.get(filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
-            self.next_id  = self._next_available_problem_id()
+            self.next_id  = self.next_available_problem_id()
         return True
 
-    def _next_available_problem_id(self) -> int:
+    def next_available_problem_id(self) -> int:
         if len(self._problems_to_edit) > 0: 
             return max(max(self._problems_to_edit.keys()) + 1, self.next_id) 
         return 1
@@ -65,89 +69,95 @@ class ProblemsEditor():
 
     def save_new_problem(self, problem:Problem) -> bool:
         assert (type(problem) == Problem)
-        _id = int(problem.id) 
-        self._problems_to_edit[_id] = problem
-        self.problemAdded.emit(problem)
-        self.problem_to_edit = None
-        self.next_id = self._next_available_problem_id()
-        return True
+        self._state.save_new_problem(problem, self._problems_to_edit)
+        print(len(self._problems_to_edit))
+        # _id = int(problem.id) 
+        # self._problems_to_edit[_id] = problem
+        # self.problemAdded.emit(problem)
+        # self.problem_to_edit = None
+        # self.next_id = self._next_available_problem_id()
+        # return True
 
     def delete_problem(self, problem_id:int) -> bool:
         assert(type(problem_id)==int)
-        if problem_id in self._problems_to_edit.keys():
-            to_remove = self._problems_to_edit.pop(problem_id)
-            self.problemRemoved.emit(to_remove)
-        self.problem_to_edit = None
-        return True
+        return self._state.delete_problem(problem_id, self._problems_to_edit)
     
+    def save_this_set(self, filepath:str):
+        self._state.save_this_set(filepath)
+
+    def save_as_new_set(self, filepath:str):
+        self._state.save_as_new_set(filepath)
+
+
+class ProblemsEditorState(ABC):
+
+    _context : ProblemsEditor
+
+    @property
+    def context(self) -> ProblemsEditor:
+        return self._context
+
+    @context.setter
+    def context(self, context: ProblemsEditor) -> None:
+        self._context = context
+
+    @abstractmethod
+    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
+        pass
+
+    @abstractmethod
+    def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
+        pass
+
+    @abstractmethod
+    def save_this_set(self, filepath:str):
+        pass
+
+    @abstractmethod
+    def save_as_new_set(self, filepath:str):
+        pass
+
+    
+
+class EditingProblemsEditor(ProblemsEditorState):
+
+    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
+        _id = int(problem.id) 
+        problems[_id] = problem
+        self._context.problemAdded.emit(problem)
+        self._context.problem_to_edit = None
+        self._context.next_id = self._context.next_available_problem_id()
+        return True
+
+    def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
+        if problem_id in problems.keys():
+            to_remove = problems.pop(problem_id)
+            self._context.problemRemoved.emit(to_remove)
+        self._context.problem_to_edit = None
+        return True
+
     def save_this_set(self, filepath:str):
         # update the current file with new data
         # assume path is already been verified
-        writer   = JsonWriter(filepath, self.problems)
+        writer   = JsonWriter(filepath, self._context.problems)
         writer.write()
 
     def save_as_new_set(self, filepath:str):
         # assume path is already been verified
-        writer   = JsonWriter(filepath, self.problems)
+        writer   = JsonWriter(filepath, self._context.problems)
         writer.write()
 
 
-# class State(ABC):
+class ViewingProblemsEditor(ProblemsEditorState):
 
-#     _context : ProblemsEditor
+    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
+        return True
+        
+    def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
+        return True
 
-#     @property
-#     def context(self) -> ProblemsEditor:
-#         return self._context
+    def save_this_set(self, filepath:str):
+        pass
 
-#     @context.setter
-#     def context(self, context: ProblemsEditor) -> None:
-#         self._context = context
-
-#     @abstractmethod
-#     def save_new_problem(self, problem:Problem) -> bool:
-#         pass
-
-#     @abstractmethod
-#     def delete_problem(self, problem_id:int) -> bool:
-#         pass
-
-#     @abstractmethod
-#     def save_this_set(self):
-#         pass
-
-#     @abstractmethod
-#     def save_as_new_set(self):
-#         pass
-
-    
-
-# class EditingState(State):
-
-
-#     def save_new_problem(self, problem:Problem) -> bool:
-#         assert (type(problem) == Problem)
-#         _id = int(problem.id) 
-#         self._context.problems_to_edit[_id] = problem
-#         self._context.problemAdded.emit(problem)
-#         self._context.problem_to_edit = None
-#         self._context.next_id = self._context.next_available_problem_id()
-#         return True
-
-#     def delete_problem(self, problem_id:int) -> bool:
-#         assert(type(problem_id)==int)
-#         if problem_id in self._context.problems_to_edit.keys():
-#             to_remove = self._context.problems_to_edit.pop(problem_id)
-#             self._context.problemRemoved.emit(to_remove)
-#         self.problem_to_edit = None
-#         return True
-    
-#     def save_this_set(self):
-#         # update the current file with new data
-#         writer   = JsonWriter(self.filepath, self.problems)
-#         writer.write()
-
-#     def save_as_new_set(self):
-#         filepath = self._path_builder.new_gym_filepath(self._directory, self.filename_to_save)
-#         writer   = JsonWriter(filepath, self.problems)
-#         writer.write()
+    def save_as_new_set(self, filepath:str):
+        pass

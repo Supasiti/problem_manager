@@ -22,8 +22,10 @@ class DependencyService():
                 return
             if dependency != None:
                 self.dependency_dict[class_type] = dependency
+                return
             if self.__n_non_default_args(class_type) == 0:
                 self.dependency_dict[class_type] = class_type()
+                return
             else:
                 raise TypeError('__init__() requires positional arguments')
                 
