@@ -1,7 +1,7 @@
 from datetime import date
 
 from services.dependency_service import DependencyService
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 from services.path_builder import PathBuilder
 from models.top_model import TopStationModel 
 from views.top_station import TopStation
@@ -16,11 +16,11 @@ class TopController():
 
         self.model = TopStationModel()            # load model
         self.view  = TopStation(self, self.model) # load view
-        self._connect_problem_request()
+        self._connect_editor()
 
-    def _connect_problem_request(self):
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_request.filepathChanged.connect(self._on_filepath_changed)
+    def _connect_editor(self):
+        editor = self._dependency.get(ProblemsEditor)
+        editor.filepathChanged.connect(self._on_filepath_changed)
 
     def _on_filepath_changed(self, filepath:str):
         builder = self._dependency.get(PathBuilder)
@@ -31,10 +31,10 @@ class TopController():
 
     def update_filename_to_save(self):
         # return false if date is empty / incorrect format / same as current file
-        problem_request = self._dependency.get(ProblemRequest)
-        date_str        = self.view.date_lineedit.text()
+        editor    = self._dependency.get(ProblemsEditor)
+        date_str  = self.view.date_lineedit.text()
         if self._verify_date_string(date_str):
-            problem_request.filename_to_save = date_str    
+            editor.filename_to_save = date_str    
             return True
         return False
         
@@ -66,7 +66,7 @@ class TopController():
         
     def _same_as_current_file(self, date_str:str):
         # return true if it is same as current file
-        builder         = self._dependency.get(PathBuilder)
-        problem_request = self._dependency.get(ProblemRequest)
-        current_filename = builder.get_filename(problem_request.filepath)
+        builder          = self._dependency.get(PathBuilder)
+        editor           = self._dependency.get(ProblemsEditor)
+        current_filename = builder.get_filename(editor.filepath)
         return date_str == current_filename

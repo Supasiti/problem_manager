@@ -1,6 +1,6 @@
 from datetime import date
 
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
 from models.problem_area_model import ProblemAreaModel, ProblemAreaDataBuilder 
 from models.dicts import GradeDict, SectorDict, ColourDict
@@ -26,7 +26,7 @@ class ProblemAreaController():
 
         self.model = ProblemAreaModel(view_data)   # load model
         self.view  = ProblemArea(self, self.model) # load view
-        self._connect_problem_request()
+        self._connect_editor()
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
@@ -34,15 +34,15 @@ class ProblemAreaController():
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._sector_setting = self._dependency.get_or_register(SectorDict) 
 
-    def _connect_problem_request(self):
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_request.problemsChanged.connect(self._on_problems_changed)
-        problem_request.problemAdded.connect(self._on_problem_added)
-        problem_request.problemRemoved.connect(self._on_problem_removed)
+    def _connect_editor(self):
+        editor = self._dependency.get(ProblemsEditor)
+        editor.problemsChanged.connect(self._on_problems_changed)
+        editor.problemAdded.connect(self._on_problem_added)
+        editor.problemRemoved.connect(self._on_problem_removed)
 
     def _on_problems_changed(self, arg:bool):
-        problem_request    = self._dependency.get(ProblemRequest)
-        problems           = problem_request.problems
+        editor             = self._dependency.get(ProblemsEditor)
+        problems           = editor.problems
         self.model.changes = self.builder.from_problems(problems)
 
     def _on_problem_added(self, problem:Problem):
@@ -54,18 +54,18 @@ class ProblemAreaController():
         self.model.changes = self.builder.empty_cell(problem)
 
     def on_cell_clicked(self, problem_id:int, row:int, col:int) -> bool:
-        problem_request     = self._dependency.get(ProblemRequest)
-        problem_to_edit     = problem_request.get_problem_by_id(int(problem_id))
+        editor              = self._dependency.get(ProblemsEditor)
+        problem_to_edit     = editor.get_problem_by_id(int(problem_id))
         if problem_to_edit is None:
             problem_to_edit = self._make_new_problem(row, col)
-        problem_request.problem_to_edit = problem_to_edit
+        editor.problem_to_edit = problem_to_edit
         return True
 
     def _make_new_problem(self, row:int, col:int):
         # return a new problem with new auto increment id
-        problem_request = self._dependency.get(ProblemRequest)
+        editor  = self._dependency.get(ProblemsEditor)
 
-        _id     = problem_request.next_id
+        _id     = editor.next_id
         _grade  = self._grade_setting.get_grade(row)
         _hold   = _grade.split(' ')[0]
         _sector = self._sector_setting.get_sector(col)

@@ -9,7 +9,7 @@ class WorkController():
     # controller all interaction the work station
 
     def __init__(self, dependency, parent):
-        self._parent    = parent
+        self._parent     = parent
         self._dependency = dependency
         
         # load other controllers

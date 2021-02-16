@@ -4,7 +4,7 @@
 #  - controls interactions with main view
 #
 from services.dependency_service import DependencyService
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 from services.path_builder import PathBuilder
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
@@ -19,7 +19,7 @@ class MainController():
     def __init__(self, dependency:DependencyService):
         
         self._dependency = dependency
-        self._dependency.register(ProblemRequest)
+        self._dependency.register(ProblemsEditor)
 
         # load other controllers
         self.top_controller = TopController(self._dependency, self)
@@ -41,8 +41,8 @@ class MainController():
     def save_as_new_set(self):
         is_savable = self.top_controller.update_filename_to_save()
         if is_savable:
-            problem_request = self._dependency.get(ProblemRequest)
-            problem_request.save_as_new_set()
+            editor = self._dependency.get(ProblemsEditor)
+            editor.save_as_new_set()
     
     def show_save_as_dialog(self):
         filename = self.top_controller.get_filename()
@@ -50,8 +50,8 @@ class MainController():
         dialog.show()
 
     def show_save_dialog(self):
-        problem_request  = self._dependency.get(ProblemRequest)
+        editor           = self._dependency.get(ProblemsEditor)
         builder          = self._dependency.get(PathBuilder)
-        current_filename = builder.get_filename(problem_request.filepath)
-        dialog = SaveDialog(current_filename, problem_request.save_this_set)
+        current_filename = builder.get_filename(editor.filepath)
+        dialog = SaveDialog(current_filename, editor.save_this_set)
         dialog.show()

@@ -1,7 +1,7 @@
 
 from models.bottom_model import BottomStationModel 
 from views.bottom_station import BottomStation
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 
 class BottomController():
     # controller all interaction the bottom station
@@ -18,5 +18,5 @@ class BottomController():
 
     def open_directory(self, directory:str):
         self.model.dynamic_data = directory
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_request.open_directory(directory)
+        editor = self._dependency.get(ProblemsEditor)
+        editor.open_directory(directory)

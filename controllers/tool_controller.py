@@ -1,7 +1,7 @@
 from datetime import date
 
 from services.dependency_service import DependencyService
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 from models.tool_model import ToolStationModel, ToolDynamicData 
 from models.dicts import ColourDict
 from views.tool_station import ToolStation
@@ -19,15 +19,15 @@ class ToolController():
         
         self.model = ToolStationModel(dynamic_data = self._view_data()) # load model
         self.view  = ToolStation(self, self.model)                      # load view
-        self._connect_problem_request()
+        self._connect_editor()
 
-    def _connect_problem_request(self):
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_request.problemToEditChanged.connect(self._on_problem_to_edit_changed)
+    def _connect_editor(self):
+        editor = self._dependency.get(ProblemsEditor)
+        editor.problemToEditChanged.connect(self._on_problem_to_edit_changed)
 
     def _on_problem_to_edit_changed(self, arg:bool):
-        problem_request         = self._dependency.get(ProblemRequest)
-        problem_to_edit         = problem_request.problem_to_edit
+        editor                  = self._dependency.get(ProblemsEditor)
+        problem_to_edit         = editor.problem_to_edit
         self.model.dynamic_data = self._view_data(problem_to_edit)
         return True
 
@@ -44,8 +44,8 @@ class ToolController():
         _problem      = self._make_problem() if _is_updatable else None
  
         if not _problem is None: 
-            problem_request = self._dependency.get(ProblemRequest)
-            problem_request.save_new_problem(_problem)
+            editor = self._dependency.get(ProblemsEditor)
+            editor.save_new_problem(_problem)
             self._reset_placeholder_texts()
 
     def _cell_selected(self):
@@ -102,9 +102,9 @@ class ToolController():
         self.view.lineedit_set_date.setPlaceholderText('YYYY-MM-DD')
 
     def delete_problem(self):
-        problem_request = self._dependency.get(ProblemRequest)
-        _id = self.view.text_id.text()
+        editor = self._dependency.get(ProblemsEditor)
+        _id    = self.view.text_id.text()
         if _id != '':
             _id = int(_id)
-            problem_request.delete_problem(_id)
+            editor.delete_problem(_id)
             

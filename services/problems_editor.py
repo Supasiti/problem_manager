@@ -4,7 +4,7 @@ from services.repository_factory import RepositoryFactory
 from services.json_writer import JsonWriter
 from APImodels.problem import Problem
 
-class ProblemRequest():
+class ProblemsEditor():
     # handle all problems editing 
     #     
     problemToEditChanged = Signal(bool)

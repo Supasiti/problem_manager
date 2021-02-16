@@ -1,5 +1,5 @@
 from services.dependency_service import DependencyService
-from services.problem_request import ProblemRequest
+from services.problems_editor import ProblemsEditor
 from models.grade_area_model import GradeAreaModel, GradeAreaDataBuilder, GradeCountsDataBuilder  
 from models.dicts import GradeDict,ColourDict
 from views.scroll_area import GradeArea
@@ -21,20 +21,20 @@ class GradeAreaController():
 
         self.model = GradeAreaModel(data, counts)   # load model
         self.view  = GradeArea(self, self.model) # load view
-        self._connect_problem_request()
+        self._connect_editor()
     
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._grade_setting = self._dependency.get_or_register(GradeDict)
 
-    def _connect_problem_request(self):
-        problem_request = self._dependency.get(ProblemRequest)
-        problem_request.problemsChanged.connect(self._on_problems_changed)
-        problem_request.problemAdded.connect(self._on_problems_changed)
-        problem_request.problemRemoved.connect(self._on_problems_changed)
+    def _connect_editor(self):
+        editor = self._dependency.get(ProblemsEditor)
+        editor.problemsChanged.connect(self._on_problems_changed)
+        editor.problemAdded.connect(self._on_problems_changed)
+        editor.problemRemoved.connect(self._on_problems_changed)
 
     def _on_problems_changed(self, arg:bool):
-        problem_request   = self._dependency.get(ProblemRequest)
-        self.model.counts = self._count_builder.from_problems(problem_request.problems)
+        editor   = self._dependency.get(ProblemsEditor)
+        self.model.counts = self._count_builder.from_problems(editor.problems)
 
