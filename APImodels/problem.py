@@ -29,3 +29,16 @@ class Problem(
         return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, status)
               
     
+    def to_dict(self):
+        result = {
+            'id'       : self.id,
+            'RIC'      : self.RIC.to_dict(),
+            'grade'    : self.grade.to_dict(),
+            'colour'   : self.colour,
+            'sector'   : self.sector,
+            'styles'   : self.styles,
+            'set_by'   : self.set_by,
+            'set_date' : self.set_date.isoformat(),
+            'status'   : self.status
+        }
+        return result

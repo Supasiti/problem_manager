@@ -33,7 +33,7 @@ class BottomStation(FixedHeightFrame):
         self.path_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)        
 
         self.change_button.setFixedWidth(data.button_width)
-        self.change_button.mousePressEvent = self._openFileNameDialog
+        self.change_button.clicked.connect(self._openFileNameDialog)
 
     def _set_layout(self):
         layout = QHBoxLayout()

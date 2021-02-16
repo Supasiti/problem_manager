@@ -18,7 +18,7 @@ class TopStaticData(NamedTuple):
 
 class TopStationModel(QObject):
     
-    dataChanged = pyqtSignal(bool) 
+    dataChanged = pyqtSignal(str) 
 
     def __init__(self, 
         static_data  : TopStaticData = TopStaticData.default(),
@@ -40,4 +40,4 @@ class TopStationModel(QObject):
     @date_str.setter
     def date_str(self, data: str):
         self._date_str = data
-        self.dataChanged.emit(True)
+        self.dataChanged.emit(data)

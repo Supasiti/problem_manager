@@ -1,8 +1,10 @@
 # global main window
-
+from PyQt5.QtWidgets import qApp
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QAction
+from PyQt5.QtWidgets import QMessageBox
 
 from views.work_station import WorkStation
 from views.top_station import TopStation
@@ -21,18 +23,12 @@ class MainView(QMainWindow):
         self.controller = controller   
         self.model      = model
         
-        self.__init_static_UI()
-        self.__init_dynamic_UI()
-        self.__connect_model()
-        
-    #     self.top_station = TopStation(self.controller)
-    #     self.work_station = WorkStation(self.controller, self.model)
-    #     self.tool_station = ToolStation(self.controller)
-    #     self.bottom_station = BottomStation(self.controller, self.model.bottom_model)
+        self._init_static_UI()
+        self._init_dynamic_UI()
+        self._connect_model()
+        self._init_menu_bars()
 
-    #     self.__init_UI()
-        
-    def __init_static_UI(self):
+    def _init_static_UI(self):
         data        = self.model.static_data
         self.title  = data.title
         self.width  = data.width
@@ -43,10 +39,10 @@ class MainView(QMainWindow):
         self.window = QLabel()
         self.setCentralWidget(self.window) 
 
-    def __connect_model(self):
-        self.model.dataChanged.connect(self.__init_dynamic_UI)
+    def _connect_model(self):
+        self.model.dataChanged.connect(self._init_dynamic_UI)
     
-    def __init_dynamic_UI(self):
+    def _init_dynamic_UI(self):
         data        = self.model.dynamic_data
         self.layout = QGridLayout()
         self.layout.setSpacing(4)
@@ -63,16 +59,28 @@ class MainView(QMainWindow):
         
         self.window.setLayout(self.layout)
 
-    # def __init_window_area(self):
+    def _init_menu_bars(self):
         
-    #     window_area = QLabel() 
-    #     self.layout = QGridLayout()
-    #     self.layout.setSpacing(4)
+        action_exit = MenuAction('Close', 'Ctrl+Shift+X', 'Close window',  qApp.quit, parent=self)
+        action_save = MenuAction('&Save', 'Ctrl+S', 'Save current set', self.controller.show_save_dialog, parent=self)
+        action_save_as = MenuAction('&Save as', 'Ctrl+Shift+S', 'Save as new set', self.controller.show_save_as_dialog, parent=self)
 
-    #     self.layout.addWidget(self.top_station,    0, 0)
-    #     self.layout.addWidget(self.work_station,   1, 0)
-    #     self.layout.addWidget(self.bottom_station, 2, 0)
-    #     self.layout.addWidget(self.tool_station,   0, 1, 3, 1) 
+        self.statusBar()
+
+        menuBar    = self.menuBar()
+
+        fileMenu   = menuBar.addMenu('&File')
+        fileMenu.addAction(action_save)
+        fileMenu.addAction(action_save_as)
+        fileMenu.addAction(action_exit)
+
+
+class MenuAction(QAction): 
+    
+    def __init__(self, display, shortcut, statusTip, connect=None, parent=None):
+        super().__init__(display, parent=parent)
         
-    #     window_area.setLayout(self.layout)
-    #     self.setCentralWidget(window_area)
+        self.setShortcut(shortcut)
+        self.setStatusTip(statusTip)
+        if not connect is None:
+            self.triggered.connect(connect)

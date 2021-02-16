@@ -36,6 +36,9 @@ class Grade():
     def __repr__(self):
         return 'Grade(%s, %s)' % (self.range, self.difficulty)
 
+    def to_dict(self):
+        return {'range': self.range, 'difficulty':self.difficulty}
+        
     @staticmethod
     def from_str(data: str):
         _txt = data.split(' ')

@@ -1,4 +1,5 @@
 import json
+import os 
 
 from APImodels.problem import Problem
 
@@ -6,9 +7,11 @@ class ProblemRepository():
     # manage persistent data for display
 
     def __init__(self, filepath):
-        self.problems = self.__lazy_init(filepath)
+        self.problems = self._lazy_init(filepath)
 
-    def __lazy_init(self, filepath:str):
+    def _lazy_init(self, filepath:str):
+        if os.path.getsize(filepath) == 0:
+            return tuple() 
         with open(filepath, 'r') as fid:
             data = json.loads(fid.read())
             result = (Problem.from_json(p) for p in data )

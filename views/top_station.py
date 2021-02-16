@@ -14,23 +14,23 @@ class TopStation(FixedHeightFrame):
         self.model      = model
         super().__init__(model.static_data.height)
 
-        self.__init_static_UI()
-        self.__connect_model()
+        self._init_static_UI()
+        self._connect_model()
     
-    def __init_static_UI(self):
+    def _init_static_UI(self):
         data  = self.model.static_data
         self.date_label = QLabel(data.label_text)
         self.date_label.setFixedWidth(data.label_width)
         self.date_label.setAlignment(Qt.AlignCenter | Qt.AlignCenter)
         
         self.date_lineedit = QLineEdit(self.model.date_str)
-        self.__set_layout()
+        self._set_layout()
 
-    def __set_layout(self):
+    def _set_layout(self):
         layout = QHBoxLayout()
         layout.addWidget(self.date_label)
         layout.addWidget(self.date_lineedit)
         self.setLayout(layout)
 
-    def __connect_model(self):
+    def _connect_model(self):
         self.model.dataChanged.connect(self.date_lineedit.setText)
