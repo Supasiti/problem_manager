@@ -6,15 +6,17 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
 from views.editor_view import EditorView
+from views.file_view import FileView
 
 class ToolData(NamedTuple):
 
     width      : int
     editor     : EditorView
+    file_view  : FileView
 
     @staticmethod
     def default():
-        return ToolData(280, None)
+        return ToolData(280, None, None)
 
 class ToolStationModel(QObject):
     

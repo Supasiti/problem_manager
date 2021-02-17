@@ -1,4 +1,3 @@
-from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtCore import Qt 
 
@@ -22,20 +21,20 @@ class ToolStation(FixedWidthFrame):
         self.layout = QVBoxLayout()
         self.layout.setSpacing(8)
         self.layout.setContentsMargins(1,1,1,1)
-
+        self.layout.setAlignment(Qt.AlignTop)
 
         self.seperator = FixedSizeLabel(self.width - 12, 1)
         self.seperator.set_colours(Colour(240,240,240), Colour(240,240,240))
 
     def _set_data(self):
-        data        = self.model.view_data
-        
-        self.editor = data.editor
+        data           = self.model.view_data
+        self.editor    = data.editor
+        self.file_view = data.file_view
 
         self.layout.addWidget(self.editor,    alignment=Qt.AlignHCenter)
         self.layout.addWidget(self.seperator, alignment=Qt.AlignHCenter)
+        self.layout.addWidget(self.file_view, alignment=Qt.AlignHCenter)
 
-        self.layout.addStretch()
         self.setLayout(self.layout)
 
     def _connect_model(self):

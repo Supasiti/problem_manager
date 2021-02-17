@@ -9,7 +9,8 @@ class ContentsPathManager():
     #  - filename to save
 
     filepathChanged   = Signal(str)
-    _filepath         : str
+    _filepath         : str        # to be used to show all the problems on the screen
+    _filenames        : list[str]  # contains all filenames in ../contents/current/
     _directory        : str
     _filename_to_save : str
 
@@ -28,6 +29,15 @@ class ContentsPathManager():
     @property
     def filename(self):
         return self.get_filename(self.filepath)
+
+    @filename.setter
+    def filename(self, value:str):
+        name = value + '.json'
+        self.filepath = os.path.join(self.current_dir, name)
+
+    @property
+    def filenames(self):
+        return self._filenames
 
     @property
     def filename_to_save(self):
@@ -64,10 +74,11 @@ class ContentsPathManager():
         return os.path.join(self.directory, 'current')
 
     def _latest_set_filepath(self):
-        json_files  = self._json_filter(self.current_dir)
+        json_files      = self._json_filter(self.current_dir)
         if len(json_files) > 0:
             json_files.sort(reverse=True)
-            latest_file = json_files[0]
+            self._filenames = list([ f.split('.')[0] for f in json_files])
+            latest_file     = json_files[0]
             return os.path.join(self.current_dir, latest_file)
         return ''
 
