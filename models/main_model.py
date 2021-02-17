@@ -67,6 +67,3 @@ class MainModel(QObject):
         self.dataChanged.emit(True)
 
       
-        # self.problem_scroll_area_model = ProblemScrollAreaModel(self.grade_setting, self.sector_setting)
-        # self.sector_scroll_area_model  = SectorScrollAreaModel(self.sector_setting)
-        # self.bottom_model = BottomStationModel()

@@ -1,48 +1,34 @@
 # Tool station model
 # 
 # contains all the informations being presented in ToolStation
-from typing import NamedTuple, Tuple
+from typing import NamedTuple
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
-from APImodels.problem import Problem
+from views.editor_view import EditorView
 
-class ToolStaticData(NamedTuple):
+class ToolData(NamedTuple):
 
-    width      :  int
-    
+    width      : int
+    editor     : EditorView
+
     @staticmethod
     def default():
-        return ToolStaticData(280)
-
-class ToolDynamicData(NamedTuple):
-
-    holds : Tuple[str]
-    problem : Problem
-    are_buttons_visible : bool
+        return ToolData(280, None)
 
 class ToolStationModel(QObject):
     
     dataChanged = pyqtSignal(bool) 
 
-    def __init__(self, 
-        static_data  : ToolStaticData = ToolStaticData.default(),
-        dynamic_data : ToolDynamicData = None 
-        ):
-
+    def __init__(self, view_data : ToolData = ToolData.default()):
         super().__init__()
-        self._static_data  = static_data
-        self._dynamic_data = dynamic_data
-    
-    @property
-    def static_data(self):
-        return self._static_data
+        self._data  = view_data
 
     @property
-    def dynamic_data(self):
-        return self._dynamic_data
+    def view_data(self):
+        return self._data
     
-    @dynamic_data.setter
-    def dynamic_data(self, data: str):
-        self._dynamic_data = data
+    @view_data.setter
+    def view_data(self, data: str):
+        self._data = data
         self.dataChanged.emit(True)

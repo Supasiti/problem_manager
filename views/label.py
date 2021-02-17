@@ -11,6 +11,24 @@ from APImodels.colour import Colour
 from models.problem_cell_data import ProblemCellData
 from models.cell_data import SectorCellData, GradeCellData, GradeCountData
 
+
+class FixedWidthLabel(QLabel):
+    
+    def __init__(self, width):
+        super().__init__()
+        self.setFixedWidth(width) 
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding) 
+    
+    def set_colours(self, 
+        colour: Colour, text_colour: Colour):
+        
+        self.setAutoFillBackground(True)
+        pal = QPalette()
+        pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
+        pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
+        self.setPalette(pal)
+
+
 class FixedSizeLabel(QLabel):
 
     def __init__(self, width:int, height:int, text:str=''):
@@ -112,6 +130,7 @@ class GradeCell(FixedSizeLabel):
         self.layout.addWidget(self.text_ric,   1, 0)
         self.layout.addWidget(self.text_aim,   0, 1, 1, 2)
         self.setLayout(self.layout)
+
 
 class GradeCountCell(FixedSizeLabel):
 

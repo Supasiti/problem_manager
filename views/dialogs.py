@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 
+
 class SaveAsDialog(QMessageBox):
 
     def __init__(self, filename:str, save_command:callable):
@@ -36,3 +37,20 @@ class SaveDialog(QMessageBox):
         ret = self.exec()
         if ret == QMessageBox.Save:
             self.on_save_clicked()
+
+
+class WarningDialog(QMessageBox):
+
+    def __init__(self, text:str, info_text:str):
+        assert(type(text) == str)
+        assert(type(info_text) == str)
+        super().__init__()
+        self.setIcon(QMessageBox.NoIcon)
+        self.setText(text)
+        self.setInformativeText(info_text)
+        self.setStandardButtons(QMessageBox.Ok)
+        self.setDefaultButton(QMessageBox.Ok)
+  
+    def show(self):
+        self.exec()
+
