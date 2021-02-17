@@ -27,7 +27,6 @@ class SectorAreaDataBuilder():
         cells.sort(key= lambda x : x.col)
         return SectorAreaData(48, tuple(cells))
 
-
     def from_problems(self, problems:tuple[Problem,...]):
         prob = tuple(problems)
         if len(prob) == 0 :

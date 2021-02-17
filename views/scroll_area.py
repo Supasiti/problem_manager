@@ -97,7 +97,6 @@ class SectorArea(FixedHeightScrollArea):
         super().__init__(self.height)
         
         self._init_UI()
-        self._config_dynamic_UI()
         self._hide_scroll_bar()
         self._connect_with_model()
     
@@ -106,8 +105,6 @@ class SectorArea(FixedHeightScrollArea):
         self.layout = QGridLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
-
-    def _config_dynamic_UI(self):
         for cell_data in self.model.changes.cells:
             self._generate_cell(cell_data, self.height)
 
@@ -125,7 +122,12 @@ class SectorArea(FixedHeightScrollArea):
         self.horizontalScrollBar().setValue(value)
     
     def _connect_with_model(self):
-        self.model.cellsChanged.connect(self._config_dynamic_UI)
+        self.model.cellsChanged.connect(self._set_cell_data)
+    
+    def _set_cell_data(self):
+        for cell_data in self.model.changes.cells:
+            cell = self.layout.itemAtPosition(0, cell_data.col).widget()
+            cell.set_data(cell_data)
 
 
 class GradeArea(FixedWidthScrollArea):

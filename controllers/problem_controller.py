@@ -9,7 +9,6 @@ from APImodels.grade import Grade
 from APImodels.RIC import RIC
 from APImodels.problem import Problem
 
-
 class ProblemAreaController():
     # controller all interaction the top station
 

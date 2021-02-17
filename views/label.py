@@ -156,22 +156,29 @@ class GradeCountCell(FixedSizeLabel):
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
 
+    _data : SectorCellData
+
     def __init__(self, height:int, data:SectorCellData):
         super().__init__(data.width, height)
-        self.data = data
-        self.set_colours(self.data.bg_colour, self.data.text_colour)
-        self._add_text()
+        self._init_UI()
+        self.set_data(data)
+
 
     # TODO put width and height in SectorCellData
-
-    def _add_text(self):
+    def _init_UI(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
-        text_sector = QLabel(self.data.text)
-        text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        text_count = QLabel(self.data.problem_count)
-        text_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        layout.addWidget(text_sector)
-        layout.addWidget(text_count)
+        self.text_sector = QLabel()
+        self.text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.text_count = QLabel()
+        self.text_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        layout.addWidget(self.text_sector)
+        layout.addWidget(self.text_count)
         self.setLayout(layout)
+
+    def set_data(self, data:SectorCellData):
+        self._data = data
+        self.set_colours(self._data.bg_colour, self._data.text_colour)
+        self.text_sector.setText(self._data.text)
+        self.text_count.setText(self._data.problem_count)
