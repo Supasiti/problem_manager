@@ -55,27 +55,42 @@ class ProblemCell(FixedSizeLabel):
 
     def __init__(self, width:int, height:int, data: ProblemCellData):
         super().__init__(width, height)
-        self.clicked_command = None
+        self._init_UI()
+        self._clicked_command = None
         self.set_data(data)
     
     # TODO width, height in problem cell data
+
+    def _init_UI(self):
+        layout = QVBoxLayout()
+        layout.setSpacing(2)
+        layout.setContentsMargins(2,2,2,2)
+        self.text_style = QLabel()
+        self.text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.text_ric   = QLabel()
+        self.text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        layout.addWidget(self.text_style)
+        layout.addWidget(self.text_ric)
+        self.setLayout(layout)
+
     def set_data(self, data: ProblemCellData):
         self._data = data
         self.set_colours(self._data.bg_colour, self._data.text_colour)
         self._add_mouse_effect()
-        self._add_text()
+        self.text_style.setText(self._data.text)
+        self.text_ric.setText(self._data.RIC)
     
     def _add_mouse_effect(self):
         self.setFocusPolicy(Qt.StrongFocus)
         self.enterEvent  = self._add_hover_effect
         self.leaveEvent  = self._remove_hover_effect
 
-        if not self.clicked_command is None:
+        if not self._clicked_command is None:
             self.mousePressEvent = self._on_mouse_clicked
     
     def _on_mouse_clicked(self, event):
-        if not self.clicked_command is None:
-            self.clicked_command(self._data.id, self._data.row, self._data.col)
+        if not self._clicked_command is None:
+            self._clicked_command(self._data.id, self._data.row, self._data.col)
     
     def _add_hover_effect(self, event):
         self.set_colours(self._data.hover_colour, self._data.text_colour)
@@ -83,20 +98,8 @@ class ProblemCell(FixedSizeLabel):
     def _remove_hover_effect(self, event):
         self.set_colours(self._data.bg_colour, self._data.text_colour)
 
-    def _add_text(self):
-        layout = QVBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(2,2,2,2)
-        text_style = QLabel(self._data.text)
-        text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        text_ric = QLabel(self._data.RIC)
-        text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        layout.addWidget(text_style)
-        layout.addWidget(text_ric)
-        self.setLayout(layout)
-
     def set_clicked_command(self, command):
-        self.clicked_command = command
+        self._clicked_command = command
         self.mousePressEvent = self._on_mouse_clicked
 
     

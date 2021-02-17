@@ -1,13 +1,13 @@
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
-from typing import Tuple, NamedTuple
+from typing import NamedTuple
 
 from models.dicts import GradeDict, SectorDict, ColourDict
 from models.problem_cell_data import ProblemCellDataBuilder, ProblemCellData
 from APImodels.problem import Problem
 
 class ProblemAreaData(NamedTuple):
-    cells : Tuple[ProblemCellData,...]
+    cells : tuple[ProblemCellData,...]
 
 class ProblemAreaDataBuilder(QObject):
 
@@ -16,39 +16,42 @@ class ProblemAreaDataBuilder(QObject):
         colour_setting: ColourDict, 
         sector_setting: SectorDict):
         super().__init__()
-        self.grade_setting  = grade_setting
-        self.colour_setting = colour_setting
-        self.sector_setting = sector_setting
-        self.builder = ProblemCellDataBuilder(
-                        self.grade_setting, self.colour_setting, self.sector_setting)
+        self._grade_setting  = grade_setting
+        self._colour_setting = colour_setting
+        self._sector_setting = sector_setting
+        self._builder = ProblemCellDataBuilder(
+                        self._grade_setting, self._colour_setting, self._sector_setting)
         
-        self.n_row = self.grade_setting.length()
-        self.n_col = self.sector_setting.length()
+        self._n_row = self._grade_setting.length()
+        self._n_col = self._sector_setting.length()
 
     @property 
     def n_cell(self):
-        return self.n_row * self.n_col
+        return self._n_row * self._n_col
     
     def _cell_coord(self, index:int):
-        return (index // self.n_col, index % self.n_col)
+        return (index // self._n_col, index % self._n_col)
 
     def no_problems(self):
-        cells = [self.builder.empty_cell(*self._cell_coord(index))
+        cells = [self._builder.empty_cell(*self._cell_coord(index))
                 for index in range(self.n_cell)]
         return ProblemAreaData(tuple(cells))
 
-    def from_problems(self, problems:Tuple[Problem,...]):
-
+    def from_problems(self, problems:tuple[Problem,...], non_empty_cells:tuple ):
+        # Arguments:
+        #   problems        : a tuple of type Problem
+        #   non_empty_cells : a tuple of type (row, col) - indicate that these are non empty
         new_cell_data  = [self._cell_data(p) for p in problems]
         new_cell_coord = [(d.row, d.col) for d in new_cell_data]
-        empty_cells    = [self.builder.empty_cell(*self._cell_coord(index)) 
-                            for index in range(self.n_cell) 
-                            if not self._cell_coord(index) in new_cell_coord]
+        empty_cells    = [self._builder.empty_cell(*_tuple) 
+                            for _tuple in non_empty_cells
+                            if not _tuple in new_cell_coord]
         new_cell_data += empty_cells
         return ProblemAreaData(tuple(new_cell_data))
 
+
     def _cell_data(self, problem:Problem):
-        return self.builder.from_problem(problem)
+        return self._builder.from_problem(problem)
 
     def from_problem(self, problem:Problem):
         assert(type(problem) == Problem)
@@ -57,9 +60,9 @@ class ProblemAreaDataBuilder(QObject):
     
     def empty_cell(self, problem :Problem):
         assert(type(problem) == Problem)
-        _row = self.grade_setting.get_row(str(problem.grade))
-        _col = self.sector_setting.get_col(problem.sector)
-        cell_data = self.builder.empty_cell(_row, _col) 
+        _row      = self._grade_setting.get_row(str(problem.grade))
+        _col      = self._sector_setting.get_col(problem.sector)
+        cell_data = self._builder.empty_cell(_row, _col) 
         return ProblemAreaData((cell_data,))
     
 class ProblemAreaModel(QObject):
@@ -69,8 +72,6 @@ class ProblemAreaModel(QObject):
     gradeCellsChanged  = pyqtSignal(dict)
 
     _changes     : ProblemAreaData
-    sector_count : dict[int: int]
-    grade_count  : dict[int: int]
 
     def __init__(self, data : ProblemAreaData):
         super().__init__()
