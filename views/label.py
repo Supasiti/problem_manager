@@ -103,7 +103,6 @@ class ProblemCell(FixedSizeLabel):
         self.mousePressEvent = self._on_mouse_clicked
 
     
-
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade
     _data  : GradeCellData
@@ -114,7 +113,6 @@ class GradeCell(FixedSizeLabel):
         self._init_UI(data)
         self.set_static_data(data)
         self.set_count_data(count)
-        print(self.width())
 
     def _init_UI(self, data: GradeCellData):
         _data  = data
@@ -154,19 +152,6 @@ class GradeCell(FixedSizeLabel):
         self.text_count.setText(self._count.text)
         self.text_count.set_colours(self._count.bg_colour, self._count.text_colour)
 
-class GradeCountCell(FixedSizeLabel):
-
-    def __init__(self, data : GradeCountData):
-        super().__init__(data.width, data.height)
-        self.data  = data
-
-        self._init_UI()
-
-    def _init_UI(self):
-        self.setText(self.data.text)
-        self.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.set_colours(self.data.bg_colour, self.data.text_colour)
-
 
 class SectorCell(FixedSizeLabel):
     # cell displaying info on each sector
@@ -197,3 +182,44 @@ class SectorCell(FixedSizeLabel):
         self.set_colours(self._data.bg_colour, self._data.text_colour)
         self.text_sector.setText(self._data.text)
         self.text_count.setText(self._data.problem_count)
+
+
+class InfoCell(FixedSizeLabel):
+
+    _data = GradeCellData
+
+    def __init__(self, width:int, height:int, inner_width:int, inner_height:int, bg_colour:Colour, text_colour:Colour):
+        super().__init__(width, height)
+        self.width = width
+        self.height = height
+        self.inner_width = inner_width
+        self.inner_height = inner_height
+        self.bg_colour = bg_colour
+        self.text_colour = text_colour
+        self._init_UI()
+
+    def _init_UI(self):
+        self.layout = QGridLayout()
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0,0,0,0)
+
+        self.text_sector = FixedSizeLabel(self.width, self.inner_height)
+        self.text_sector.setText('Sectors')
+        self.text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.text_sector.set_colours(self.bg_colour, self.text_colour)
+
+        self.text_aim = FixedSizeLabel(self.inner_width, self.inner_height)
+        self.text_aim.setText('Aim')
+        self.text_aim.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.text_aim.set_colours(self.bg_colour, self.text_colour)
+
+        self.text_counts = FixedSizeLabel(self.inner_width, self.inner_height)
+        self.text_counts.setText('Counts')
+        self.text_counts.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.text_counts.set_colours(self.bg_colour, self.text_colour)
+
+        self.layout.addWidget(self.text_sector, 0, 0, 1, 3)
+        self.layout.addWidget(self.text_aim,    1, 1)
+        self.layout.addWidget(self.text_counts, 1, 2)
+
+        self.setLayout(self.layout)

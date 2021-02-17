@@ -4,15 +4,14 @@ from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
-from views.label import FixedSizeLabel
+from views.label import FixedSizeLabel, InfoCell
 from views.frame import Frame
 from views.scroll_area import ProblemArea, SectorArea, GradeArea
-from views.info_area import InfoArea
 from APImodels.colour import Colour
 
 class WorkStation(Frame):
 
-    info_view    : InfoArea
+    info_view    : InfoCell
     sector_view  : SectorArea
     grade_view   : GradeArea
     problem_view : ProblemArea
@@ -39,12 +38,12 @@ class WorkStation(Frame):
         self.layout.setContentsMargins(2,2,2,2)
         self.layout.setSpacing(4)
 
-        # self.info         = data.info_view   
+        self.info_view    = InfoCell(160, 48, 52, 23, Colour(30,30,30), Colour(240,240,240))
         self.sector_view  = data.sector_view
         self.grade_view   = data.grade_view  
         self.problem_view = data.problem_view   
 
-        # self.layout.addWidget(self.info,           0, 0)
+        self.layout.addWidget(self.info_view,           0, 0)
         self.layout.addWidget(self.sector_view,    0, 1)
         self.layout.addWidget(self.grade_view,     1, 0)
         self.layout.addWidget(self.problem_view,   1, 1, 2, 2)

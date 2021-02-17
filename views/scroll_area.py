@@ -6,7 +6,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
-from views.label import ProblemCell, GradeCell, GradeCountCell, SectorCell
+from views.label import ProblemCell, GradeCell, SectorCell
 from models.problem_cell_data import ProblemCellData
 from models.cell_data import SectorCellData
 
@@ -85,6 +85,7 @@ class ProblemArea(ScrollArea):
             cell = self.layout.itemAtPosition(cell_data.row, cell_data.col).widget()
             cell.set_data(cell_data)
 
+
 class SectorArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
@@ -144,7 +145,6 @@ class GradeArea(FixedWidthScrollArea):
         self._init_UI()
         self._hide_scroll_bar()
         self._connect_model()
-        print('grade area: {}'.format(self.width))
     
     def _init_UI(self):
         self.widget = QWidget()

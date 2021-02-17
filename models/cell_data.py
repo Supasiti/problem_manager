@@ -97,13 +97,10 @@ class GradeCellDataBuilder():
         return Colour(R,G,B)
     
 
-
 class GradeCountData(NamedTuple):
     # data for cell that counts problems of that particular grade
 
     row :int
-    width : int 
-    height : int
     bg_colour: Colour
     text_colour: Colour
     text : str
@@ -118,12 +115,10 @@ class GradeCountDataBuilder():
 
     def build(self, row:int, count:int):
         
-        width  = 50
-        height = 48
         bg_colour   = self._extract_background_colour(row, count)
         text_colour = self._extract_text_colour(row, count)
 
-        return GradeCountData(row, width, height, bg_colour, text_colour, str(count))
+        return GradeCountData(row, bg_colour, text_colour, str(count))
 
     def _extract_background_colour(self, row:int, count:int):
         # return background colour depending on whether or not number of problems in that

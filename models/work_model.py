@@ -4,7 +4,6 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
 from views.scroll_area import ProblemArea, SectorArea, GradeArea
-from views.info_area import InfoArea
 from APImodels.colour import Colour
 
 class WorkStaticData(NamedTuple):
