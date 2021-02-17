@@ -77,9 +77,9 @@ class GradeCellDataBuilder():
 
     def build(self, row:int):
         
-        width = 103
+        width = 160
         height = 48
-        inner_width = 50
+        inner_width = 52
         inner_height = 23
         bg_colour   = self.__extract_background_colour(row)
         text_colour = self.__extract_text_colour(row)
@@ -118,7 +118,7 @@ class GradeCountDataBuilder():
 
     def build(self, row:int, count:int):
         
-        width = 50
+        width  = 50
         height = 48
         bg_colour   = self._extract_background_colour(row, count)
         text_colour = self._extract_text_colour(row, count)

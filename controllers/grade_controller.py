@@ -22,6 +22,7 @@ class GradeAreaController():
         self.model = GradeAreaModel(data, counts)   # load model
         self.view  = GradeArea(self, self.model) # load view
         self._connect_editor()
+        
     
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency

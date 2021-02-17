@@ -142,9 +142,9 @@ class GradeArea(FixedWidthScrollArea):
         super().__init__(self.width)
         
         self._init_UI()
-        self._config_dynamic_UI()
         self._hide_scroll_bar()
         self._connect_model()
+        print('grade area: {}'.format(self.width))
     
     def _init_UI(self):
         self.widget = QWidget()
@@ -153,12 +153,9 @@ class GradeArea(FixedWidthScrollArea):
         self.layout.setContentsMargins(0,0,0,0)
         
         for cell_data in self.model.static.cells:
-            self.layout.addWidget(GradeCell(cell_data), cell_data.row, 0)
-
-    def _config_dynamic_UI(self):
-        for cell_data in self.model.counts.cells:
-            self.layout.addWidget(GradeCountCell(cell_data), cell_data.row, 1)
-
+            count = self.model.counts.get_cell(cell_data.row)
+            self.layout.addWidget(GradeCell(cell_data, count), cell_data.row, 0)
+        
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
      
@@ -172,5 +169,10 @@ class GradeArea(FixedWidthScrollArea):
         self.verticalScrollBar().valueChanged.connect(command)
 
     def _connect_model(self):
-        self.model.countsChanged.connect(self._config_dynamic_UI)
+        self.model.countsChanged.connect(self._set_count_data)
+
+    def _set_count_data(self):
+        for count_data in self.model.counts.cells:
+            cell = self.layout.itemAtPosition(count_data.row, 0).widget()
+            cell.set_count_data(count_data)
     

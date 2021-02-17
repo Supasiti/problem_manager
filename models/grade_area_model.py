@@ -23,11 +23,16 @@ class GradeAreaDataBuilder():
     def default(self):
         cells = [self.builder.build(row) for row in range(self.n_row)]
         cells.sort(key= lambda x : x.row)
-        return GradeAreaData(154, tuple(cells))
+        return GradeAreaData(160, tuple(cells))
 
 
 class GradeCountsData(NamedTuple):
     cells : Tuple[GradeCountData,...]
+
+    def get_cell(self, row:int):
+        cell = [cell for cell in self.cells if cell.row == row]
+        return cell[0] if len(cell) > 0 else None
+
 
 class GradeCountsDataBuilder():
 

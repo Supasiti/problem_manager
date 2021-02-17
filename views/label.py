@@ -106,38 +106,53 @@ class ProblemCell(FixedSizeLabel):
 
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade
+    _data  : GradeCellData
+    _count : GradeCountData
 
-    def __init__(self, data : GradeCellData):
+    def __init__(self, data : GradeCellData, count: GradeCountData ):
         super().__init__(data.width, data.height)
-        self.data  = data
+        self._init_UI(data)
+        self.set_static_data(data)
+        self.set_count_data(count)
+        print(self.width())
 
-        self._init_UI()
-
-    def _init_UI(self):
+    def _init_UI(self, data: GradeCellData):
+        _data  = data
         self.layout = QGridLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
 
-        self.text_style = FixedSizeLabel(self.data.inner_width, self.data.inner_height)
+        self.text_style = FixedSizeLabel(_data.inner_width, _data.inner_height)
         self.text_style.setText('Style')
         self.text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.text_style.set_colours(self.data.bg_colour, self.data.text_colour)
 
-        self.text_ric = FixedSizeLabel(self.data.inner_width, self.data.inner_height)
+        self.text_ric = FixedSizeLabel(_data.inner_width, _data.inner_height)
         self.text_ric.setText('RIC')
         self.text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
-        self.text_ric.set_colours(self.data.bg_colour, self.data.text_colour)
 
-        self.text_aim = FixedSizeLabel(self.data.inner_width, self.data.height)
-        self.text_aim.setText(self.data.aim)
+        self.text_aim = FixedSizeLabel(_data.inner_width, _data.height)
         self.text_aim.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
-        self.text_aim.set_colours(self.data.bg_colour, self.data.text_colour)
+
+        self.text_count = FixedSizeLabel(_data.inner_width, _data.height)
+        self.text_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
 
         self.layout.addWidget(self.text_style, 0, 0)
         self.layout.addWidget(self.text_ric,   1, 0)
-        self.layout.addWidget(self.text_aim,   0, 1, 1, 2)
+        self.layout.addWidget(self.text_aim,   0, 1, 2, 1)
+        self.layout.addWidget(self.text_count, 0, 2, 2, 1)
         self.setLayout(self.layout)
 
+    def set_static_data(self, data:GradeCellData):
+        self._data = data
+        self.text_style.set_colours(self._data.bg_colour, self._data.text_colour)
+        self.text_ric.set_colours(self._data.bg_colour, self._data.text_colour)
+        self.text_aim.setText(self._data.aim)
+        self.text_aim.set_colours(self._data.bg_colour, self._data.text_colour)
+
+    def set_count_data(self, data: GradeCountData):
+        self._count = data
+        self.text_count.setText(self._count.text)
+        self.text_count.set_colours(self._count.bg_colour, self._count.text_colour)
 
 class GradeCountCell(FixedSizeLabel):
 
