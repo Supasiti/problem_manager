@@ -51,17 +51,20 @@ class ProblemCell(FixedSizeLabel):
     # cell displaying info on problem if there is no problem on this particular
     # cell. This is the base problem cell.
 
+    _data : ProblemCellData
+
     def __init__(self, width:int, height:int, data: ProblemCellData):
         super().__init__(width, height)
-        self.data            = data
         self.clicked_command = None
-        
-        self.set_colours(self.data.bg_colour, self.data.text_colour)
+        self.set_data(data)
+    
+    # TODO width, height in problem cell data
+    def set_data(self, data: ProblemCellData):
+        self._data = data
+        self.set_colours(self._data.bg_colour, self._data.text_colour)
         self._add_mouse_effect()
         self._add_text()
-
-    # TODO width, height in problem cell data
-
+    
     def _add_mouse_effect(self):
         self.setFocusPolicy(Qt.StrongFocus)
         self.enterEvent  = self._add_hover_effect
@@ -72,21 +75,21 @@ class ProblemCell(FixedSizeLabel):
     
     def _on_mouse_clicked(self, event):
         if not self.clicked_command is None:
-            self.clicked_command(self.data.id, self.data.row, self.data.col)
+            self.clicked_command(self._data.id, self._data.row, self._data.col)
     
     def _add_hover_effect(self, event):
-        self.set_colours(self.data.hover_colour, self.data.text_colour)
+        self.set_colours(self._data.hover_colour, self._data.text_colour)
     
     def _remove_hover_effect(self, event):
-        self.set_colours(self.data.bg_colour, self.data.text_colour)
+        self.set_colours(self._data.bg_colour, self._data.text_colour)
 
     def _add_text(self):
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
-        text_style = QLabel(self.data.text)
+        text_style = QLabel(self._data.text)
         text_style.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        text_ric = QLabel(self.data.RIC)
+        text_ric = QLabel(self._data.RIC)
         text_ric.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         layout.addWidget(text_style)
         layout.addWidget(text_ric)
@@ -96,6 +99,7 @@ class ProblemCell(FixedSizeLabel):
         self.clicked_command = command
         self.mousePressEvent = self._on_mouse_clicked
 
+    
 
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade
