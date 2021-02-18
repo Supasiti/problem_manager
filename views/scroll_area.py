@@ -175,4 +175,3 @@ class GradeArea(FixedWidthScrollArea):
         for count_data in self.model.counts.cells:
             cell = self.layout.itemAtPosition(count_data.row, 0).widget()
             cell.set_count_data(count_data)
-    

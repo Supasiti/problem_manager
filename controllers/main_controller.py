@@ -10,7 +10,6 @@ from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
 from controllers.top_controller import TopController
 from controllers.work_controller import WorkController
 from controllers.tool_controller import ToolController
-# from controllers.editor_controller import EditorController
 from controllers.bottom_controller import BottomController
 
 class MainController():    

@@ -55,6 +55,7 @@ class ProblemCellDataBuilder():
             return problem.colour
 
     def _extract_background_colour(self, hold_colour=None):
+        # print(self._colour_setting.)
         R,G,B = self._colour_setting.get_colour('default')[0:3]
         if not hold_colour is None:
             R,G,B =  self._colour_setting.get_colour(hold_colour)[0:3]

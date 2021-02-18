@@ -15,17 +15,17 @@ class DependencyService():
         self.dependency_dict = dict()
         self.padlock = Lock()
 
-    def register(self, class_type: type, dependency:object = None):
+    def register(self, class_type: type, dependency:object = None) ->bool:
         
         with self.padlock:
             if class_type in self.dependency_dict.keys():
-                return
-            if dependency != None:
+                return True
+            elif dependency != None:
                 self.dependency_dict[class_type] = dependency
-                return
-            if self.__n_non_default_args(class_type) == 0:
+                return True
+            elif self._n_non_default_args(class_type) == 0:
                 self.dependency_dict[class_type] = class_type()
-                return
+                return True
             else:
                 raise TypeError('__init__() requires positional arguments')
                 
@@ -41,12 +41,13 @@ class DependencyService():
             return self.dependency_dict[class_type]
 
 
-    def deregister(self, class_type:type):
+    def deregister(self, class_type:type) -> bool:
         with self.padlock:
             if class_type in self.dependency_dict.keys():
-                    self.dependency_dict.pop(class_type) 
+                self.dependency_dict.pop(class_type) 
+        return True
 
-    def __n_non_default_args(self, class_type:type):
+    def _n_non_default_args(self, class_type:type) ->int:
         sig = signature(class_type)
         non_default_args = [arg for arg in sig.parameters.values() if arg.default is arg.empty]
         return len(non_default_args)
