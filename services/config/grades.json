@@ -1,0 +1,439 @@
+{
+    "0": {
+        "aim": 4,
+        "bg_colour": {
+            "blue": 142,
+            "green": 225,
+            "red": 255
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "yellow"
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 240,
+            "red": 255
+        },
+        "row": 0,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "1": {
+        "aim": 1,
+        "bg_colour": {
+            "blue": 91,
+            "green": 212,
+            "red": 255
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "yellow"
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 225,
+            "red": 255
+        },
+        "row": 1,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "10": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 70,
+            "green": 158,
+            "red": 95
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "green"
+        },
+        "hover_colour": {
+            "blue": 114,
+            "green": 188,
+            "red": 136
+        },
+        "row": 10,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "11": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "red"
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 197,
+            "red": 242
+        },
+        "row": 11,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "12": {
+        "aim": 5,
+        "bg_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 219
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "red"
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "row": 12,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "13": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 197
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "red"
+        },
+        "hover_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 219
+        },
+        "row": 13,
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "14": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 174,
+            "green": 174,
+            "red": 174
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "black"
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 197,
+            "red": 197
+        },
+        "row": 14,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "15": {
+        "aim": 4,
+        "bg_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 142
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "black"
+        },
+        "hover_colour": {
+            "blue": 174,
+            "green": 174,
+            "red": 174
+        },
+        "row": 15,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "16": {
+        "aim": 1,
+        "bg_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 91
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "black"
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 142
+        },
+        "row": 16,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "17": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 237,
+            "green": 237,
+            "red": 237
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "white"
+        },
+        "hover_colour": {
+            "blue": 241,
+            "green": 241,
+            "red": 241
+        },
+        "row": 17,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "18": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 212,
+            "green": 212,
+            "red": 212
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "white"
+        },
+        "hover_colour": {
+            "blue": 237,
+            "green": 237,
+            "red": 237
+        },
+        "row": 18,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "2": {
+        "aim": 1,
+        "bg_colour": {
+            "blue": 242,
+            "green": 186,
+            "red": 154
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "blue"
+        },
+        "hover_colour": {
+            "blue": 247,
+            "green": 213,
+            "red": 194
+        },
+        "row": 2,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "3": {
+        "aim": 4,
+        "bg_colour": {
+            "blue": 232,
+            "green": 148,
+            "red": 98
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "blue"
+        },
+        "hover_colour": {
+            "blue": 242,
+            "green": 186,
+            "red": 154
+        },
+        "row": 3,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "4": {
+        "aim": 1,
+        "bg_colour": {
+            "blue": 210,
+            "green": 109,
+            "red": 53
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "blue"
+        },
+        "hover_colour": {
+            "blue": 232,
+            "green": 148,
+            "red": 98
+        },
+        "row": 4,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "5": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 208,
+            "green": 157,
+            "red": 171
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "purple"
+        },
+        "hover_colour": {
+            "blue": 230,
+            "green": 204,
+            "red": 212
+        },
+        "row": 5,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "6": {
+        "aim": 4,
+        "bg_colour": {
+            "blue": 187,
+            "green": 113,
+            "red": 131
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "purple"
+        },
+        "hover_colour": {
+            "blue": 208,
+            "green": 157,
+            "red": 171
+        },
+        "row": 6,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "7": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 157,
+            "green": 69,
+            "red": 92
+        },
+        "grade": {
+            "difficulty": "hard",
+            "range": "purple"
+        },
+        "hover_colour": {
+            "blue": 187,
+            "green": 113,
+            "red": 131
+        },
+        "row": 7,
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "8": {
+        "aim": 2,
+        "bg_colour": {
+            "blue": 158,
+            "green": 209,
+            "red": 173
+        },
+        "grade": {
+            "difficulty": "easy",
+            "range": "green"
+        },
+        "hover_colour": {
+            "blue": 205,
+            "green": 231,
+            "red": 212
+        },
+        "row": 8,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "9": {
+        "aim": 6,
+        "bg_colour": {
+            "blue": 114,
+            "green": 188,
+            "red": 136
+        },
+        "grade": {
+            "difficulty": "mid",
+            "range": "green"
+        },
+        "hover_colour": {
+            "blue": 158,
+            "green": 209,
+            "red": 173
+        },
+        "row": 9,
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    }
+}

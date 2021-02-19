@@ -52,6 +52,8 @@ class ProblemsEditor():
             repository    = self._repo_factory.get(filepath)
             self.problems = dict({p.id: p for p in repository.get_all_problems()})
             self.next_id  = self.next_available_problem_id()
+        else:
+            self.problems = dict()
         return True
 
     def next_available_problem_id(self) -> int:

@@ -12,6 +12,18 @@ class GradeStyle(NamedTuple):
     text_colour : Colour
     hover_colour : Colour
 
+    def to_dict(self) -> dict:
+        result = {
+            'grade'     : self.grade._asdict(),
+            'row'       : self.row,
+            'aim'       : self.aim,
+            'bg_colour'    : self.bg_colour._asdict(),
+            'text_colour'  : self.text_colour._asdict(),
+            'hover_colour' : self.hover_colour._asdict()
+        }
+        return result 
+
+
 class GradeStyleBuilder():
 
     def from_json(self, data:dict) -> GradeStyle:

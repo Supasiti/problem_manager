@@ -11,6 +11,7 @@ class Colour(NamedTuple):
 
     def to_tuple(self):
         return (self.red, self.green, self.blue)
+    
 
     @staticmethod
     def from_json(data):

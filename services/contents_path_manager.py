@@ -61,11 +61,13 @@ class ContentsPathManager():
 
     @directory.setter
     def directory(self, value:str):
-        if self._validate_directory(value):
-            self._directory = value
-            self.filepath = self._latest_set_filepath()
+        self._directory = value
+        if not self._current_directory_exists(value):
+            json_dir = os.path.join(value, 'current')
+            os.mkdir(json_dir)
+        self.filepath = self._latest_set_filepath()
 
-    def _validate_directory(self, directory:str):
+    def _current_directory_exists(self, directory:str):
         json_dir = os.path.join(directory, 'current')
         return os.path.isdir(json_dir)    # true if exist
     

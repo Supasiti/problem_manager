@@ -6,49 +6,24 @@ import os
 
 from services.signal import Signal
 from services.file_setting import FileSetting
-
-class ConfigParser():
-    # read/write configure file on loading / change
-    # filepath of config.json file is expected to be in the same folder as this class.
-
-    _data : dict
-
-    def __init__(self):
-        self._filepath = self._create_filepath()
-        self.load_config(self._filepath)
-    
-    def _create_filepath(self):
-        real_path = os.path.realpath(__file__)
-        dir_path  = os.path.dirname(real_path)
-        return os.path.join(dir_path, 'config.json')
-
-    @property
-    def data(self) -> dict:
-        return self._data
-    
-    @data.setter
-    def data(self, new_data:dict) -> bool:
-        self._data = new_data
-        # probably need to write config file here
-
-    def load_config(self, filepath:str):
-        with open(filepath, 'r') as fid:
-            self._data = json.loads(fid.read())
+from services.grade_setting import GradeSetting, GradeStyle, GradeStyleBuilder
 
 
 class Setting():
 
     padlock        = Lock()
-    settingChanged = Signal(bool)
+    settingChanged = Signal(type)
     
     def __init__(self):
-        self._parser          = ConfigParser()
         self._settings        = dict()
         self._init_all_setting()
 
     def _init_all_setting(self) -> None:
-        file_parser = FileSettingParser(self._parser)
+        file_parser = FileSettingParser()
         self._register(FileSetting, file_parser.get_data(), file_parser)
+
+        grade_parser = GradeSettingParser()
+        self._register(GradeSetting, grade_parser.get_data(), grade_parser)
 
     def get(self, class_type:type) -> object:
         if class_type in self._settings.keys():
@@ -66,33 +41,92 @@ class Setting():
         if class_type in self._settings.keys():
             parser = self._settings[class_type].parser
             parser.set_data(value)
-            self._register(FileSetting, parser.get_data(), parser)
-            self.settingChanged.emit(True)
+            self._register(class_type, parser.get_data(), parser)
+            self.settingChanged.emit(class_type)
             return True
         raise ValueError('This setting has not been registered.')
 
+    def write(self, class_type:type):
+        if class_type in self._settings.keys():
+            parser = self._settings[class_type].parser
+            parser.write()
+
 
 class SettingParser(ABC):
+    # based setting parser to read/write configuration on loading / change
 
-    def __init__(self, parser:ConfigParser):
-        self.parser   = parser
+    def load_config(self, filepath:str) -> object:
+        with open(filepath, 'r') as fid:
+            raw_data = json.loads(fid.read())
+            fid.close()
+        return raw_data
+    
+    def write(self, filepath:str, data:object) -> None:
+        with open(filepath, 'w' ) as fid:
+            json.dump(data, fid, indent=4, sort_keys=True)
+            fid.truncate()
+            fid.close()
 
     @abstractmethod
     def get_data(self) -> object:
         pass
     
     @abstractmethod
-    def set_data(self, value:object) ->bool:
+    def set_data(self, key:str, value:object) ->bool:
         pass
 
 
 class FileSettingParser(SettingParser):
+    # read/write file paths on loading / change
+    # filepath of config.json file is expected to be in the same folder as this class.
+
+    def __init__(self):
+        self._filepath = self._create_filepath()
+        self._data     = self.load_config(self._filepath)
+    
+    def _create_filepath(self):
+        real_path = os.path.realpath(__file__)
+        dir_path  = os.path.dirname(real_path)
+        return os.path.join(dir_path, 'config','config.json')
+
+    def write(self) -> None:
+        SettingParser.write(self, self._filepath, self._data)
 
     def get_data(self) -> object:
-        return FileSetting(self.parser.data['content path'])
+        return FileSetting(self._data['content path'])
     
     def set_data(self, value:object) ->bool:
-        self.parser.data['content path'] = value
+        self._data['content path'] = value
+        return True
+
+
+class GradeSettingParser(SettingParser):
+    # read/write setting on gradings
+    # filepath of grades.json  is expected to be in the same folder as this class.
+
+    def __init__(self):
+        self._filepath = self._create_filepath()
+        self._data     = self.load_config(self._filepath)
+    
+    def _create_filepath(self):
+        real_path = os.path.realpath(__file__)
+        dir_path  = os.path.dirname(real_path)
+        return os.path.join(dir_path, 'config','grades.json')
+
+    def write(self):
+        SettingParser.write(self, self._filepath, self._data)
+
+    def get_data(self) -> object:
+        builder = GradeStyleBuilder()
+        styles = [builder.from_json(style) for style in self._data.values()]
+        return GradeSetting(tuple(styles))
+    
+    def set_data(self, value:object) ->bool:
+        if isinstance(value, GradeStyle):
+            self._data[str(value.row)] = value.to_dict()
+        if isinstance(value, tuple):
+            for style in value:
+                self._data[str(style.row)] = style.to_dict()
         return True
 
 

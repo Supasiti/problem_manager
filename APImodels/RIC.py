@@ -36,5 +36,3 @@ class RIC():
     def __repr__(self):
         return 'RIC(%s, %s, %s)' % (self.R, self.I, self.C)
     
-    def to_dict(self):
-        return {'R' : self.R, 'I' : self.I, 'C': self.C}
