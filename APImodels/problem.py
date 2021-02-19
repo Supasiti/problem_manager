@@ -18,7 +18,7 @@ class Problem(
     def from_json(data):
         _id      = int(data['id'])
         ric      = RIC(int(data['RIC']['R']), int(data['RIC']['I']), int(data['RIC']['C']))
-        grade    = Grade(data['grade']['range'], data['grade']['difficulty'])
+        grade    = Grade.from_json(data['grade'])
         colour   = data['colour']
         sector   = data['sector']
         styles   = tuple(data['styles'])

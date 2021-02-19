@@ -23,7 +23,7 @@ class BottomStationModel(QObject):
 
     def __init__(self,
         static_data  : BottomStaticData = BottomStaticData.default(),
-        dynamic_data : str = r'/Users/thara/Desktop/Programming/python/problem_manager/Contents'
+        dynamic_data : str = ''
         ):
         super().__init__()
         self._static_data  = static_data

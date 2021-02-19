@@ -4,6 +4,8 @@ from abc import ABC, abstractmethod
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
+from services.setting import Setting
+from services.file_setting import FileSetting
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
@@ -48,6 +50,7 @@ class MainController():
         self._dependency   = dependency
         self._dependency.register(ProblemsEditor, self.editor)
         self.path_manager = self._dependency.get_or_register(ContentsPathManager)
+
 
     def change_to_state(self, state:MainControllerState):
         self._state = state
