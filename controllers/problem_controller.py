@@ -75,7 +75,7 @@ class ProblemAreaController():
 
         _id     = self._editor.next_id
         _grade  = self._grade_setting.get_grade(row)
-        _hold   = _grade.split(' ')[0]
+        _hold   = str(_grade).split(' ')[0]
         _sector = self._sector_setting.get_sector(col)
 
         return Problem(_id, RIC(1,1,1), _grade, _hold, _sector, (), '', date.today(), 'on')
