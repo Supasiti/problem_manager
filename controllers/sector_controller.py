@@ -1,15 +1,17 @@
 
 from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
+from services.setting import Setting
+from services.colour_setting import ColourSetting
 from models.sector_area_model import SectorAreaModel, SectorAreaDataBuilder  
-from models.dicts import SectorDict,ColourDict
+from models.dicts import SectorDict
 from views.scroll_area import SectorArea
 
 class SectorAreaController():
     # controller all interaction the top station
 
     _dependency : DependencyService
-    _colour_setting : ColourDict
+    _colour_setting : ColourSetting
     _sector_setting : SectorDict
 
     def __init__(self, dependency : DependencyService, parent=None):
@@ -22,8 +24,10 @@ class SectorAreaController():
     
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
-        self._colour_setting = self._dependency.get_or_register(ColourDict) 
+        # self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._sector_setting = self._dependency.get_or_register(SectorDict)
+        self._setting        = self._dependency.get(Setting)
+        self._colour_setting  = self._setting.get(ColourSetting)
 
     def _connect_editor(self):
         editor = self._dependency.get(ProblemsEditor)

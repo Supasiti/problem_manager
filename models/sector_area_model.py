@@ -2,7 +2,8 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from typing import Tuple, NamedTuple
 
-from models.dicts import SectorDict, ColourDict
+from services.colour_setting import ColourSetting
+from models.dicts import SectorDict
 from models.cell_data import SectorCellData, SectorCellDataBuilder
 from APImodels.sector import Sector
 from APImodels.problem import Problem
@@ -13,7 +14,7 @@ class SectorAreaData(NamedTuple):
 
 class SectorAreaDataBuilder():
    
-    def __init__(self, sector_setting: SectorDict, colour_setting:ColourDict):
+    def __init__(self, sector_setting: SectorDict, colour_setting:ColourSetting):
         super().__init__()
         self._sector_setting = sector_setting
         self._colour_setting = colour_setting

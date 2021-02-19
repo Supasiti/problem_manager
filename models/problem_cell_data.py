@@ -44,9 +44,6 @@ class ProblemCellDataBuilder():
 
         return ProblemCellData(row, col, bg_colour, text_colour, hover_colour,
             text, RIC, problem_id)
-
-    def _extract_grade(self, problem: Problem):
-        return str(problem.grade)
         
     def _extract_hold_colour(self, problem: Problem):
         if problem.colour == problem.grade.range:
@@ -55,7 +52,6 @@ class ProblemCellDataBuilder():
             return problem.colour
 
     def _extract_background_colour(self, hold_colour=None):
-        # print(self._colour_setting.)
         R,G,B = self._colour_setting.get_colour('default')[0:3]
         if not hold_colour is None:
             R,G,B =  self._colour_setting.get_colour(hold_colour)[0:3]
@@ -73,7 +69,6 @@ class ProblemCellDataBuilder():
             R,G,B =  self._colour_setting.get_colour(hold_colour)[6:9]
         return Colour(R,G,B)
         
-
     def empty_cell(self, row:int, col:int):
 
         bg_colour    = self._extract_background_colour()

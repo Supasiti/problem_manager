@@ -88,6 +88,9 @@ class ColourDict():
     def get_hold_colours(self, name: str):
         if name.lower() in self._colours.keys():
             return (name.split(' ')[0], 'orange')
+    
+    def get_all_colours(self):
+        return self._colours.keys()
 
 
 class SectorDict():

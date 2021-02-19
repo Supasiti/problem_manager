@@ -1,0 +1,416 @@
+{
+    "alert": {
+        "bg_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 255
+        },
+        "hover_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 219
+        },
+        "name": "alert",
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "black easy": {
+        "bg_colour": {
+            "blue": 174,
+            "green": 174,
+            "red": 174
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 197,
+            "red": 197
+        },
+        "name": "black easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "black hard": {
+        "bg_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 91
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 142
+        },
+        "name": "black hard",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "black mid": {
+        "bg_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 142
+        },
+        "hover_colour": {
+            "blue": 174,
+            "green": 174,
+            "red": 174
+        },
+        "name": "black mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "blue easy": {
+        "bg_colour": {
+            "blue": 242,
+            "green": 186,
+            "red": 154
+        },
+        "hover_colour": {
+            "blue": 247,
+            "green": 213,
+            "red": 194
+        },
+        "name": "blue easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "blue hard": {
+        "bg_colour": {
+            "blue": 210,
+            "green": 109,
+            "red": 53
+        },
+        "hover_colour": {
+            "blue": 232,
+            "green": 148,
+            "red": 98
+        },
+        "name": "blue hard",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "blue mid": {
+        "bg_colour": {
+            "blue": 232,
+            "green": 148,
+            "red": 98
+        },
+        "hover_colour": {
+            "blue": 242,
+            "green": 186,
+            "red": 154
+        },
+        "name": "blue mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "default": {
+        "bg_colour": {
+            "blue": 30,
+            "green": 30,
+            "red": 30
+        },
+        "hover_colour": {
+            "blue": 60,
+            "green": 60,
+            "red": 60
+        },
+        "name": "default",
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "green easy": {
+        "bg_colour": {
+            "blue": 158,
+            "green": 209,
+            "red": 173
+        },
+        "hover_colour": {
+            "blue": 205,
+            "green": 231,
+            "red": 212
+        },
+        "name": "green easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "green hard": {
+        "bg_colour": {
+            "blue": 70,
+            "green": 158,
+            "red": 95
+        },
+        "hover_colour": {
+            "blue": 114,
+            "green": 188,
+            "red": 136
+        },
+        "name": "green hard",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "green mid": {
+        "bg_colour": {
+            "blue": 114,
+            "green": 188,
+            "red": 136
+        },
+        "hover_colour": {
+            "blue": 158,
+            "green": 209,
+            "red": 173
+        },
+        "name": "green mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "orange": {
+        "bg_colour": {
+            "blue": 0,
+            "green": 142,
+            "red": 255
+        },
+        "hover_colour": {
+            "blue": 96,
+            "green": 169,
+            "red": 245
+        },
+        "name": "orange",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "purple easy": {
+        "bg_colour": {
+            "blue": 208,
+            "green": 157,
+            "red": 171
+        },
+        "hover_colour": {
+            "blue": 230,
+            "green": 204,
+            "red": 212
+        },
+        "name": "purple easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "purple hard": {
+        "bg_colour": {
+            "blue": 157,
+            "green": 69,
+            "red": 92
+        },
+        "hover_colour": {
+            "blue": 187,
+            "green": 113,
+            "red": 131
+        },
+        "name": "purple hard",
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "purple mid": {
+        "bg_colour": {
+            "blue": 187,
+            "green": 113,
+            "red": 131
+        },
+        "hover_colour": {
+            "blue": 208,
+            "green": 157,
+            "red": 171
+        },
+        "name": "purple mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "red easy": {
+        "bg_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 197,
+            "red": 242
+        },
+        "name": "red easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "red hard": {
+        "bg_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 197
+        },
+        "hover_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 219
+        },
+        "name": "red hard",
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
+    "red mid": {
+        "bg_colour": {
+            "blue": 91,
+            "green": 91,
+            "red": 219
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "name": "red mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "setting": {
+        "bg_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 142,
+            "red": 231
+        },
+        "name": "setting",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "white easy": {
+        "bg_colour": {
+            "blue": 237,
+            "green": 237,
+            "red": 237
+        },
+        "hover_colour": {
+            "blue": 241,
+            "green": 241,
+            "red": 241
+        },
+        "name": "white easy",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "white mid": {
+        "bg_colour": {
+            "blue": 212,
+            "green": 212,
+            "red": 212
+        },
+        "hover_colour": {
+            "blue": 237,
+            "green": 237,
+            "red": 237
+        },
+        "name": "white mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "yellow hard": {
+        "bg_colour": {
+            "blue": 91,
+            "green": 212,
+            "red": 255
+        },
+        "hover_colour": {
+            "blue": 142,
+            "green": 225,
+            "red": 255
+        },
+        "name": "yellow hard",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    },
+    "yellow mid": {
+        "bg_colour": {
+            "blue": 142,
+            "green": 225,
+            "red": 255
+        },
+        "hover_colour": {
+            "blue": 197,
+            "green": 240,
+            "red": 255
+        },
+        "name": "yellow mid",
+        "text_colour": {
+            "blue": 0,
+            "green": 0,
+            "red": 0
+        }
+    }
+}

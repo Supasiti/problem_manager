@@ -3,7 +3,7 @@ from PyQt5.QtCore import pyqtSignal
 from typing import NamedTuple
 
 from services.grade_setting import GradeSetting
-from models.dicts import ColourDict
+from services.colour_setting import ColourSetting
 from models.cell_data import GradeCellData, GradeCellDataBuilder, GradeCountData, GradeCountDataBuilder
 from APImodels.problem import Problem
 
@@ -13,12 +13,10 @@ class GradeAreaData(NamedTuple):
 
 class GradeAreaDataBuilder():
 
-    def __init__(self, grade_setting: GradeSetting, colour_setting:ColourDict):
+    def __init__(self, grade_setting: GradeSetting):
         super().__init__()
         self.grade_setting  = grade_setting
-        self.colour_setting = colour_setting
         self.builder = GradeCellDataBuilder(self.grade_setting)
-       
         self.n_row   = self.grade_setting.length()
 
     def default(self):
@@ -37,7 +35,7 @@ class GradeCountsData(NamedTuple):
 
 class GradeCountsDataBuilder():
 
-    def __init__(self, grade_setting: GradeSetting, colour_setting:ColourDict):
+    def __init__(self, grade_setting: GradeSetting, colour_setting:ColourSetting):
         super().__init__()
         self._grade_setting  = grade_setting
         self._colour_setting = colour_setting

@@ -7,7 +7,7 @@ import os
 from services.signal import Signal
 from services.file_setting import FileSetting
 from services.grade_setting import GradeSetting, GradeStyle, GradeStyleBuilder
-
+from services.colour_setting import ColourSetting, ColourStyle
 
 class Setting():
 
@@ -24,6 +24,10 @@ class Setting():
 
         grade_parser = GradeSettingParser()
         self._register(GradeSetting, grade_parser.get_data(), grade_parser)
+
+        colour_parser = ColourSettingParser()
+        self._register(ColourSetting, colour_parser.get_data(), colour_parser)
+        
 
     def get(self, class_type:type) -> object:
         if class_type in self._settings.keys():
@@ -78,7 +82,7 @@ class SettingParser(ABC):
 
 class FileSettingParser(SettingParser):
     # read/write file paths on loading / change
-    # filepath of config.json file is expected to be in the same folder as this class.
+    # filepath of config.json file is expected to be in the folder: /config
 
     def __init__(self):
         self._filepath = self._create_filepath()
@@ -102,7 +106,7 @@ class FileSettingParser(SettingParser):
 
 class GradeSettingParser(SettingParser):
     # read/write setting on gradings
-    # filepath of grades.json  is expected to be in the same folder as this class.
+    # filepath of grades.json is expected to be in the folder: /config
 
     def __init__(self):
         self._filepath = self._create_filepath()
@@ -129,6 +133,34 @@ class GradeSettingParser(SettingParser):
                 self._data[str(style.row)] = style.to_dict()
         return True
 
+class ColourSettingParser(SettingParser):
+    # read/write setting on colour scheme
+    # filepath of colours.json  is expected to be iin the folder: /config
+
+    def __init__(self):
+        self._filepath = self._create_filepath()
+        self._data     = self.load_config(self._filepath)
+    
+    def _create_filepath(self):
+        real_path = os.path.realpath(__file__)
+        dir_path  = os.path.dirname(real_path)
+        return os.path.join(dir_path, 'config','colours.json')
+
+    def write(self):
+        SettingParser.write(self, self._filepath, self._data)
+    
+    def get_data(self) -> object:
+        styles = { name : ColourStyle.from_json(style) for name,style in self._data.items()}
+        return ColourSetting(dict(styles))
+    
+    def set_data(self, value:object) ->bool:
+        if isinstance(value, ColourStyle):
+            self._data[value.name] = value.to_dict()
+        if isinstance(value, tuple):
+            for style in value:
+                self._data[style.name] = style.to_dict()
+        return True
+    
 
 class SettingParserData(NamedTuple):
     setting : object
