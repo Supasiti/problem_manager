@@ -8,6 +8,7 @@ from services.signal import Signal
 from services.file_setting import FileSetting
 from services.grade_setting import GradeSetting, GradeStyle, GradeStyleBuilder
 from services.colour_setting import ColourSetting, ColourStyle
+from services.sector_setting import SectorSetting, SectorStyle
 
 class Setting():
 
@@ -28,6 +29,8 @@ class Setting():
         colour_parser = ColourSettingParser()
         self._register(ColourSetting, colour_parser.get_data(), colour_parser)
         
+        sector_parser = SectorSettingParser()
+        self._register(SectorSetting, sector_parser.get_data(), sector_parser)
 
     def get(self, class_type:type) -> object:
         if class_type in self._settings.keys():
@@ -76,7 +79,7 @@ class SettingParser(ABC):
         pass
     
     @abstractmethod
-    def set_data(self, key:str, value:object) ->bool:
+    def set_data(self, value:object) ->bool:
         pass
 
 
@@ -133,6 +136,7 @@ class GradeSettingParser(SettingParser):
                 self._data[str(style.row)] = style.to_dict()
         return True
 
+
 class ColourSettingParser(SettingParser):
     # read/write setting on colour scheme
     # filepath of colours.json  is expected to be iin the folder: /config
@@ -161,6 +165,34 @@ class ColourSettingParser(SettingParser):
                 self._data[style.name] = style.to_dict()
         return True
     
+
+class SectorSettingParser(SettingParser):
+    # read/write setting on sector 
+    # filepath of sectors.json  is expected to be iin the folder: /config
+
+    def __init__(self):
+        self._filepath = self._create_filepath()
+        self._data     = self.load_config(self._filepath)
+    
+    def _create_filepath(self):
+        real_path = os.path.realpath(__file__)
+        dir_path  = os.path.dirname(real_path)
+        return os.path.join(dir_path, 'config','sectors.json')
+
+    def write(self):
+        SettingParser.write(self, self._filepath, self._data)
+
+    def get_data(self) -> object:
+        return SectorSetting(dict(self._data))
+
+    def set_data(self, value:object) -> bool:
+        if isinstance(value, SectorStyle):
+            self._data[value.name] = value.col
+        if isinstance(value, tuple):
+            for style in value:
+                self._data[style.name] = style.col
+        return True
+
 
 class SettingParserData(NamedTuple):
     setting : object

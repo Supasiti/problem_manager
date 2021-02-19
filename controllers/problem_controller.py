@@ -4,8 +4,9 @@ from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
 from services.setting import Setting
 from services.grade_setting import GradeSetting
+from services.colour_setting import ColourSetting
+from services.sector_setting import SectorSetting
 from models.problem_area_model import ProblemAreaModel, ProblemAreaDataBuilder 
-from models.dicts import SectorDict, ColourDict
 from views.scroll_area import ProblemArea
 from APImodels.RIC import RIC
 from APImodels.problem import Problem
@@ -16,8 +17,9 @@ class ProblemAreaController():
     _dependency     : DependencyService
     _editor         : ProblemsEditor
     _grade_setting  : GradeSetting
-    _colour_setting : ColourDict
-    _sector_setting : SectorDict
+    _colour_setting : ColourSetting
+    _sector_setting : SectorSetting
+    _setting        : Setting
 
     def __init__(self, dependency:DependencyService, parent=None):
         self._parent = parent
@@ -25,16 +27,17 @@ class ProblemAreaController():
         self._builder = ProblemAreaDataBuilder(self._grade_setting, self._colour_setting, self._sector_setting)
 
         self.model = ProblemAreaModel(self._builder.no_problems())   # load model
-        self.view  = ProblemArea(self, self.model) # load view
+        self.view  = ProblemArea(self, self.model)                   # load view
         self._connect_editor()
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
-        self._colour_setting = self._dependency.get_or_register(ColourDict) 
-        self._sector_setting = self._dependency.get_or_register(SectorDict) 
+        # self._sector_setting = self._dependency.get_or_register(SectorDict) 
         self._editor         = self._dependency.get(ProblemsEditor)
         self._setting        = self._dependency.get(Setting)
         self._grade_setting  = self._setting.get(GradeSetting)
+        self._colour_setting = self._setting.get(ColourSetting)
+        self._sector_setting = self._setting.get(SectorSetting)
 
     def _connect_editor(self):
         self._editor.problemsChanged.connect(self._on_problems_changed)

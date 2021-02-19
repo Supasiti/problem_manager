@@ -6,6 +6,7 @@ from services.grade_setting import GradeSetting
 from services.colour_setting import ColourSetting
 from models.cell_data import GradeCellData, GradeCellDataBuilder, GradeCountData, GradeCountDataBuilder
 from APImodels.problem import Problem
+from APImodels.grade import Grade
 
 class GradeAreaData(NamedTuple):
     width : int
@@ -45,7 +46,7 @@ class GradeCountsDataBuilder():
         self._grades = self._grade_setting.get_all_grades()
 
     def default(self):
-        cells = [self._builder.build(row, 0) for row in range(self.n_row)] ## need to change
+        cells = [self._builder.build(row, 0) for row in range(self.n_row)] 
         cells.sort(key= lambda x : x.row)
         return GradeCountsData(tuple(cells))
 
@@ -58,8 +59,8 @@ class GradeCountsDataBuilder():
         cells.sort(key= lambda x : x.row)
         return GradeCountsData(tuple(cells))
 
-    def _counts(self, grade:str, problems:tuple[Problem,...]):
-        return len([p for p in problems if str(p.grade) == grade])
+    def _counts(self, grade:Grade, problems:tuple[Problem,...]):
+        return len([p for p in problems if p.grade == grade])
 
 class GradeAreaModel(QObject):
     

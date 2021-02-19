@@ -43,9 +43,9 @@ class ColourSetting():
             return self._data[str(grade)]
         raise ValueError('Invalid colour name')
 
-    def get_hold_colours(self, name: str):
-        if name.lower() in self._data.keys():
-            return (name.split(' ')[0], 'orange')
+    def get_hold_colours(self, grade: Grade):
+        if str(grade) in self._data.keys():
+            return (str(grade).split(' ')[0], 'orange')
 
     def get_bg_colour(self, name:str):
         if name.lower() in self._data.keys():
@@ -55,4 +55,9 @@ class ColourSetting():
     def get_text_colour(self, name:str):
         if name.lower() in self._data.keys():
             return self._data[name].text_colour
+        raise ValueError('Invalid colour name')
+
+    def get_hover_colour(self, name:str):
+        if name.lower() in self._data.keys():
+            return self._data[name].hover_colour
         raise ValueError('Invalid colour name')

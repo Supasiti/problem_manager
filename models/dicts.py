@@ -1,6 +1,7 @@
 
 class GradeDict():
     # row , aim
+    # depreciated 
 
     _grade_dict = {
         'yellow mid'  : (0, 4), 
@@ -54,6 +55,7 @@ class GradeDict():
 
 class ColourDict():
     # background colour (R G B), text colour (R G B), hover colour (R G B)
+    # depreciated 
 
     _colours = {
         'yellow mid'  : (255, 225, 142,   0,   0,   0, 255, 240, 197),
@@ -94,7 +96,8 @@ class ColourDict():
 
 
 class SectorDict():
-
+    # depreciated 
+    
     _sector_dict = {
         'front l' : 0,
         'front r' : 1,

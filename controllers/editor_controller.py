@@ -2,8 +2,9 @@ from datetime import date
 
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
+from services.setting import Setting
+from services.colour_setting import ColourSetting
 from models.editor_model import EditorModel, EditorData 
-from models.dicts import ColourDict
 from views.editor_view import EditorView
 from APImodels.problem import Problem
 from APImodels.RIC import RIC
@@ -12,8 +13,9 @@ from APImodels.grade import Grade
 class EditorController():
     # controller all interaction the problem editor view 
     
-    _colour_setting : ColourDict
     _editor         : ProblemsEditor
+    _colour_setting : ColourSetting
+    _setting        : Setting
 
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
@@ -24,8 +26,9 @@ class EditorController():
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
-        self._colour_setting = self._dependency.get_or_register(ColourDict)
         self._editor         = self._dependency.get(ProblemsEditor)
+        self._setting        = self._dependency.get(Setting)
+        self._colour_setting = self._setting.get(ColourSetting)
 
     def _connect_other(self):
         self._editor.problemToEditChanged.connect(self._on_problem_to_edit_changed)
@@ -37,8 +40,7 @@ class EditorController():
 
     def view_data(self, problem:Problem = None):
         _problem  = Problem() if problem is None else problem
-        grade_str = str(_problem.grade)
-        holds     = self._colour_setting.get_hold_colours(grade_str)
+        holds     = self._colour_setting.get_hold_colours(_problem.grade)
         return EditorData(holds, _problem, self._is_updatable)
 
     def _on_state_changed(self, name:str):

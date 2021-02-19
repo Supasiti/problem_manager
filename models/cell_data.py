@@ -1,8 +1,8 @@
 from typing import NamedTuple
 
-from models.dicts import SectorDict
 from services.grade_setting import GradeSetting
 from services.colour_setting import ColourSetting
+from services.sector_setting import SectorSetting
 from APImodels.sector import Sector
 from APImodels.colour import Colour
 
@@ -21,7 +21,7 @@ class SectorCellDataBuilder():
     #  - sectors
     #  - col - in case there isn't one
 
-    def __init__(self, sector_setting: SectorDict, colour_setting: ColourSetting):
+    def __init__(self, sector_setting: SectorSetting, colour_setting: ColourSetting):
         self.sector_setting = sector_setting
         self.colour_setting = colour_setting
 
@@ -37,10 +37,12 @@ class SectorCellDataBuilder():
         return SectorCellData(col, width, bg_colour, text_colour, text, count)
 
     def _background_colour(self, setting:bool):
-        return self.colour_setting.get_bg_colour('setting') if setting else self.colour_setting.get_bg_colour('default')
+        colour_str = 'setting' if setting else 'default'
+        return self.colour_setting.get_bg_colour(colour_str) 
 
     def _text_colour(self, setting:bool):
-        return self.colour_setting.get_text_colour('setting') if setting else self.colour_setting.get_text_colour('default')
+        colour_str = 'setting' if setting else 'default'
+        return self.colour_setting.get_text_colour(colour_str)
     
     def from_col(self, col:int):
         width        = 96 
@@ -109,26 +111,13 @@ class GradeCountDataBuilder():
     def _extract_background_colour(self, row:int, count:int):
         # return background colour depending on whether or not number of problems in that
         # grade meets the target
-        aim = self._grade_setting.get_aim(row)
-
-        # if count < aim:
-        #     R,G,B = self._colour_setting.get_colour('alert')[0:3]
-        # else:
-        #     R,G,B = self._colour_setting.get_colour('default')[0:3]
-        # return Colour(R,G,B)
-
-        return self._colour_setting.get_bg_colour('alert') if count < aim else self._colour_setting.get_bg_colour('default')
-
+        aim        = self._grade_setting.get_aim(row)
+        colour_str = 'alert' if count < aim else 'default'
+        return self._colour_setting.get_bg_colour(colour_str)
 
     def _extract_text_colour(self, row:int, count:int):
-        # return tex colour depending on whether or not number of problems in that
+        # return text colour depending on whether or not number of problems in that
         # grade meets the target
-        aim = self._grade_setting.get_aim(row)
-
-        # if count < aim:
-        #     R,G,B = self._colour_setting.get_colour('alert')[3:6]
-        # else:
-        #     R,G,B = self._colour_setting.get_colour('default')[3:6]
-        # return Colour(R,G,B)   
-
-        return self._colour_setting.get_text_colour('alert') if count < aim else self._colour_setting.get_text_colour('default')
+        aim        = self._grade_setting.get_aim(row)
+        colour_str = 'alert' if count < aim else 'default'
+        return self._colour_setting.get_text_colour(colour_str) 
