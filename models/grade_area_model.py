@@ -1,22 +1,23 @@
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
-from typing import Tuple, NamedTuple
+from typing import NamedTuple
 
-from models.dicts import GradeDict, ColourDict
+from services.grade_setting import GradeSetting
+from models.dicts import ColourDict
 from models.cell_data import GradeCellData, GradeCellDataBuilder, GradeCountData, GradeCountDataBuilder
 from APImodels.problem import Problem
 
 class GradeAreaData(NamedTuple):
     width : int
-    cells : Tuple[GradeCellData,...]
+    cells : tuple[GradeCellData,...]
 
 class GradeAreaDataBuilder():
 
-    def __init__(self, grade_setting: GradeDict, colour_setting:ColourDict):
+    def __init__(self, grade_setting: GradeSetting, colour_setting:ColourDict):
         super().__init__()
         self.grade_setting  = grade_setting
         self.colour_setting = colour_setting
-        self.builder = GradeCellDataBuilder(self.grade_setting, self.colour_setting)
+        self.builder = GradeCellDataBuilder(self.grade_setting)
        
         self.n_row   = self.grade_setting.length()
 
@@ -27,7 +28,7 @@ class GradeAreaDataBuilder():
 
 
 class GradeCountsData(NamedTuple):
-    cells : Tuple[GradeCountData,...]
+    cells : tuple[GradeCountData,...]
 
     def get_cell(self, row:int):
         cell = [cell for cell in self.cells if cell.row == row]
@@ -36,7 +37,7 @@ class GradeCountsData(NamedTuple):
 
 class GradeCountsDataBuilder():
 
-    def __init__(self, grade_setting: GradeDict, colour_setting:ColourDict):
+    def __init__(self, grade_setting: GradeSetting, colour_setting:ColourDict):
         super().__init__()
         self._grade_setting  = grade_setting
         self._colour_setting = colour_setting

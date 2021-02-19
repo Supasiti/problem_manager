@@ -1,6 +1,7 @@
 from typing import NamedTuple
 
-from models.dicts import GradeDict, ColourDict, SectorDict
+from services.grade_setting import GradeSetting
+from models.dicts import ColourDict, SectorDict
 from APImodels.problem import Problem 
 from APImodels.colour import Colour
 
@@ -21,7 +22,7 @@ class ProblemCellDataBuilder():
     #  - row, col - in case there isn't one
 
     def __init__(self, 
-        grade_setting : GradeDict, 
+        grade_setting : GradeSetting, 
         colour_setting: ColourDict, 
         sector_setting: SectorDict):
         self._grade_setting  = grade_setting
@@ -29,11 +30,10 @@ class ProblemCellDataBuilder():
         self._sector_setting = sector_setting
 
     def from_problem(self, problem:Problem):
-        
-        grade_str   = self._extract_grade(problem)
+
         hold_colour = self._extract_hold_colour(problem)
 
-        row          = self._grade_setting.get_row(grade_str)
+        row          = self._grade_setting.get_row(problem.grade)
         col          = self._sector_setting.get_col(problem.sector)
         bg_colour    = self._extract_background_colour(hold_colour)
         text_colour  = self._extract_text_colour(hold_colour)

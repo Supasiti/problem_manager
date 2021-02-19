@@ -39,3 +39,4 @@ if __name__ == '__main__':
 
     parser.set_data(styles_to_update)
     parser.write()
+    

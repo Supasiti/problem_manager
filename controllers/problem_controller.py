@@ -2,10 +2,11 @@ from datetime import date
 
 from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
+from services.setting import Setting
+from services.grade_setting import GradeSetting
 from models.problem_area_model import ProblemAreaModel, ProblemAreaDataBuilder 
-from models.dicts import GradeDict, SectorDict, ColourDict
+from models.dicts import SectorDict, ColourDict
 from views.scroll_area import ProblemArea
-from APImodels.grade import Grade
 from APImodels.RIC import RIC
 from APImodels.problem import Problem
 
@@ -14,7 +15,7 @@ class ProblemAreaController():
 
     _dependency     : DependencyService
     _editor         : ProblemsEditor
-    _grade_setting  : GradeDict
+    _grade_setting  : GradeSetting
     _colour_setting : ColourDict
     _sector_setting : SectorDict
 
@@ -29,10 +30,11 @@ class ProblemAreaController():
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
-        self._grade_setting  = self._dependency.get_or_register(GradeDict)  
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
         self._sector_setting = self._dependency.get_or_register(SectorDict) 
         self._editor         = self._dependency.get(ProblemsEditor)
+        self._setting        = self._dependency.get(Setting)
+        self._grade_setting  = self._setting.get(GradeSetting)
 
     def _connect_editor(self):
         self._editor.problemsChanged.connect(self._on_problems_changed)
@@ -76,5 +78,5 @@ class ProblemAreaController():
         _hold   = _grade.split(' ')[0]
         _sector = self._sector_setting.get_sector(col)
 
-        return Problem(_id, RIC(1,1,1), Grade.from_str(_grade), _hold, _sector, (), '', date.today(), 'on')
+        return Problem(_id, RIC(1,1,1), _grade, _hold, _sector, (), '', date.today(), 'on')
 

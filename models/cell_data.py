@@ -1,6 +1,8 @@
 
 from typing import NamedTuple
-from models.dicts import SectorDict, ColourDict, GradeDict
+
+from models.dicts import SectorDict, ColourDict
+from services.grade_setting import GradeSetting
 from APImodels.sector import Sector
 from APImodels.colour import Colour
 
@@ -71,31 +73,21 @@ class GradeCellDataBuilder():
     # build grade cell model from either:
     #  - row 
 
-    def __init__(self, grade_setting: GradeDict, colour_setting: ColourDict):
+    def __init__(self, grade_setting: GradeSetting):
         self.grade_setting  = grade_setting
-        self.colour_setting = colour_setting
 
     def build(self, row:int):
-        
-        width = 160
+        width  = 160
         height = 48
-        inner_width = 52
+        inner_width  = 52
         inner_height = 23
-        bg_colour   = self.__extract_background_colour(row)
-        text_colour = self.__extract_text_colour(row)
-        aim         = str(self.grade_setting.get_aim(row))
+        bg_colour    = self.grade_setting.get_bg_colour(row)
+        text_colour  = self.grade_setting.get_text_colour(row)
+        aim          = str(self.grade_setting.get_aim(row))
+
         return GradeCellData(row, width, height, inner_width, inner_height, bg_colour, text_colour, aim)
 
-    def __extract_background_colour(self, row:int):
-        grade_str = self.grade_setting.get_grade(row)
-        R,G,B = self.colour_setting.get_colour(grade_str)[0:3]
-        return Colour(R,G,B)
 
-    def __extract_text_colour(self, row:int):
-        grade_str = self.grade_setting.get_grade(row)
-        R,G,B = self.colour_setting.get_colour(grade_str)[3:6]
-        return Colour(R,G,B)
-    
 
 class GradeCountData(NamedTuple):
     # data for cell that counts problems of that particular grade
@@ -109,7 +101,7 @@ class GradeCountDataBuilder():
     # build grade count data from :
     #  - row + count
 
-    def __init__(self, grade_setting: GradeDict, colour_setting: ColourDict):
+    def __init__(self, grade_setting: GradeSetting, colour_setting: ColourDict):
         self._grade_setting  = grade_setting
         self._colour_setting = colour_setting
 

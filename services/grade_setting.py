@@ -36,6 +36,7 @@ class GradeStyleBuilder():
 
         return GradeStyle(grade, row, aim, bg_colour, text_colour, hover_colour)
 
+
 class GradeSetting():
 
     def __init__(self, data:tuple[GradeStyle,...]):
@@ -58,6 +59,18 @@ class GradeSetting():
         
     def get_aim(self, row:int) -> int:
         result = list([style.aim for style in self._data if style.row == row])
+        if len(result) >0:
+            return result[0]
+        raise IndexError('index is out of range.')
+
+    def get_bg_colour(self, row:int) -> Colour:
+        result = list([style.bg_colour for style in self._data if style.row == row])
+        if len(result) >0:
+            return result[0]
+        raise IndexError('index is out of range.')
+    
+    def get_text_colour(self, row:int) -> Colour:
+        result = list([style.text_colour for style in self._data if style.row == row])
         if len(result) >0:
             return result[0]
         raise IndexError('index is out of range.')

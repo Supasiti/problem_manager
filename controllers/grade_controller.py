@@ -1,7 +1,9 @@
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
+from services.setting import Setting
+from services.grade_setting import GradeSetting
 from models.grade_area_model import GradeAreaModel, GradeAreaDataBuilder, GradeCountsDataBuilder  
-from models.dicts import GradeDict,ColourDict
+from models.dicts import ColourDict
 from views.scroll_area import GradeArea
 
 class GradeAreaController():
@@ -9,7 +11,8 @@ class GradeAreaController():
 
     _dependency : DependencyService
     _colour_setting : ColourDict
-    _grade_setting : GradeDict
+    _grade_setting  : GradeSetting
+    _editor         : ProblemsEditor
 
     def __init__(self, dependency, parent=None):
         self._parent         = parent
@@ -27,15 +30,15 @@ class GradeAreaController():
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
         self._colour_setting = self._dependency.get_or_register(ColourDict) 
-        self._grade_setting = self._dependency.get_or_register(GradeDict)
+        self._editor         = self._dependency.get(ProblemsEditor)
+        self._setting        = self._dependency.get(Setting)
+        self._grade_setting  = self._setting.get(GradeSetting)
 
     def _connect_editor(self):
-        editor = self._dependency.get(ProblemsEditor)
-        editor.problemsChanged.connect(self._on_problems_changed)
-        editor.problemAdded.connect(self._on_problems_changed)
-        editor.problemRemoved.connect(self._on_problems_changed)
+        self._editor.problemsChanged.connect(self._on_problems_changed)
+        self._editor.problemAdded.connect(self._on_problems_changed)
+        self._editor.problemRemoved.connect(self._on_problems_changed)
 
     def _on_problems_changed(self, arg:bool):
-        editor   = self._dependency.get(ProblemsEditor)
-        self.model.counts = self._count_builder.from_problems(editor.problems)
+        self.model.counts = self._count_builder.from_problems(self._editor.problems)
 

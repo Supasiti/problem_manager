@@ -2,7 +2,8 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from typing import NamedTuple
 
-from models.dicts import GradeDict, SectorDict, ColourDict
+from services.grade_setting import GradeSetting
+from models.dicts import SectorDict, ColourDict
 from models.problem_cell_data import ProblemCellDataBuilder, ProblemCellData
 from APImodels.problem import Problem
 
@@ -12,7 +13,7 @@ class ProblemAreaData(NamedTuple):
 class ProblemAreaDataBuilder(QObject):
 
     def __init__(self, 
-        grade_setting : GradeDict, 
+        grade_setting : GradeSetting, 
         colour_setting: ColourDict, 
         sector_setting: SectorDict):
         super().__init__()
@@ -60,7 +61,7 @@ class ProblemAreaDataBuilder(QObject):
     
     def empty_cell(self, problem :Problem):
         assert(type(problem) == Problem)
-        _row      = self._grade_setting.get_row(str(problem.grade))
+        _row      = self._grade_setting.get_row(problem.grade)
         _col      = self._sector_setting.get_col(problem.sector)
         cell_data = self._builder.empty_cell(_row, _col) 
         return ProblemAreaData((cell_data,))
