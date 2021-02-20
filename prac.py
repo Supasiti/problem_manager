@@ -1,13 +1,15 @@
 from services.setting import Setting , SectorSettingParser
-
-
+from APImodels.problem import Problem
+from APImodels.RIC import RIC
+from APImodels.grade import Grade
+import datetime
 from services.grade_setting import GradeSetting
 import json
 from APImodels.colour import Colour
 from APImodels.grade import Grade
 
 from services.colour_setting import ColourStyle
-from models.dicts import ColourDict, GradeDict
+
 
 
 
@@ -42,4 +44,6 @@ if __name__ == '__main__':
     # parser.set_data(styles_to_update)
     # parser.write()
 
-    
+    list1 = range(6)
+    list2 = range(6)
+    print(list1 == list2)

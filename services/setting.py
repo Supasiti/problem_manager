@@ -75,6 +75,10 @@ class SettingParser(ABC):
             fid.close()
 
     @abstractmethod
+    def set_filepath(self, filepath:str) -> None:
+        pass
+
+    @abstractmethod
     def get_data(self) -> object:
         pass
     
@@ -99,6 +103,10 @@ class FileSettingParser(SettingParser):
     def write(self) -> None:
         SettingParser.write(self, self._filepath, self._data)
 
+    def set_filepath(self, filepath:str) -> None:
+        self._filepath = filepath
+        self._data     = self.load_config(self._filepath)
+
     def get_data(self) -> object:
         return FileSetting(self._data['content path'])
     
@@ -122,6 +130,10 @@ class GradeSettingParser(SettingParser):
 
     def write(self):
         SettingParser.write(self, self._filepath, self._data)
+
+    def set_filepath(self, filepath:str) -> None:
+        self._filepath = filepath
+        self._data     = self.load_config(self._filepath)
 
     def get_data(self) -> object:
         builder = GradeStyleBuilder()
@@ -153,6 +165,10 @@ class ColourSettingParser(SettingParser):
     def write(self):
         SettingParser.write(self, self._filepath, self._data)
     
+    def set_filepath(self, filepath:str) -> None:
+        self._filepath = filepath
+        self._data     = self.load_config(self._filepath)
+
     def get_data(self) -> object:
         styles = { name : ColourStyle.from_json(style) for name,style in self._data.items()}
         return ColourSetting(dict(styles))
@@ -181,6 +197,10 @@ class SectorSettingParser(SettingParser):
 
     def write(self):
         SettingParser.write(self, self._filepath, self._data)
+
+    def set_filepath(self, filepath:str) -> None:
+        self._filepath = filepath
+        self._data     = self.load_config(self._filepath)
 
     def get_data(self) -> object:
         return SectorSetting(dict(self._data))

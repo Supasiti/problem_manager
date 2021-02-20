@@ -21,6 +21,7 @@ class ProblemRepository():
         return self.problems
 
     def get_problem_by_id(self, _id:int):
+        assert(type(_id) == int)
         prob_list = [p for p in self.problems if p.id == _id]
         if len(prob_list) > 0:
             return prob_list[0]

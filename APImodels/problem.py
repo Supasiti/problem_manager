@@ -32,7 +32,7 @@ class Problem(
     def to_dict(self):
         result = {
             'id'       : self.id,
-            'RIC'      : self.RIC._asdict(),
+            'RIC'      : self.RIC.to_dict(),
             'grade'    : self.grade._asdict(),
             'colour'   : self.colour,
             'sector'   : self.sector,
