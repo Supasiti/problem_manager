@@ -18,10 +18,11 @@ class Grade(NamedTuple):
         
     @staticmethod
     def from_str(data: str):
-        _txt = data.split(' ')
+        stripped = data.strip()
+        _txt     = stripped.split(' ')
         if len(_txt) != 2: 
             raise ValueError('Incorrect value format. Expected a string of format: "range difficulty"')
-        return Grade(_txt[0], _txt[1])
+        return Grade(_txt[0].lower(), _txt[1].lower())
     
     @staticmethod
     def from_json(data):

@@ -6,7 +6,7 @@ import os
 
 from services.signal import Signal
 from services.file_setting import FileSetting
-from services.grade_setting import GradeSetting, GradeStyle, GradeStyleBuilder
+from services.grade_setting  import GradeSetting,  GradeStyle, GradeStyleBuilder
 from services.colour_setting import ColourSetting, ColourStyle
 from services.sector_setting import SectorSetting, SectorStyle
 
