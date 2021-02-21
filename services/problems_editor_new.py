@@ -16,16 +16,17 @@ class ProblemsEditor():
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
     _state = None
+    
     _repository : ProblemRepository
+    _next_id    : int
 
     def __init__(self, state:ProblemsEditorState):
         self.change_to_state(state)
         self._problems_init      = dict()  # id (int): problem
         self._problems_to_add    = dict()  # id (int): problem
-        self._problems_to_remove = dict()  # id (int): problem
+        self._problems_to_strip  = dict()  # id (int): problem
         self._problem_to_edit  = None
 
-        self.next_id = 1
     
     def change_to_state(self, state:ProblemsEditorState):
         self._state = state
@@ -50,33 +51,39 @@ class ProblemsEditor():
         self._problem_to_edit = problem
         self.problemToEditChanged.emit(True)
 
+    @property
+    def next_id(self):
+        return self._next_id
+    
     def set_repository(self, value:ProblemRepository):
         self._repository = value
 
-    def load_problems(self):  
+    def load_problems(self) -> bool:  
         if not self._repository is None:
             self.problems = dict({p.id: p for p in self._repository.get_all_problems()})
-            self.next_id  = self.next_available_problem_id()
+            self.next_id  = self._repository.next_id
         else:
             self.problems = dict()
+            self.next_id  = 0
         return True
 
     def next_available_problem_id(self) -> int:
-        problems = self._problems_init + self._problems_to_add + self._problems_to_remove
-        if len(problems) > 0: 
-            return max(max(self._problems_to_edit.keys()) + 1, self.next_id) 
-        return 1
+        ids = self._problems_init.keys() + self._problems_to_add.keys() + self._problems_to_strip.keys()
+        if len(ids) > 0: 
+            return max(max(ids) + 1, self.next_id) 
+        return 0
 
     def get_problem_by_id(self, problem_id:int) -> Problem:
+        # find id in problems_init or problems_to_add
         assert (type(problem_id) == int)
-        if self._dict_is_non_empty_and_id_in_keys(problem_id):
-            return self._problems_to_edit[problem_id]
+        if problem_id in self._problems_init.keys():
+            return self._problems_init[problem_id]
+        if problem_id in self._problems_to_add.keys():
+            return self._problems_to_add[problem_id]
         return None
 
-    def _dict_is_non_empty_and_id_in_keys(self, problem_id:int):
-        assert (type(problem_id) == int)
-        return len(self.problems) >0 and problem_id in self._problems_to_edit.keys()
-
+    # TODO 
+    # --------------------------
     def save_new_problem(self, problem:Problem) -> bool:
         assert (type(problem) == Problem)
         self._state.save_new_problem(problem, self._problems_to_edit)
