@@ -6,16 +6,24 @@ from APImodels.problem import Problem
 class ProblemRepository():
     # read .json file with current problem data
 
-    def __init__(self, filepath):
-        self.problems  = self._lazy_init(filepath)
+    _data    : dict
+    problems : tuple[Problem,...]
+    next_id  : int
 
+    def __init__(self, filepath):
+        self._lazy_init(filepath)   
+        
     def _lazy_init(self, filepath:str):
         if os.path.getsize(filepath) == 0:
-            return tuple() 
-        with open(filepath, 'r') as fid:
-            data = json.loads(fid.read())
-            result = (Problem.from_json(p) for p in data )
-        return tuple(result)
+            self._data    = None
+            self.next_id  = 0
+            self.problems = None
+        else:
+            with open(filepath, 'r') as fid:
+                self._data = json.loads(fid.read())
+            self.next_id  = self._data.pop('next_id')
+            self.problems = tuple((Problem.from_json(p) for p in self._data.values()))
+        
 
     def get_all_problems(self):
         return self.problems

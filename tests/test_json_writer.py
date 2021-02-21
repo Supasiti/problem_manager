@@ -10,8 +10,9 @@ class TestJsonWriter(unittest.TestCase):
         self.data_filepath  = self._create_filepath('data',     'test_problems_data.json')
         self.write_filepath = self._create_filepath('write_to', 'test_json_write_to.json')
         self.repository = ProblemRepository(self.data_filepath)
-        self.problems   =  self.repository.get_all_problems()
-        self.writer     = JsonWriter(self.write_filepath, self.problems)
+        self.problems   = self.repository.get_all_problems()
+        self.next_id    = self.repository.next_id
+        self.writer     = JsonWriter(self.write_filepath, self.problems, self.next_id)
 
     def _create_filepath(self, folder:str, filename:str):
         real_path = os.path.realpath(__file__)
