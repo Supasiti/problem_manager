@@ -53,8 +53,16 @@ class TestGradeSettingParser(TestSettingParser):
         self.assertEqual(result.length() , 6)
 
     def test_set_single_data(self):
-        style = GradeStyle(Grade('yellow','mid'), 0, 3, Colour(0,1,200),Colour(3,4,5),Colour(6,7,8) )
+        # when set_data, it is expected to check for duplicates, and get rid of them.
+        # and then set the new data
+        #  - style saved to row "6" 
+        #  - style to row "0" is deleted due to duplication
+
+        style = GradeStyle(Grade('yellow','mid'), 6, 3, Colour(0,1,2),Colour(3,4,5),Colour(6,7,8) )
         self.parser.set_data(style)
-        result = self.parser.get_data()
-        aim = result.get_aim(Grade('yellow','mid')) 
+        setting = self.parser.get_data()
+        aim     = setting.get_aim(6) 
+        
         self.assertEqual(aim , 3)
+        with self.assertRaises(IndexError):
+            setting.get_row(0)

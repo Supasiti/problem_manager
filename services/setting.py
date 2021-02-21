@@ -141,13 +141,26 @@ class GradeSettingParser(SettingParser):
         return GradeSetting(tuple(styles))
     
     def set_data(self, value:object) ->bool:
+        # requirement:
+        #  - one to one maping between row and grade name
+        #  - row must be unique
         if isinstance(value, GradeStyle):
-            self._data[str(value.row)] = value.to_dict()
+            self._set_data_if_is_GradeStyle(value)
+            return True
         if isinstance(value, tuple):
             for style in value:
-                self._data[str(style.row)] = style.to_dict()
+                self._set_data_if_is_GradeStyle(style)
         return True
 
+    def _set_data_if_is_GradeStyle(self, value: GradeStyle):
+        if isinstance(value, GradeStyle):
+            self._remove_duplicates(value)
+            self._data[str(value.row)] = value.to_dict()
+
+    def _remove_duplicates(self, style:GradeStyle):
+        duplicates = [r  for r,s in self._data.items() if s['grade'] == style.grade._asdict()]
+        for row in duplicates:
+            self._data.pop(str(row))
 
 class ColourSettingParser(SettingParser):
     # read/write setting on colour scheme

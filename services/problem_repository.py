@@ -4,10 +4,10 @@ import os
 from APImodels.problem import Problem
 
 class ProblemRepository():
-    # manage persistent data for display
+    # read .json file with current problem data
 
     def __init__(self, filepath):
-        self.problems = self._lazy_init(filepath)
+        self.problems  = self._lazy_init(filepath)
 
     def _lazy_init(self, filepath:str):
         if os.path.getsize(filepath) == 0:
