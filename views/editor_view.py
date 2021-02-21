@@ -52,9 +52,6 @@ class EditorView(FixedSizeLabel):
         label_set_date = FixedSizeLabel(80, 28, 'Set Date:')
         label_set_date.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
-        label_status = FixedSizeLabel(80, 28, 'Status:')
-        label_status.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-
         self.button_update = QPushButton('Update')
         self.button_update.clicked.connect(self._update_problem)
 
@@ -82,8 +79,6 @@ class EditorView(FixedSizeLabel):
         self.text_sector.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         self.dropdown_hold = QComboBox() 
-        self.dropdown_status = QComboBox() 
-        self.dropdown_status.addItems(['On', 'Stripped'])
 
         self.lineedit_styles_0 = QLineEdit()
         self.lineedit_styles_1 = QLineEdit()
@@ -95,7 +90,7 @@ class EditorView(FixedSizeLabel):
         self.layout = QGridLayout()
         self.layout.setContentsMargins(2,2,2,2)
         self.layout.setSpacing(8)
-        self.layout.setRowMinimumHeight(12,36)
+        self.layout.setRowMinimumHeight(11,36)
 
 
         self.layout.addWidget(label_title,    0, 0, 1, 4)
@@ -107,7 +102,6 @@ class EditorView(FixedSizeLabel):
         self.layout.addWidget(label_styles,   6, 0)
         self.layout.addWidget(label_set_by,   9, 0)
         self.layout.addWidget(label_set_date,10, 0)
-        self.layout.addWidget(label_status,  11, 0)
 
         self.layout.addWidget(self.text_id,       1, 1, 1, 3)
         self.layout.addWidget(self.dropdown_r,    2, 1)
@@ -121,9 +115,8 @@ class EditorView(FixedSizeLabel):
         self.layout.addWidget(self.lineedit_styles_2, 8, 1, 1, 3)
         self.layout.addWidget(self.lineedit_set_by,   9, 1, 1, 3)
         self.layout.addWidget(self.lineedit_set_date,10, 1, 1, 3)
-        self.layout.addWidget(self.dropdown_status,  11, 1, 1, 3)
-        self.layout.addWidget(self.button_update,    12, 2, 1, 2)   
-        self.layout.addWidget(self.button_delete,    12, 0, 1, 2)
+        self.layout.addWidget(self.button_update,    11, 2, 1, 2)   
+        self.layout.addWidget(self.button_delete,    11, 0, 1, 2)
         self.setLayout(self.layout)
 
     def _set_data(self):
@@ -139,14 +132,13 @@ class EditorView(FixedSizeLabel):
         self._set_lineedit_styles(_problem.styles)
         self.lineedit_set_by.setText(_problem.set_by)
         self._set_lineedit_set_date(_problem.set_date)
-        self.dropdown_status.setCurrentText(_problem.status)
         if data.are_buttons_visible:
             self.button_delete.show()
             self.button_update.show()
         else:
             self.button_delete.hide()
             self.button_update.hide()
-            self.layout.addWidget(QLabel(), 12, 0)
+            self.layout.addWidget(QLabel(), 11, 0)
 
     def _set_dropdown_hold(self, data:EditorData):
         self.dropdown_hold.clear()

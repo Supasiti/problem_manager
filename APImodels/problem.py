@@ -10,8 +10,8 @@ from APImodels.grade import Grade
 class Problem(
     namedtuple(
         'Problem',
-        ['id', 'RIC', 'grade', 'colour', 'sector','styles', 'set_by', 'set_date', 'status'],
-        defaults = ('', RIC(1,1,1), Grade('yellow','mid'), '','', (), '', None, 'on')
+        ['id', 'RIC', 'grade', 'colour', 'sector','styles', 'set_by', 'set_date', 'strip_date'],
+        defaults = ('', RIC(1,1,1), Grade('yellow','mid'), '','', (), '', None, None)
     )):
 
     @staticmethod
@@ -24,9 +24,9 @@ class Problem(
         styles   = tuple(data['styles'])
         set_by   = data['set_by']
         set_date = date.fromisoformat(data['set_date'])
-        status   = data['status']
+        strip_date = None if data['strip_date'] == None else date.fromisoformat(data['strip_date'])
 
-        return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, status)
+        return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, strip_date)
               
     
     def to_dict(self):
@@ -39,6 +39,7 @@ class Problem(
             'styles'   : self.styles,
             'set_by'   : self.set_by,
             'set_date' : self.set_date.isoformat(),
-            'status'   : self.status
+            'strip_date' : None if self.strip_date == None else self.strip_date.isoformat()
         }
         return result
+    

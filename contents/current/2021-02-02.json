@@ -14,7 +14,7 @@
         "sector": "arch l",
         "set_by": "Aaron",
         "set_date": "2021-02-02",
-        "status": "on",
+        "strip_date": null,
         "styles": [
             "run",
             "press"
