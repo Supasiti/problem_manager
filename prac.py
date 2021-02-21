@@ -44,6 +44,9 @@ if __name__ == '__main__':
     # parser.set_data(styles_to_update)
     # parser.write()
 
-    list1 = range(6)
+    list1 = [1,2,3,4,5,0]
+    list1.sort(key= lambda x : int(x))
     list2 = range(6)
     print(list1 == list2)
+    res = all(ele >= 0 and ele < 6 for ele in list1)
+    print(res)

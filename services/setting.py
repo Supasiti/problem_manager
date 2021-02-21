@@ -118,6 +118,9 @@ class FileSettingParser(SettingParser):
 class GradeSettingParser(SettingParser):
     # read/write setting on gradings
     # filepath of grades.json is expected to be in the folder: /config
+    # data : str(row) : GradeStyle
+    #   - one to one maping between row and grade name
+    #   - row must be unique from 0,1,2 ...
 
     def __init__(self):
         self._filepath = self._create_filepath()
@@ -143,24 +146,38 @@ class GradeSettingParser(SettingParser):
     def set_data(self, value:object) ->bool:
         # requirement:
         #  - one to one maping between row and grade name
-        #  - row must be unique
-        if isinstance(value, GradeStyle):
-            self._set_data_if_is_GradeStyle(value)
-            return True
-        if isinstance(value, tuple):
-            for style in value:
-                self._set_data_if_is_GradeStyle(style)
+        #  - row must be unique from 0,1,2 ...
+        #  - if any of these conditions fails - raise
+        data_copy = self._data.copy()
+        if not self._update_grade_dict(value, data_copy): return True
+        if self._keys_is_not_range(data_copy):
+            raise ValueError('Cannot update grade setting: the list of rows must start from 0,1,2, ... to n.')
+        self._data = data_copy
         return True
 
-    def _set_data_if_is_GradeStyle(self, value: GradeStyle):
-        if isinstance(value, GradeStyle):
-            self._remove_duplicates(value)
-            self._data[str(value.row)] = value.to_dict()
+    def _keys_is_not_range(self, data:dict) -> bool:
+        return not all( int(r) >= 0 and int(r) < len(data) for r in data.keys())
 
-    def _remove_duplicates(self, style:GradeStyle):
-        duplicates = [r  for r,s in self._data.items() if s['grade'] == style.grade._asdict()]
+    def _update_grade_dict(self, value: GradeStyle, data:dict) -> bool:
+        # return False if it didn't update the dictionary
+        if isinstance(value, GradeStyle):
+            self._update_if_is_GradeStyle(value, data)
+        elif isinstance(value, tuple):
+            for style in value:
+                self._update_if_is_GradeStyle(style, data)
+        else: 
+            return False
+        return True
+
+    def _update_if_is_GradeStyle(self, value: GradeStyle, data:dict):
+        if isinstance(value, GradeStyle):
+            self._remove_duplicates(value, data)
+            data[str(value.row)] = value.to_dict()
+
+    def _remove_duplicates(self, style:GradeStyle, data:dict):
+        duplicates = [r  for r,s in data.items() if s['grade'] == style.grade._asdict()]
         for row in duplicates:
-            self._data.pop(str(row))
+            data.pop(str(row))
 
 class ColourSettingParser(SettingParser):
     # read/write setting on colour scheme
