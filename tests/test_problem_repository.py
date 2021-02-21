@@ -7,8 +7,8 @@ from APImodels.problem import Problem
 class TestProblemRepository(unittest.TestCase):
 
     def setUp(self):
-        self.filepath = self._create_filepath('data', 'test_problems_data.json')
-        self.repository = ProblemRepository(self.filepath)
+        self.data_filepath  = self._create_filepath('data', 'test_problems_data.json')
+        self.repository = ProblemRepository(self.data_filepath)
 
     def _create_filepath(self, folder:str, filename:str):
         real_path = os.path.realpath(__file__)
@@ -29,3 +29,4 @@ class TestProblemRepository(unittest.TestCase):
         self.assertEqual(type(problem_1), Problem)
         self.assertEqual(problem_1.colour, 'red')
         self.assertEqual(problem_4, None)
+    

@@ -38,7 +38,8 @@ class GradeStyleBuilder():
 
 
 class GradeSetting():
-
+    # assume that there is one-to-one mapping between grades and rows
+    
     def __init__(self, data:tuple[GradeStyle,...]):
         self._data = data
     

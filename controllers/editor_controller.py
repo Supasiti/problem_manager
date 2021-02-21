@@ -101,9 +101,9 @@ class EditorController():
         styles = self._get_styles_tuple()
         set_by = self.view.lineedit_set_by.text()
         set_date = date.fromisoformat(self.view.lineedit_set_date.text())
-        status = self.view.dropdown_status.currentText().lower()
+        strip_date = None
 
-        return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, status)
+        return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, strip_date)
 
     def _get_styles_tuple(self):
         _styles = [getattr(self.view, 'lineedit_styles_' + str(index)).text() for index in range(3) ]
