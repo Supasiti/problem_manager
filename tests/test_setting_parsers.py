@@ -1,15 +1,14 @@
 import unittest
 import os
 
-from services.setting import FileSettingParser, GradeSettingParser
-from services.file_setting import FileSetting
-from services.grade_setting import GradeSetting, GradeStyle
+from services.file_setting import FileSetting, FileSettingParser
+from services.grade_setting import GradeSetting, GradeStyle, GradeSettingParser
 from APImodels.grade import Grade
 from APImodels.colour import Colour
 
 class TestSettingParser(unittest.TestCase):
 
-    def create_filepath(cls, folder:str, filename:str):
+    def create_filepath(self, folder:str, filename:str):
         real_path = os.path.realpath(__file__)
         dir_path  = os.path.dirname(real_path)
         return os.path.join(dir_path, folder,filename)
