@@ -1,9 +1,25 @@
+from abc import ABC, abstractmethod
 import json
 import os 
 
 from APImodels.problem import Problem
 
-class ProblemRepository():
+class ProblemRepository(ABC):
+
+    @property
+    @abstractmethod
+    def next_id(self) -> int:
+        pass
+    
+    @abstractmethod
+    def get_all_problems(self) -> tuple:
+        pass
+
+    @abstractmethod
+    def get_problem_by_id(self, _id:int) -> Problem:
+        pass
+
+class LocalProblemRepository(ProblemRepository):
     # read .json file with current problem data
 
     _data    : dict
@@ -28,10 +44,10 @@ class ProblemRepository():
     def next_id(self) -> int:
         return self._next_id
 
-    def get_all_problems(self):
+    def get_all_problems(self) ->tuple:
         return self._problems
 
-    def get_problem_by_id(self, _id:int):
+    def get_problem_by_id(self, _id:int) -> Problem:
         assert(type(_id) == int)
         prob_list = [p for p in self._problems if p.id == _id]
         if len(prob_list) > 0:

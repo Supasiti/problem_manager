@@ -9,6 +9,7 @@ from tests.test_json_writer import TestJsonWriter                # involve read 
 from tests.test_signal import TestSignal
 from tests.test_setting_parsers import TestFileSettingParser     # involve read / write file
 from tests.test_setting_parsers import TestGradeSettingParser    # involve read / write file
+from tests.test_problem_editor import TestProblemEditor
 
 if __name__ =='__main__':
     unittest.main()

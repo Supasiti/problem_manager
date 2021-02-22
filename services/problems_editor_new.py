@@ -1,5 +1,6 @@
 from __future__ import annotations
 from abc import abstractmethod, ABC
+from datetime import date
 
 from services.signal import Signal
 from services.problem_repository import ProblemRepository
@@ -16,18 +17,15 @@ class ProblemsEditor():
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
     _state = None
-    
-    _repository : ProblemRepository
     _next_id    : int
 
     def __init__(self, state:ProblemsEditorState):
         self.change_to_state(state)
-        self._problems_init      = dict()  # id (int): problem
-        self._problems_to_add    = dict()  # id (int): problem
-        self._problems_to_strip  = dict()  # id (int): problem
-        self._problem_to_edit  = None
+        self._problems_init      = dict()  # id (int): problem : problems already on the wall
+        self._problems_to_add    = dict()  # id (int): problem : problems being set
+        self._problems_to_strip  = dict()  # id (int): problem : problems being stripped
+        self._problem_to_edit    = None
 
-    
     def change_to_state(self, state:ProblemsEditorState):
         self._state = state
         self._state.context = self
@@ -35,11 +33,14 @@ class ProblemsEditor():
     
     @property
     def problems(self):
-        return tuple(self._problems_to_init.values())
+        problems_on_screen = list(self._problems_init.values()) + list(self._problems_to_add.values())
+        return tuple(problems_on_screen)
     
     @problems.setter
     def problems(self, problems:dict):
-        self._problems_to_init = problems
+        self._problems_init = problems
+        self._problems_to_add.clear()
+        self._problems_to_strip.clear()
         self.problemsChanged.emit(True)
         
     @property
@@ -55,23 +56,21 @@ class ProblemsEditor():
     def next_id(self):
         return self._next_id
     
-    def set_repository(self, value:ProblemRepository):
-        self._repository = value
-
-    def load_problems(self) -> bool:  
-        if not self._repository is None:
-            self.problems = dict({p.id: p for p in self._repository.get_all_problems()})
-            self.next_id  = self._repository.next_id
-        else:
-            self.problems = dict()
-            self.next_id  = 0
+    @next_id.setter
+    def next_id(self, value):
+        self._next_id = value
+    
+    def load_problems(self, repository:ProblemRepository) -> bool:  
+        self.problems = dict({p.id: p for p in repository.get_all_problems()})
+        self._next_id = repository.next_id
         return True
 
     def next_available_problem_id(self) -> int:
-        ids = self._problems_init.keys() + self._problems_to_add.keys() + self._problems_to_strip.keys()
-        if len(ids) > 0: 
-            return max(max(ids) + 1, self.next_id) 
-        return 0
+        ids = list(self._problems_init.keys())  + \
+            list(self._problems_to_add.keys()) + \
+            list(self._problems_to_strip.keys())
+        return max(max(ids) + 1, self.next_id) 
+ 
 
     def get_problem_by_id(self, problem_id:int) -> Problem:
         # find id in problems_init or problems_to_add
@@ -82,21 +81,22 @@ class ProblemsEditor():
             return self._problems_to_add[problem_id]
         return None
 
-    # TODO 
-    # --------------------------
-    def save_new_problem(self, problem:Problem) -> bool:
+    def add_new_problem(self, problem:Problem,) -> bool:
         assert (type(problem) == Problem)
-        self._state.save_new_problem(problem, self._problems_to_edit)
+        self._state.add_new_problem(problem, self._problems_init, self._problems_to_add)
 
     def delete_problem(self, problem_id:int) -> bool:
+        # delete a problem when make a mistake. 
+        # doesn't allow to delete saved problem
         assert(type(problem_id)==int)
-        return self._state.delete_problem(problem_id, self._problems_to_edit)
+        return self._state.delete_problem(problem_id, self._problems_to_add)
     
-    def save_this_set(self, filepath:str):
-        self._state.save_this_set(filepath)
+    def strip_problem(self, problem_id:int, strip_date:date) ->bool:
+        return self._state.strip_problem(problem_id, strip_date, self._problems_init, self._problems_to_strip)
 
-    def save_as_new_set(self, filepath:str):
-        self._state.save_as_new_set(filepath)
+    def save_this_set(self, writer:JsonWriter):
+        self._state.save_this_set(writer)
+
 
 
 class ProblemsEditorState(ABC):
@@ -112,7 +112,7 @@ class ProblemsEditorState(ABC):
         self._context = context
 
     @abstractmethod
-    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
+    def add_new_problem(self, problem:Problem,  problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
         pass
 
     @abstractmethod
@@ -120,11 +120,11 @@ class ProblemsEditorState(ABC):
         pass
 
     @abstractmethod
-    def save_this_set(self, filepath:str):
+    def strip_problem(self, problem_id:int, strip_date:date, problems: dict[Problem,...], strip_to:dict[Problem,...]) ->bool:
         pass
 
     @abstractmethod
-    def save_as_new_set(self, filepath:str):
+    def save_this_set(self, writer:JsonWriter):
         pass
 
 
@@ -135,30 +135,45 @@ class EditingProblemsEditor(ProblemsEditorState):
         super().__init__()
         self.name = 'editing'
     
-    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
-        _id = int(problem.id) 
-        problems[_id] = problem
+    def add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
+        # Can only add a problem with either existing ids or next_id
+        self._try_add_new_problem(problem, problems, add_to)
         self._context.problemAdded.emit(problem)
         self._context.problem_to_edit = None
         self._context.next_id = self._context.next_available_problem_id()
         return True
+    
+    def _try_add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) ->None:
+        _id = problem.id 
+        if _id == self._context.next_id:
+            add_to[_id] = problem
+        elif _id in problems.keys():
+            problems[_id] = problem
+        else:
+            raise ValueError('trying to add problem with incorrect id!')
 
     def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
+        # not to be confused with strip problem - 
         if problem_id in problems.keys():
             to_remove = problems.pop(problem_id)
             self._context.problemRemoved.emit(to_remove)
         self._context.problem_to_edit = None
         return True
 
-    def save_this_set(self, filepath:str):
+    def strip_problem(self, problem_id:int, strip_date:date, problems: dict[Problem,...], strip_to:dict[Problem,...]) ->bool:
+        # can only strip the problem already on the wall
+        if problem_id in problems.keys():
+            prob = problems.pop(problem_id)
+            strip_to[problem_id] = prob.with_strip_date(strip_date)
+            return True
+        else:
+            raise IndexError('Problem to be stripped is not found.')
+
+    def save_this_set(self, writer:JsonWriter):
         # update the current file with new data
         # assume path is already been verified
-        writer   = JsonWriter(filepath, self._context.problems)
-        writer.write()
-
-    def save_as_new_set(self, filepath:str):
-        # assume path is already been verified
-        writer   = JsonWriter(filepath, self._context.problems)
+        writer.set_problems(self._context.problems)
+        writer.set_next_id(self._context.next_id)
         writer.write()
 
 
@@ -169,14 +184,15 @@ class ViewingProblemsEditor(ProblemsEditorState):
         super().__init__()
         self.name = 'viewing'
 
-    def save_new_problem(self, problem:Problem, problems: dict[Problem,...]) -> bool:
+    def add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
         return True
 
     def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
         return True
 
-    def save_this_set(self, filepath:str):
+    def strip_problem(self, problem_id:int, strip_date:date, problems: dict[Problem,...], strip_to:dict[Problem,...]) ->bool:
+        return True
+
+    def save_this_set(self, writer:JsonWriter):
         pass
 
-    def save_as_new_set(self, filepath:str):
-        pass
