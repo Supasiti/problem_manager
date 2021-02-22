@@ -4,7 +4,7 @@ from APImodels.problem import Problem
 
 class JsonWriter():
 
-    def __init__(self, filepath:str, problems:tuple[Problem,...]=None, next_id:int=0):
+    def __init__(self, filepath:str='', problems:tuple[Problem,...]=None, next_id:int=0):
         self._filepath = filepath
         self._problems = problems
         self._next_id  = next_id
@@ -14,6 +14,9 @@ class JsonWriter():
     
     def set_next_id(self, _id:int):
         self._next_id = _id
+
+    def set_filepath(self, filepath:str):
+        self._filepath = filepath
 
     def write(self):
         data = self._json_data()

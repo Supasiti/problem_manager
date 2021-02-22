@@ -4,7 +4,7 @@ import datetime
 from APImodels.RIC import RIC
 from APImodels.grade import Grade
 from APImodels.problem import Problem
-from services.problems_editor_new import ProblemsEditor, EditingProblemsEditor
+from services.problems_editor import ProblemsEditor, EditingProblemsEditor
 from services.problem_repository import ProblemRepository
 
 class TestProblemEditor(unittest.TestCase):

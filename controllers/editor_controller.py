@@ -59,7 +59,7 @@ class EditorController():
         _problem      = self._make_problem() if _is_updatable else None
  
         if not _problem is None: 
-            self._editor.save_new_problem(_problem)
+            self._editor.add_new_problem(_problem)
             self._reset_placeholder_texts()
 
     def _cell_selected(self):

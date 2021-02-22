@@ -22,12 +22,14 @@ class ProblemRepository(ABC):
 class LocalProblemRepository(ProblemRepository):
     # read .json file with current problem data
 
-    _data    : dict
-    _problems : tuple[Problem,...]
-    _next_id  : int
+    _data      : dict
+    _problems  : tuple[Problem,...]
+    _next_id   :  int
+    _filepath  : str
 
-    def __init__(self, filepath):
-        self._lazy_init(filepath)   
+    def __init__(self, filepath =''):
+        if filepath !='':
+            self.set_filepath(filepath)
         
     def _lazy_init(self, filepath:str):
         if os.path.getsize(filepath) == 0:
@@ -39,6 +41,10 @@ class LocalProblemRepository(ProblemRepository):
                 self._data = json.loads(fid.read())
             self._next_id  = self._data.pop('next_id')
             self._problems = tuple((Problem.from_json(p) for p in self._data.values()))
+
+    def set_filepath(self, filepath:str):
+        self._filepath = filepath
+        self._lazy_init(filepath)
 
     @property    
     def next_id(self) -> int:
