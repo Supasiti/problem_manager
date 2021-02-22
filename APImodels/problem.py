@@ -43,3 +43,15 @@ class Problem(
         }
         return result
     
+    def with_strip_date(self, new_date:date):
+        _id      = self.id
+        ric      = self.RIC
+        grade    = self.grade
+        colour   = self.colour
+        sector   = self.sector
+        styles   = self.styles
+        set_by   = self.set_by
+        set_date = self.set_date
+        strip_date = new_date
+        
+        return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, strip_date)

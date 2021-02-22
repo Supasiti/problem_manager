@@ -1,5 +1,7 @@
 from typing import NamedTuple
+import os
 
+from services.setting_parser import SettingParser
 
 class SectorStyle(NamedTuple):
 
@@ -35,3 +37,35 @@ class SectorSetting():
         
     def length(self):
         return len(self._data)
+
+
+class SectorSettingParser(SettingParser):
+    # read/write setting on sector 
+    # filepath of sectors.json  is expected to be iin the folder: /config
+
+    def __init__(self):
+        self._filepath = self._create_filepath()
+        self._data     = self.load_config(self._filepath)
+    
+    def _create_filepath(self):
+        real_path = os.path.realpath(__file__)
+        dir_path  = os.path.dirname(real_path)
+        return os.path.join(dir_path, 'config','sectors.json')
+
+    def write(self):
+        SettingParser.write(self, self._filepath, self._data)
+
+    def set_filepath(self, filepath:str) -> None:
+        self._filepath = filepath
+        self._data     = self.load_config(self._filepath)
+
+    def get_data(self) -> object:
+        return SectorSetting(dict(self._data))
+
+    def set_data(self, value:object) -> bool:
+        if isinstance(value, SectorStyle):
+            self._data[value.name] = value.col
+        if isinstance(value, tuple):
+            for style in value:
+                self._data[style.name] = style.col
+        return True

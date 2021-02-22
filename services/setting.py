@@ -1,14 +1,12 @@
-from abc import ABC, abstractmethod
 from typing import NamedTuple
 from threading import Lock
-import json
-import os
 
 from services.signal import Signal
-from services.file_setting import FileSetting
-from services.grade_setting  import GradeSetting,  GradeStyle, GradeStyleBuilder
-from services.colour_setting import ColourSetting, ColourStyle
-from services.sector_setting import SectorSetting, SectorStyle
+from services.setting_parser import SettingParser
+from services.file_setting import FileSetting,   FileSettingParser
+from services.grade_setting  import GradeSetting, GradeSettingParser
+from services.colour_setting import ColourSetting, ColourSettingParser
+from services.sector_setting import SectorSetting, SectorSettingParser
 
 class Setting():
 
@@ -57,175 +55,6 @@ class Setting():
         if class_type in self._settings.keys():
             parser = self._settings[class_type].parser
             parser.write()
-
-
-class SettingParser(ABC):
-    # based setting parser to read/write configuration on loading / change
-
-    def load_config(self, filepath:str) -> object:
-        with open(filepath, 'r') as fid:
-            raw_data = json.loads(fid.read())
-            fid.close()
-        return raw_data
-    
-    def write(self, filepath:str, data:object) -> None:
-        with open(filepath, 'w' ) as fid:
-            json.dump(data, fid, indent=4, sort_keys=True)
-            fid.truncate()
-            fid.close()
-
-    @abstractmethod
-    def set_filepath(self, filepath:str) -> None:
-        pass
-
-    @abstractmethod
-    def get_data(self) -> object:
-        pass
-    
-    @abstractmethod
-    def set_data(self, value:object) ->bool:
-        pass
-
-
-class FileSettingParser(SettingParser):
-    # read/write file paths on loading / change
-    # filepath of config.json file is expected to be in the folder: /config
-
-    def __init__(self):
-        self._filepath = self._create_filepath()
-        self._data     = self.load_config(self._filepath)
-    
-    def _create_filepath(self):
-        real_path = os.path.realpath(__file__)
-        dir_path  = os.path.dirname(real_path)
-        return os.path.join(dir_path, 'config','config.json')
-
-    def write(self) -> None:
-        SettingParser.write(self, self._filepath, self._data)
-
-    def set_filepath(self, filepath:str) -> None:
-        self._filepath = filepath
-        self._data     = self.load_config(self._filepath)
-
-    def get_data(self) -> object:
-        return FileSetting(self._data['content path'])
-    
-    def set_data(self, value:object) ->bool:
-        self._data['content path'] = value
-        return True
-
-
-class GradeSettingParser(SettingParser):
-    # read/write setting on gradings
-    # filepath of grades.json is expected to be in the folder: /config
-
-    def __init__(self):
-        self._filepath = self._create_filepath()
-        self._data     = self.load_config(self._filepath)
-    
-    def _create_filepath(self):
-        real_path = os.path.realpath(__file__)
-        dir_path  = os.path.dirname(real_path)
-        return os.path.join(dir_path, 'config','grades.json')
-
-    def write(self):
-        SettingParser.write(self, self._filepath, self._data)
-
-    def set_filepath(self, filepath:str) -> None:
-        self._filepath = filepath
-        self._data     = self.load_config(self._filepath)
-
-    def get_data(self) -> object:
-        builder = GradeStyleBuilder()
-        styles = [builder.from_json(style) for style in self._data.values()]
-        return GradeSetting(tuple(styles))
-    
-    def set_data(self, value:object) ->bool:
-        # requirement:
-        #  - one to one maping between row and grade name
-        #  - row must be unique
-        if isinstance(value, GradeStyle):
-            self._set_data_if_is_GradeStyle(value)
-            return True
-        if isinstance(value, tuple):
-            for style in value:
-                self._set_data_if_is_GradeStyle(style)
-        return True
-
-    def _set_data_if_is_GradeStyle(self, value: GradeStyle):
-        if isinstance(value, GradeStyle):
-            self._remove_duplicates(value)
-            self._data[str(value.row)] = value.to_dict()
-
-    def _remove_duplicates(self, style:GradeStyle):
-        duplicates = [r  for r,s in self._data.items() if s['grade'] == style.grade._asdict()]
-        for row in duplicates:
-            self._data.pop(str(row))
-
-class ColourSettingParser(SettingParser):
-    # read/write setting on colour scheme
-    # filepath of colours.json  is expected to be iin the folder: /config
-
-    def __init__(self):
-        self._filepath = self._create_filepath()
-        self._data     = self.load_config(self._filepath)
-    
-    def _create_filepath(self):
-        real_path = os.path.realpath(__file__)
-        dir_path  = os.path.dirname(real_path)
-        return os.path.join(dir_path, 'config','colours.json')
-
-    def write(self):
-        SettingParser.write(self, self._filepath, self._data)
-    
-    def set_filepath(self, filepath:str) -> None:
-        self._filepath = filepath
-        self._data     = self.load_config(self._filepath)
-
-    def get_data(self) -> object:
-        styles = { name : ColourStyle.from_json(style) for name,style in self._data.items()}
-        return ColourSetting(dict(styles))
-    
-    def set_data(self, value:object) ->bool:
-        if isinstance(value, ColourStyle):
-            self._data[value.name] = value.to_dict()
-        if isinstance(value, tuple):
-            for style in value:
-                self._data[style.name] = style.to_dict()
-        return True
-    
-
-class SectorSettingParser(SettingParser):
-    # read/write setting on sector 
-    # filepath of sectors.json  is expected to be iin the folder: /config
-
-    def __init__(self):
-        self._filepath = self._create_filepath()
-        self._data     = self.load_config(self._filepath)
-    
-    def _create_filepath(self):
-        real_path = os.path.realpath(__file__)
-        dir_path  = os.path.dirname(real_path)
-        return os.path.join(dir_path, 'config','sectors.json')
-
-    def write(self):
-        SettingParser.write(self, self._filepath, self._data)
-
-    def set_filepath(self, filepath:str) -> None:
-        self._filepath = filepath
-        self._data     = self.load_config(self._filepath)
-
-    def get_data(self) -> object:
-        return SectorSetting(dict(self._data))
-
-    def set_data(self, value:object) -> bool:
-        if isinstance(value, SectorStyle):
-            self._data[value.name] = value.col
-        if isinstance(value, tuple):
-            for style in value:
-                self._data[style.name] = style.col
-        return True
-
 
 class SettingParserData(NamedTuple):
     setting : object

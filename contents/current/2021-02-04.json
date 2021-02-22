@@ -1,6 +1,5 @@
 {
-    "next_id" : 4,
-    "1" : {
+    "1": {
         "RIC": {
             "C": 3,
             "I": 4,
@@ -21,7 +20,7 @@
             "pop"
         ]
     },
-    "2" : {
+    "2": {
         "RIC": {
             "C": 3,
             "I": 2,
@@ -42,7 +41,7 @@
             "press"
         ]
     },
-    "3" : {
+    "3": {
         "RIC": {
             "C": 1,
             "I": 1,
@@ -61,5 +60,26 @@
         "styles": [
             "s"
         ]
-    }
+    },
+    "4": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "purple",
+        "grade": {
+            "difficulty": "mid",
+            "range": "purple"
+        },
+        "id": 4,
+        "sector": "arch r",
+        "set_by": "s",
+        "set_date": "2021-02-22",
+        "strip_date": null,
+        "styles": [
+            "s"
+        ]
+    },
+    "next_id": 5
 }

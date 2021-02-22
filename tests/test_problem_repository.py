@@ -1,14 +1,14 @@
 import unittest
 import os
 
-from services.problem_repository import ProblemRepository
+from services.problem_repository import LocalProblemRepository
 from APImodels.problem import Problem
 
 class TestProblemRepository(unittest.TestCase):
 
     def setUp(self):
         self.data_filepath  = self._create_filepath('data', 'test_problems_data.json')
-        self.repository = ProblemRepository(self.data_filepath)
+        self.repository = LocalProblemRepository(self.data_filepath)
 
     def _create_filepath(self, folder:str, filename:str):
         real_path = os.path.realpath(__file__)
@@ -16,8 +16,7 @@ class TestProblemRepository(unittest.TestCase):
         return os.path.join(dir_path, folder,filename)
 
     def test_init(self):
-        problems = self.repository.get_all_problems()
-
+        problems = self.repository.get_all_problems() 
         self.assertEqual(type(problems), tuple)
         self.assertEqual(len(problems), 3)
         self.assertEqual(type(problems[0]), Problem)

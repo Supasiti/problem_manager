@@ -4,8 +4,7 @@ from abc import ABC, abstractmethod
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
-from services.setting import Setting
-from services.file_setting import FileSetting
+from services.json_writer import JsonWriter
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
@@ -49,7 +48,8 @@ class MainController():
         self.editor        = ProblemsEditor(EditingProblemsEditor())
         self._dependency   = dependency
         self._dependency.register(ProblemsEditor, self.editor)
-        self.path_manager = self._dependency.get_or_register(ContentsPathManager)
+        self.path_manager = self._dependency.get(ContentsPathManager)
+        self.writer       = self._dependency.get(JsonWriter)
 
 
     def change_to_state(self, state:MainControllerState):
@@ -106,8 +106,9 @@ class EditingMainController(MainControllerState):
         dialog.show()
     
     def _save_this_set(self):
-        path = self._context.path_manager.filepath  
-        self._context.editor.save_this_set(path)
+        path = self._context.path_manager.filepath 
+        self._context.writer.set_filepath(path)
+        self._context.editor.save_this_set(self._context.writer)
 
     def show_save_as_dialog(self):
         filename = self._context.top_controller.get_filename()
@@ -118,7 +119,8 @@ class EditingMainController(MainControllerState):
         is_savable = self._context.top_controller.update_filename_to_save()
         if is_savable:
             path   = self._context.path_manager.filepath_to_save
-            self._context.editor.save_as_new_set(path)
+            self._context.writer.set_filepath(path)
+            self._context.editor.save_this_set(self._context.writer)
 
 class ViewingMainController(MainControllerState):
 
