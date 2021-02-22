@@ -120,7 +120,7 @@ class EditingMainController(MainControllerState):
         if is_savable:
             path   = self._context.path_manager.filepath_to_save
             self._context.writer.set_filepath(path)
-            self._context.editor.save_as_new_set(self._context.writer)
+            self._context.editor.save_this_set(self._context.writer)
 
 class ViewingMainController(MainControllerState):
 

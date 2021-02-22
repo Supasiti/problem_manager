@@ -61,5 +61,25 @@
             "s"
         ]
     },
-    "next_id": 4
+    "4": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "purple",
+        "grade": {
+            "difficulty": "mid",
+            "range": "purple"
+        },
+        "id": 4,
+        "sector": "arch r",
+        "set_by": "s",
+        "set_date": "2021-02-22",
+        "strip_date": null,
+        "styles": [
+            "s"
+        ]
+    },
+    "next_id": 5
 }
