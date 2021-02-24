@@ -63,9 +63,37 @@ class SectorSettingParser(SettingParser):
         return SectorSetting(dict(self._data))
 
     def set_data(self, value:object) -> bool:
-        if isinstance(value, SectorStyle):
-            self._data[value.name] = value.col
-        if isinstance(value, tuple):
-            for style in value:
-                self._data[style.name] = style.col
+        # requirement:
+        #  - one to one maping between sector and col 
+        #  - col must be unique from 0,1, ..., n
+        #  - if any of these conditions fails - raise
+        data_copy = self._data.copy()
+        if not self._update_sector_dict(value, data_copy): return True
+        if self._columns_is_not_range(data_copy):
+            raise ValueError('Cannot update grade setting: the list of rows must start from 0,1,2, ... to n.')
+        self._data = data_copy
         return True
+    
+    def _update_sector_dict(self, value: SectorStyle, data:dict) -> bool:
+        # return False if it didn't update the dictionary
+        if isinstance(value, SectorStyle):
+            self._update_if_is_SectorStyle(value, data)
+        elif isinstance(value, tuple):
+            for style in value:
+                self._update_if_is_SectorStyle(style, data)
+        else: 
+            return False
+        return True
+    
+    def _update_if_is_SectorStyle(self, value: SectorStyle, data:dict):
+        if isinstance(value, SectorStyle):
+            self._remove_duplicates(value, data)
+            data[value.name] = value.col
+    
+    def _remove_duplicates(self, style:SectorStyle, data:dict):
+        duplicates = [r  for r,s in data.items() if int(s) == style.col]
+        for name in duplicates:
+            data.pop(name)
+    
+    def _columns_is_not_range(self, data:dict) -> bool:
+        return not all( int(c) >= 0 and int(c) < len(data) for c in data.values())

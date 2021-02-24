@@ -50,17 +50,17 @@ class ColourSetting():
         if str(grade) in self._data.keys():
             return (str(grade).split(' ')[0], 'orange')
 
-    def get_bg_colour(self, name:str):
+    def get_bg_colour(self, name:str) -> Colour:
         if name.lower() in self._data.keys():
             return self._data[name].bg_colour
         raise ValueError('Invalid colour name')
 
-    def get_text_colour(self, name:str):
+    def get_text_colour(self, name:str)-> Colour:
         if name.lower() in self._data.keys():
             return self._data[name].text_colour
         raise ValueError('Invalid colour name')
 
-    def get_hover_colour(self, name:str):
+    def get_hover_colour(self, name:str)-> Colour:
         if name.lower() in self._data.keys():
             return self._data[name].hover_colour
         raise ValueError('Invalid colour name')
@@ -91,9 +91,16 @@ class ColourSettingParser(SettingParser):
         return ColourSetting(dict(styles))
     
     def set_data(self, value:object) ->bool:
+        # name must be unique
         if isinstance(value, ColourStyle):
-            self._data[value.name] = value.to_dict()
-        if isinstance(value, tuple):
+            self._update_if_is_ColourStyle(value, self._data)
+        elif isinstance(value, tuple):
             for style in value:
-                self._data[style.name] = style.to_dict()
+                self._update_if_is_ColourStyle(style, self._data)
+        else: 
+            return False
         return True
+    
+    def _update_if_is_ColourStyle(self, value: ColourStyle, data:dict):
+        if isinstance(value, ColourStyle):
+            data[value.name] = value.to_dict()

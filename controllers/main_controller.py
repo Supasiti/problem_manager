@@ -51,7 +51,6 @@ class MainController():
         self.path_manager = self._dependency.get(ContentsPathManager)
         self.writer       = self._dependency.get(JsonWriter)
 
-
     def change_to_state(self, state:MainControllerState):
         self._state = state
         self._state.context = self

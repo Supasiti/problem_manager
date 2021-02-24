@@ -7,9 +7,12 @@ from tests.test_dependency_service import TestDependencyService
 from tests.test_problem_repository import TestProblemRepository  # involve read file
 from tests.test_json_writer import TestJsonWriter                # involve read / write file
 from tests.test_signal import TestSignal
-from tests.test_setting_parsers import TestFileSettingParser     # involve read / write file
-from tests.test_setting_parsers import TestGradeSettingParser    # involve read / write file
+from tests.test_setting_parsers import TestFileSettingParser     # involve read file
+from tests.test_setting_parsers import TestGradeSettingParser    # involve read file
+from tests.test_setting_parsers import TestSectorSettingParser   # involve read file
+from tests.test_setting_parsers import TestColourSettingParser   # involve read file
 from tests.test_problem_editor import TestProblemEditor
+
 
 if __name__ =='__main__':
     unittest.main()
