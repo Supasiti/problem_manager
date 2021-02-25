@@ -179,6 +179,7 @@ class EditingProblemsEditor(ProblemsEditorState):
         if problem_id in problems.keys():
             prob = problems.pop(problem_id)
             strip_to[problem_id] = prob.with_strip_date(strip_date)
+            self._context.problemRemoved.emit(prob)
             self._context.problem_to_edit = None
             return True
         else:

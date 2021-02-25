@@ -171,5 +171,5 @@ class EditorView(FixedSizeLabel):
         self.controller.delete_problem()
     
     def _strip_problem(self, event):
-        self.controller.delete_problem()
+        self.controller.strip_problem()
         

@@ -19,6 +19,7 @@ class EditorController():
 
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
+        self._view_mode    = False
         self.model         = EditorModel(dynamic_data = self.view_data()) # load model
         self.view          = EditorView(self, self.model)  # load view
         self._connect_other()
@@ -31,27 +32,14 @@ class EditorController():
 
     def _connect_other(self):
         self._editor.problemTypeChanged.connect(self._on_problem_type_changed)
-        # self._editor.newProblemChanged.connect(self._on_new_problem_changed)
         self._editor.stateChanged.connect(self._on_state_changed)
 
-    # def _on_old_problem_changed(self, arg:bool) -> bool:
-    #     if arg:
-    #         self.model.dynamic_data = self.view_data(problem=self._editor.problem_to_edit, is_strippable=True)
-    #     else:
-    #         self.model.dynamic_data = self.view_data()
-    #     return True
-    
     def _on_problem_type_changed(self, arg:ProblemEditingType) ->bool:
         problem = self._editor.problem_to_edit
-        self.model.dynamic_data = self.view_data(problem=problem, problemType=arg)
-
-
-    # def _on_new_problem_changed(self, arg:bool) -> bool:
-    #     problem = self._editor.problem_to_edit
-    #     if arg:
-    #         self.model.dynamic_data = self.view_data(problem=problem, is_deletable=True, is_addable=True)
-    #     else:
-    #         self.model.dynamic_data = self.view_data(problem=problem, is_addable=True)
+        if self._view_mode:
+            self.model.dynamic_data = self.view_data(problem=problem)
+        else:
+            self.model.dynamic_data = self.view_data(problem=problem, problemType=arg)
 
     def view_data(self, problem:Problem = None, problemType:ProblemEditingType = ProblemEditingType()):
         _problem  = Problem() if problem is None else problem
@@ -59,13 +47,14 @@ class EditorController():
         return EditorData(holds, _problem, problemType.is_strippable, problemType.is_deletable, problemType.is_addable)
 
     def _on_state_changed(self, name:str):
+        self._view_mode = True if name == 'viewing' else False
         self.model.dynamic_data = self.view_data()
 
     def update_problem(self):
-        _is_updatable = True
-        _is_updatable = self._cell_selected()
-        _is_updatable = self._prompt_if_form_incomplete()
-        _problem      = self._make_problem() if _is_updatable else None
+        # assume that buttons only offer all the actions available
+        _selected  = self._cell_selected()
+        _completed = self._form_is_completed()
+        _problem   = self._make_problem() if _selected and _completed else None
  
         if not _problem is None: 
             self._editor.add_new_problem(_problem)
@@ -74,9 +63,7 @@ class EditorController():
     def _cell_selected(self):
         return self.view.text_id.text() != '' and self.view.text_sector.text() !=  '' 
         
-    def _prompt_if_form_incomplete(self):
-        # return True if the form is complete
-        # otherwise False
+    def _form_is_completed(self):
         result = True
         if self.view.lineedit_styles_0.text()== '':
             self.view.lineedit_styles_0.setPlaceholderText('must have at least one style')
@@ -123,13 +110,36 @@ class EditorController():
         self.view.lineedit_styles_0.setPlaceholderText('')
         self.view.lineedit_set_by.setPlaceholderText('')
         self.view.lineedit_set_date.setPlaceholderText('YYYY-MM-DD')
+        self.view.lineedit_strip_date.setPlaceholderText('YYYY-MM-DD')
 
     def delete_problem(self):
+        # assume that buttons only offer all the actions available
         _id    = self.view.text_id.text()
         if _id != '':
             _id = int(_id)
             self._editor.delete_problem(_id)
 
-    def strip_problem(self):
+    def strip_problem(self) -> None:
         # strip the problem : need to check if strip date have been filled
-        pass
+        if not self._strip_date_is_completed(): return
+        
+        strip_date = self._try_parse_date()
+        _id        = self.view.text_id.text()
+        if _id != '':
+            _id   = int(_id)
+            self._editor.strip_problem(_id, strip_date)
+            self._reset_placeholder_texts()
+            self.view.lineedit_strip_date.setText('')
+
+    def _strip_date_is_completed(self) -> bool:
+        if  self.view.lineedit_strip_date.text()== '':
+            self.view.lineedit_strip_date.setPlaceholderText('must have a strip date in YYYY-MM-DD')
+            return False
+        return True
+
+    def _try_parse_date(self) -> date:
+        try:
+            return date.fromisoformat(self.view.lineedit_strip_date.text())
+        except ValueError:
+            self.view.lineedit_strip_date.setText('')
+            self.view.lineedit_strip_date.setPlaceholderText('expect a date in format YYYY-MM-DD')
