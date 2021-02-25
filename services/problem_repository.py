@@ -24,7 +24,7 @@ class LocalProblemRepository(ProblemRepository):
 
     _data      : dict
     _problems  : tuple[Problem,...]
-    _next_id   :  int
+    _next_id   : int
     _filepath  : str
 
     def __init__(self, filepath =''):
@@ -33,13 +33,13 @@ class LocalProblemRepository(ProblemRepository):
         
     def _lazy_init(self, filepath:str):
         if os.path.getsize(filepath) == 0:
-            self._data    = None
+            self._data     = dict()
             self._next_id  = 0
-            self._problems = None
+            self._problems = tuple()
         else:
             with open(filepath, 'r') as fid:
                 self._data = json.loads(fid.read())
-            self._next_id  = self._data.pop('next_id')
+            self._next_id  = int(self._data.pop('next_id'))
             self._problems = tuple((Problem.from_json(p) for p in self._data.values()))
 
     def set_filepath(self, filepath:str):

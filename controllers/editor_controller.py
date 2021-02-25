@@ -6,7 +6,7 @@ from services.setting import Setting
 from services.colour_setting import ColourSetting
 from models.editor_model import EditorModel, EditorData 
 from views.editor_view import EditorView
-from APImodels.problem import Problem
+from APImodels.problem import Problem, ProblemEditingType
 from APImodels.RIC import RIC
 from APImodels.grade import Grade
 
@@ -19,7 +19,6 @@ class EditorController():
 
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
-        self._is_updatable = True
         self.model         = EditorModel(dynamic_data = self.view_data()) # load model
         self.view          = EditorView(self, self.model)  # load view
         self._connect_other()
@@ -31,25 +30,35 @@ class EditorController():
         self._colour_setting = self._setting.get(ColourSetting)
 
     def _connect_other(self):
-        self._editor.problemToEditChanged.connect(self._on_problem_to_edit_changed)
+        self._editor.problemTypeChanged.connect(self._on_problem_type_changed)
+        # self._editor.newProblemChanged.connect(self._on_new_problem_changed)
         self._editor.stateChanged.connect(self._on_state_changed)
 
-    def _on_problem_to_edit_changed(self, arg:bool):
-        self.model.dynamic_data = self.view_data(self._editor.problem_to_edit)
-        return True
+    # def _on_old_problem_changed(self, arg:bool) -> bool:
+    #     if arg:
+    #         self.model.dynamic_data = self.view_data(problem=self._editor.problem_to_edit, is_strippable=True)
+    #     else:
+    #         self.model.dynamic_data = self.view_data()
+    #     return True
+    
+    def _on_problem_type_changed(self, arg:ProblemEditingType) ->bool:
+        problem = self._editor.problem_to_edit
+        self.model.dynamic_data = self.view_data(problem=problem, problemType=arg)
 
-    def view_data(self, problem:Problem = None):
+
+    # def _on_new_problem_changed(self, arg:bool) -> bool:
+    #     problem = self._editor.problem_to_edit
+    #     if arg:
+    #         self.model.dynamic_data = self.view_data(problem=problem, is_deletable=True, is_addable=True)
+    #     else:
+    #         self.model.dynamic_data = self.view_data(problem=problem, is_addable=True)
+
+    def view_data(self, problem:Problem = None, problemType:ProblemEditingType = ProblemEditingType()):
         _problem  = Problem() if problem is None else problem
         holds     = self._colour_setting.get_hold_colours(_problem.grade)
-        return EditorData(holds, _problem, self._is_updatable)
+        return EditorData(holds, _problem, problemType.is_strippable, problemType.is_deletable, problemType.is_addable)
 
     def _on_state_changed(self, name:str):
-        if name == 'editing':
-            self._is_updatable = True
-        elif name == 'viewing':
-            self._is_updatable = False
-        else:
-            raise ValueError('incorrect state')
         self.model.dynamic_data = self.view_data()
 
     def update_problem(self):
@@ -120,3 +129,7 @@ class EditorController():
         if _id != '':
             _id = int(_id)
             self._editor.delete_problem(_id)
+
+    def strip_problem(self):
+        # strip the problem : need to check if strip date have been filled
+        pass

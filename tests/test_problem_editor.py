@@ -35,13 +35,10 @@ class TestProblemEditor(unittest.TestCase):
         self.assertEqual(problem, self.repository.problems[1])
     
     def test_add_same_problem(self):
-        problem1 = Problem(id=1, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
-        self.editor.add_new_problem(problem1)
-        problems = self.editor.problems
-        problem  = self.editor.get_problem_by_id(1)
-
-        self.assertEqual(len(problems), 3)
-        self.assertEqual(problem, problem1)
+        # can't update the problems from previous set
+        problem1 = Problem(id=1, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)        
+        with self.assertRaises(ValueError):
+            self.editor.add_new_problem(problem1)
 
     def test_add_new_problem(self):
         problem4 = Problem(id=4, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
@@ -51,6 +48,17 @@ class TestProblemEditor(unittest.TestCase):
 
         self.assertEqual(len(problems), 4)
         self.assertEqual(problem, problem4)
+
+    def test_update_new_problem(self):
+        problem4 = Problem(id=4, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
+        problem5 = Problem(id=4, RIC=RIC(1, 2, 1), grade=Grade('green', 'mid'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
+        self.editor.add_new_problem(problem4)
+        self.editor.add_new_problem(problem5)
+        problems = self.editor.problems
+        problem  = self.editor.get_problem_by_id(4)
+
+        self.assertEqual(len(problems), 4)
+        self.assertEqual(problem, problem5)
 
     def test_add_incorrect_problem(self):
         problem5 = Problem(id=5, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)

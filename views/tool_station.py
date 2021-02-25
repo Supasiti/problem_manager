@@ -19,7 +19,7 @@ class ToolStation(FixedWidthFrame):
 
     def _init__UI(self):
         self.layout = QVBoxLayout()
-        self.layout.setSpacing(8)
+        self.layout.setSpacing(4)
         self.layout.setContentsMargins(1,1,1,1)
         self.layout.setAlignment(Qt.AlignTop)
 

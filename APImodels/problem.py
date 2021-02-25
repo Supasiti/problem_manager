@@ -3,6 +3,7 @@
 #  - immutable
 
 from collections import namedtuple 
+from typing import NamedTuple
 from datetime import date
 from APImodels.RIC import RIC
 from APImodels.grade import Grade
@@ -55,3 +56,12 @@ class Problem(
         strip_date = new_date
         
         return Problem(_id, ric, grade, colour, sector, styles, set_by, set_date, strip_date)
+
+
+class ProblemEditingType(NamedTuple):
+
+    is_strippable : bool = False
+    is_deletable  : bool = False
+    is_addable    : bool = False
+
+    

@@ -14,13 +14,15 @@ class EditorStaticData(NamedTuple):
 
     @staticmethod
     def default():
-        return EditorStaticData(276, 440)
+        return EditorStaticData(276, 420)
 
 class EditorData(NamedTuple):
 
     holds : tuple[str]
     problem : Problem
-    are_buttons_visible : bool
+    is_strippable : bool
+    is_deletable  : bool
+    is_addable    : bool
 
 class EditorModel(QObject):
     

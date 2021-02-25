@@ -5,14 +5,16 @@ from datetime import date
 from services.signal import Signal
 from services.problem_repository import ProblemRepository
 from services.json_writer import JsonWriter
-from APImodels.problem import Problem
+from APImodels.problem import Problem, ProblemEditingType
 
 
 class ProblemsEditor():
     # handle all problems editing 
 
     stateChanged         = Signal(str)
-    problemToEditChanged = Signal(bool)
+    oldProblemChanged    = Signal(bool)  # true : can strip,  false : can't do anything
+    newProblemChanged    = Signal(bool)  # true : can delete, false : can only be added
+    problemTypeChanged   = Signal(ProblemEditingType)
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
     problemRemoved       = Signal(Problem)
@@ -50,7 +52,19 @@ class ProblemsEditor():
     @problem_to_edit.setter
     def problem_to_edit(self, problem:Problem):
         self._problem_to_edit = problem
-        self.problemToEditChanged.emit(True)
+        self._emit_problem_type(problem)
+
+    def _emit_problem_type(self, problem:Problem):
+        if problem is None:
+            self.problemTypeChanged.emit(ProblemEditingType())
+        elif problem.id == self.next_id:
+            self.problemTypeChanged.emit(ProblemEditingType(is_addable=True))
+        elif problem.id in self._problems_to_add.keys():
+            self.problemTypeChanged.emit(ProblemEditingType(is_deletable=True, is_addable=True))
+        elif problem.id in self._problems_init.keys():
+            self.problemTypeChanged.emit(ProblemEditingType(is_strippable=True))
+        else:
+            return
 
     @property
     def next_id(self):
@@ -83,7 +97,7 @@ class ProblemsEditor():
 
     def add_new_problem(self, problem:Problem,) -> bool:
         assert (type(problem) == Problem)
-        self._state.add_new_problem(problem, self._problems_init, self._problems_to_add)
+        self._state.add_new_problem(problem, self._problems_to_add)
 
     def delete_problem(self, problem_id:int) -> bool:
         # delete a problem when make a mistake. 
@@ -112,7 +126,7 @@ class ProblemsEditorState(ABC):
         self._context = context
 
     @abstractmethod
-    def add_new_problem(self, problem:Problem,  problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
+    def add_new_problem(self, problem:Problem, add_to:dict[Problem,...]) -> bool:
         pass
 
     @abstractmethod
@@ -135,20 +149,20 @@ class EditingProblemsEditor(ProblemsEditorState):
         super().__init__()
         self.name = 'editing'
     
-    def add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
-        # Can only add a problem with either existing ids or next_id
-        self._try_add_new_problem(problem, problems, add_to)
+    def add_new_problem(self, problem:Problem, add_to:dict[Problem,...]) -> bool:
+        # Can only add a problem with next_id or 
+        # update a problem in add_to list
+        # to stop people from editting the old problems
+        self._try_add_new_problem(problem, add_to)
         self._context.problemAdded.emit(problem)
         self._context.problem_to_edit = None
         self._context.next_id = self._context.next_available_problem_id()
         return True
     
-    def _try_add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) ->None:
+    def _try_add_new_problem(self, problem:Problem, add_to:dict[Problem,...]) ->None:
         _id = problem.id 
-        if _id == self._context.next_id:
+        if _id == self._context.next_id or _id in add_to.keys():
             add_to[_id] = problem
-        elif _id in problems.keys():
-            problems[_id] = problem
         else:
             raise ValueError('trying to add problem with incorrect id!')
 
@@ -165,6 +179,7 @@ class EditingProblemsEditor(ProblemsEditorState):
         if problem_id in problems.keys():
             prob = problems.pop(problem_id)
             strip_to[problem_id] = prob.with_strip_date(strip_date)
+            self._context.problem_to_edit = None
             return True
         else:
             raise IndexError('Problem to be stripped is not found.')
@@ -184,7 +199,7 @@ class ViewingProblemsEditor(ProblemsEditorState):
         super().__init__()
         self.name = 'viewing'
 
-    def add_new_problem(self, problem:Problem, problems: dict[Problem,...], add_to:dict[Problem,...]) -> bool:
+    def add_new_problem(self, problem:Problem, add_to:dict[Problem,...]) -> bool:
         return True
 
     def delete_problem(self, problem_id:int, problems: dict[Problem,...]) -> bool:
