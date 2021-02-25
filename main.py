@@ -7,7 +7,7 @@ from controllers.main_controller import MainController
 from services.dependency_service import DependencyService
 from services.contents_path_manager import ContentsPathManager
 from services.problem_repository import LocalProblemRepository
-from services.json_writer import JsonWriter
+from services.json_writer import JsonWriter, StrippedProblemWriter
 from services.setting import Setting
 '''
     Application
@@ -22,6 +22,7 @@ class App(QApplication):
         self.dependency.register(ContentsPathManager)
         self.dependency.register(JsonWriter)
         self.dependency.register(LocalProblemRepository)
+        self.dependency.register(StrippedProblemWriter)
         
         self.main_controller = MainController(self.dependency)
 
@@ -30,4 +31,3 @@ if __name__ == '__main__':
     app = App(sys.argv)
     app.setStyle('Fusion')
     sys.exit(app.exec_())   
-    

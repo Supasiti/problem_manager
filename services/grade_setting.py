@@ -78,6 +78,10 @@ class GradeSetting():
         if len(result) >0:
             return result[0]
         raise IndexError('index is out of range.')
+    
+    def get_total_aim(self):
+        aims = [g.aim for g in self._data]
+        return sum(aims)
 
     def length(self):
         return len(self._data)

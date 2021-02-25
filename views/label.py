@@ -203,23 +203,36 @@ class InfoCell(FixedSizeLabel):
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
 
-        self.text_sector = FixedSizeLabel(self.width, self.inner_height)
-        self.text_sector.setText('Sectors')
+        self.text_sector = FixedSizeLabel(self.inner_width, self.height,'Sectors')
         self.text_sector.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.text_sector.set_colours(self.bg_colour, self.text_colour)
 
-        self.text_aim = FixedSizeLabel(self.inner_width, self.inner_height)
-        self.text_aim.setText('Aim')
+        self.text_aim = FixedSizeLabel(self.inner_width, self.inner_height, 'Aim')
         self.text_aim.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
         self.text_aim.set_colours(self.bg_colour, self.text_colour)
 
-        self.text_counts = FixedSizeLabel(self.inner_width, self.inner_height)
-        self.text_counts.setText('Counts')
+        self.label_aim = FixedSizeLabel(self.inner_width, self.inner_height)
+        self.label_aim.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.label_aim.set_colours(self.bg_colour, self.text_colour)
+
+        self.text_counts = FixedSizeLabel(self.inner_width, self.inner_height, 'Counts')
         self.text_counts.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
         self.text_counts.set_colours(self.bg_colour, self.text_colour)
 
-        self.layout.addWidget(self.text_sector, 0, 0, 1, 3)
-        self.layout.addWidget(self.text_aim,    1, 1)
-        self.layout.addWidget(self.text_counts, 1, 2)
+        self.label_count = FixedSizeLabel(self.inner_width, self.inner_height)
+        self.label_count.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter) 
+        self.label_count.set_colours(self.bg_colour, self.text_colour)
+
+        self.layout.addWidget(self.text_sector, 0, 0, 2, 1)
+        self.layout.addWidget(self.text_aim,    0, 1)
+        self.layout.addWidget(self.text_counts, 0, 2)
+        self.layout.addWidget(self.label_aim,   1, 1)
+        self.layout.addWidget(self.label_count, 1, 2)
 
         self.setLayout(self.layout)
+
+    def set_count(self, value:int)->None:
+        self.label_count.setText(str(value))
+
+    def set_aim(self,value:int) -> None:
+        self.label_aim.setText(str(value))

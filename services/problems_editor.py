@@ -4,7 +4,7 @@ from datetime import date
 
 from services.signal import Signal
 from services.problem_repository import ProblemRepository
-from services.json_writer import JsonWriter
+from services.json_writer import JsonWriter, StrippedProblemWriter
 from APImodels.problem import Problem, ProblemEditingType
 
 
@@ -44,7 +44,11 @@ class ProblemsEditor():
         self._problems_to_add.clear()
         self._problems_to_strip.clear()
         self.problemsChanged.emit(True)
-        
+    
+    @property
+    def problems_to_strip(self) -> tuple:
+        return tuple(self._problems_to_strip.values())
+
     @property
     def problem_to_edit(self):
         return self._problem_to_edit
@@ -108,8 +112,8 @@ class ProblemsEditor():
     def strip_problem(self, problem_id:int, strip_date:date) ->bool:
         return self._state.strip_problem(problem_id, strip_date, self._problems_init, self._problems_to_strip)
 
-    def save_this_set(self, writer:JsonWriter):
-        self._state.save_this_set(writer)
+    def save_this_set(self, writer:JsonWriter, for_stripped:StrippedProblemWriter):
+        self._state.save_this_set(writer, for_stripped)
 
 
 
@@ -138,7 +142,7 @@ class ProblemsEditorState(ABC):
         pass
 
     @abstractmethod
-    def save_this_set(self, writer:JsonWriter):
+    def save_this_set(self, writer:JsonWriter, for_stripped:StrippedProblemWriter):
         pass
 
 
@@ -185,12 +189,15 @@ class EditingProblemsEditor(ProblemsEditorState):
         else:
             raise IndexError('Problem to be stripped is not found.')
 
-    def save_this_set(self, writer:JsonWriter):
+    def save_this_set(self, writer:JsonWriter, for_stripped:StrippedProblemWriter):
         # update the current file with new data
         # assume path is already been verified
         writer.set_problems(self._context.problems)
         writer.set_next_id(self._context.next_id)
         writer.write()
+
+        for_stripped.set_problems(self._context.problems_to_strip)
+        for_stripped.write()
 
 
 class ViewingProblemsEditor(ProblemsEditorState):
@@ -209,6 +216,6 @@ class ViewingProblemsEditor(ProblemsEditorState):
     def strip_problem(self, problem_id:int, strip_date:date, problems: dict[Problem,...], strip_to:dict[Problem,...]) ->bool:
         return True
 
-    def save_this_set(self, writer:JsonWriter):
+    def save_this_set(self, writer:JsonWriter, for_stripped:StrippedProblemWriter):
         pass
 

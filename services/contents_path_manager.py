@@ -75,6 +75,10 @@ class ContentsPathManager():
     def current_dir(self):
         return os.path.join(self.directory, 'current')
 
+    @property
+    def history_dir(self):
+        return os.path.join(self.directory, 'history')
+
     def _latest_set_filepath(self):
         json_files      = self._json_filter(self.current_dir)
         if len(json_files) > 0:
@@ -92,3 +96,6 @@ class ContentsPathManager():
     def get_filename(self, filepath:str):
         filename = os.path.basename(filepath)
         return filename.split('.')[0]
+
+    def get_filepath_for_stripped_problem(self, name:str) -> str:
+        return os.path.join(self.history_dir, name + '.json')

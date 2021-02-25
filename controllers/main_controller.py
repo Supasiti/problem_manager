@@ -1,10 +1,11 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from datetime import date
 
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
-from services.json_writer import JsonWriter
+from services.json_writer import JsonWriter, StrippedProblemWriter
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
@@ -50,6 +51,7 @@ class MainController():
         self._dependency.register(ProblemsEditor, self.editor)
         self.path_manager = self._dependency.get(ContentsPathManager)
         self.writer       = self._dependency.get(JsonWriter)
+        self.strip_writer = self._dependency.get(StrippedProblemWriter)
 
     def change_to_state(self, state:MainControllerState):
         self._state = state
@@ -78,7 +80,7 @@ class MainController():
   
     def open_previous_set(self):
         self.editor.change_to_state(ViewingProblemsEditor())
-        # do something
+
 
 
 class MainControllerState(ABC):
@@ -107,7 +109,8 @@ class EditingMainController(MainControllerState):
     def _save_this_set(self):
         path = self._context.path_manager.filepath 
         self._context.writer.set_filepath(path)
-        self._context.editor.save_this_set(self._context.writer)
+        self._set_strip_writer_filepath()
+        self._context.editor.save_this_set(self._context.writer, self._context.strip_writer)
 
     def show_save_as_dialog(self):
         filename = self._context.top_controller.get_filename()
@@ -119,7 +122,13 @@ class EditingMainController(MainControllerState):
         if is_savable:
             path   = self._context.path_manager.filepath_to_save
             self._context.writer.set_filepath(path)
-            self._context.editor.save_this_set(self._context.writer)
+            self._set_strip_writer_filepath()
+            self._context.editor.save_this_set(self._context.writer, self._context.strip_writer)
+    
+    def _set_strip_writer_filepath(self) -> None:
+        month_today = date.today().strftime('%Y-%m') # in YYYY-MM
+        strip_path  = self._context.path_manager.get_filepath_for_stripped_problem(month_today)
+        self._context.strip_writer.set_filepath(strip_path)
 
 class ViewingMainController(MainControllerState):
 

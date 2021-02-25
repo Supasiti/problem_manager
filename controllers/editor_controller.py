@@ -20,7 +20,7 @@ class EditorController():
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
         self._view_mode    = False
-        self.model         = EditorModel(dynamic_data = self.view_data()) # load model
+        self.model         = EditorModel(dynamic_data = self._view_data()) # load model
         self.view          = EditorView(self, self.model)  # load view
         self._connect_other()
 
@@ -37,18 +37,18 @@ class EditorController():
     def _on_problem_type_changed(self, arg:ProblemEditingType) ->bool:
         problem = self._editor.problem_to_edit
         if self._view_mode:
-            self.model.dynamic_data = self.view_data(problem=problem)
+            self.model.dynamic_data = self._view_data(problem=problem)
         else:
-            self.model.dynamic_data = self.view_data(problem=problem, problemType=arg)
+            self.model.dynamic_data = self._view_data(problem=problem, problemType=arg)
 
-    def view_data(self, problem:Problem = None, problemType:ProblemEditingType = ProblemEditingType()):
+    def _view_data(self, problem:Problem = None, problemType:ProblemEditingType = ProblemEditingType()):
         _problem  = Problem() if problem is None else problem
         holds     = self._colour_setting.get_hold_colours(_problem.grade)
         return EditorData(holds, _problem, problemType.is_strippable, problemType.is_deletable, problemType.is_addable)
 
     def _on_state_changed(self, name:str):
         self._view_mode = True if name == 'viewing' else False
-        self.model.dynamic_data = self.view_data()
+        self.model.dynamic_data = self._view_data()
 
     def update_problem(self):
         # assume that buttons only offer all the actions available
@@ -120,7 +120,7 @@ class EditorController():
             self._editor.delete_problem(_id)
 
     def strip_problem(self) -> None:
-        # strip the problem : need to check if strip date have been filled
+        # strip the problem : assume that buttons only offer all the actions available
         if not self._strip_date_is_completed(): return
         
         strip_date = self._try_parse_date()

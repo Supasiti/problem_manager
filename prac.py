@@ -1,7 +1,8 @@
 from tests.test_problem_editor import MockRepository
-
+from datetime import date
 
 if __name__ == '__main__':
     
 
-    repo = MockRepository()
+    today = date.today().strftime('%Y-%m')
+    print(today)
