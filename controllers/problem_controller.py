@@ -32,7 +32,6 @@ class ProblemAreaController():
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
-        # self._sector_setting = self._dependency.get_or_register(SectorDict) 
         self._editor         = self._dependency.get(ProblemsEditor)
         self._setting        = self._dependency.get(Setting)
         self._grade_setting  = self._setting.get(GradeSetting)

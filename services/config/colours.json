@@ -143,6 +143,24 @@
             "red": 240
         }
     },
+    "default_light": {
+        "bg_colour": {
+            "blue": 45,
+            "green": 45,
+            "red": 45
+        },
+        "hover_colour": {
+            "blue": 60,
+            "green": 60,
+            "red": 60
+        },
+        "name": "default",
+        "text_colour": {
+            "blue": 240,
+            "green": 240,
+            "red": 240
+        }
+    },
     "green easy": {
         "bg_colour": {
             "blue": 158,

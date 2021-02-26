@@ -5,14 +5,16 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtCore import Qt
 
-from views.frame import FixedHeightFrame
+from views.frame import FixedSizeFrame
 
-class TopStation(FixedHeightFrame):
+class TopStation(FixedSizeFrame):
 
     def __init__(self, controller, model):
         self.controller = controller   
         self.model      = model
-        super().__init__(model.static_data.height)
+        self.width      = self.model.static_data.width
+        self.height     = self.model.static_data.height
+        super().__init__(self.width, self.height)
 
         self._init_static_UI()
         self._connect_model()

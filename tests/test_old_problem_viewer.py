@@ -12,10 +12,10 @@ class TestOldProblemViewer(unittest.TestCase):
     def setUpClass(cls):
         cls.mock_data = MockFileIO()
         cls.viewer = OldProblemViewer()
-        cls.viewer.set_IO_dir(cls.mock_data)
+        cls.viewer.set_dir_IO(cls.mock_data)
 
     def setUp(self):
-        self.viewer.set_IO_dir(self.mock_data)
+        self.viewer.set_dir_IO(self.mock_data)
 
     def test_get_risks(self):
         risks = self.viewer.get_risks()
@@ -34,7 +34,8 @@ class TestOldProblemViewer(unittest.TestCase):
 
     def test_set_filter_holds(self):
         self.viewer.set_filter_holds(['purple'])
-        problems = self.viewer.get_filtered_problems()
+        self.viewer.filter_problems()
+        problems = self.viewer.problems
         ids = [p.id for p in problems]
         ids.sort()
 
@@ -42,7 +43,8 @@ class TestOldProblemViewer(unittest.TestCase):
 
     def test_set_filter_styles(self):
         self.viewer.set_filter_styles(['dyno','glide'])
-        problems = self.viewer.get_filtered_problems()
+        self.viewer.filter_problems()
+        problems = self.viewer.problems
         ids = [p.id for p in problems]
         ids.sort()
 

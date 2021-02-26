@@ -4,7 +4,10 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QAction
+from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QColor
 
+from APImodels.colour import Colour 
 from views.work_station import WorkStation
 from views.top_station import TopStation
 from views.bottom_station import BottomStation
@@ -38,6 +41,7 @@ class MainView(QMainWindow):
         
         self.window = QLabel()
         self.setCentralWidget(self.window) 
+        self.set_colours(Colour(45,45,45),Colour(240,240,240))
 
     def _connect_model(self):
         self.model.dataChanged.connect(self._init_dynamic_UI)
@@ -52,10 +56,10 @@ class MainView(QMainWindow):
         self.tool_station   = data.tool_station 
         self.bottom_station = data.bottom_station 
         
-        self.layout.addWidget(self.top_station,    0, 0)
-        self.layout.addWidget(self.work_station,   1, 0)
+        self.layout.addWidget(self.top_station,    0, 1)
+        self.layout.addWidget(self.work_station,   0, 0, 2, 1)
         self.layout.addWidget(self.bottom_station, 2, 0)
-        self.layout.addWidget(self.tool_station,   0, 1, 3, 1) 
+        self.layout.addWidget(self.tool_station,   1, 1, 2, 1) 
         
         self.window.setLayout(self.layout)
 
@@ -87,6 +91,12 @@ class MainView(QMainWindow):
         fileMenu.addSeparator()
         fileMenu.addAction(action_exit)
 
+    def set_colours(self, colour: Colour, text_colour:Colour):
+        self.setAutoFillBackground(True)
+        pal = QPalette()
+        pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
+        pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
+        self.setPalette(pal)
 
 class MenuAction(QAction): 
     

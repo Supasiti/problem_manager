@@ -1,5 +1,5 @@
 {
-    "12": {
+    "10": {
         "RIC": {
             "C": 1,
             "I": 1,
@@ -10,7 +10,7 @@
             "difficulty": "mid",
             "range": "purple"
         },
-        "id": 12,
+        "id": 10,
         "sector": "mid",
         "set_by": "d",
         "set_date": "2021-02-25",

@@ -13,6 +13,7 @@ from controllers.top_controller import TopController
 from controllers.work_controller import WorkController
 from controllers.tool_controller import ToolController
 from controllers.bottom_controller import BottomController
+from controllers.list_view_controller import ProblemListController
 
 class MainController():    
 # Aims:
@@ -28,19 +29,13 @@ class MainController():
         self.change_to_state(EditingMainController())
 
         # load other controllers
-        self.top_controller    = TopController(self._dependency)
-        self.work_controller   = WorkController(self._dependency)
         self.bottom_controller = BottomController(self._dependency)
+        self.top_controller    = TopController(self._dependency)
+        # self.work_controller   = WorkController(self._dependency)
         self.tool_controller   = ToolController(self._dependency)
+        self.work_controller   = ProblemListController(self._dependency)
 
-        # build MainViewDynamicData
-        view_data = MainViewDynamicData(
-            self.top_controller.view, 
-            self.work_controller.view, 
-            self.bottom_controller.view, 
-            self.tool_controller.view)
-
-        self.model = MainModel(dynamic_data = view_data) # load model
+        self.model = MainModel(dynamic_data = self._view_data()) # load model
         self.view  = MainView(self, self.model)          # load view
         self.view.show()
         self._connect_other()
@@ -57,6 +52,9 @@ class MainController():
         self._state = state
         self._state.context = self
 
+    def _view_data(self):
+        return MainViewDynamicData(self.top_controller.view, self.work_controller.view, self.bottom_controller.view, self.tool_controller.view)
+    
     def _connect_other(self):
         self.editor.stateChanged.connect(self._on_state_changed)
     
@@ -81,7 +79,14 @@ class MainController():
     def open_previous_set(self):
         self.editor.change_to_state(ViewingProblemsEditor())
 
-
+    def open_problem_list_viewer(self):
+        # open problem list view
+        # change state to view only
+        # open problem filter
+        # set up dependency
+            # get filepath for history
+            # 
+        pass
 
 class MainControllerState(ABC):
 

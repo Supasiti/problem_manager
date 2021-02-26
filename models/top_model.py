@@ -9,12 +9,14 @@ from PyQt5.QtCore import pyqtSignal
 class TopStaticData(NamedTuple):
 
     height      : int
+    width       : int
     label_text  : str
     label_width : int
     
+    
     @staticmethod
     def default():
-        return TopStaticData(40, 'Date', 60)
+        return TopStaticData(40, 280, 'Date', 60)
 
 class TopStationModel(QObject):
     
