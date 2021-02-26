@@ -3,6 +3,7 @@ from datetime import date
 
 if __name__ == '__main__':
     
+    numbers = [1, 1,1,1,2,3,3,3,4,4,4,5]
 
-    today = date.today().strftime('%Y-%m')
-    print(today)
+    uniques = list(dict.fromkeys(numbers).keys())
+    print(uniques)

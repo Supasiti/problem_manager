@@ -90,7 +90,7 @@ class ContentsPathManager():
 
     def _json_filter(self, directory: str):
         if os.path.isdir(directory): 
-            return [path for path in os.listdir(directory) if path.endswith('.json')]
+            return [name for name in os.listdir(directory) if name.endswith('.json')]
         return []
 
     def get_filename(self, filepath:str):

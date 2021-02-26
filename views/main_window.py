@@ -26,6 +26,7 @@ class MainView(QMainWindow):
         self._init_dynamic_UI()
         self._connect_model()
         self._init_menu_bars()
+        
 
     def _init_static_UI(self):
         data        = self.model.static_data

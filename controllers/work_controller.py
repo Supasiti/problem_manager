@@ -33,7 +33,6 @@ class WorkController():
         self._set_aim()
         self._set_count()
 
-
     def _set_aim(self):
         setting       = self._dependency.get(Setting)
         grade_setting = setting.get(GradeSetting)
@@ -42,7 +41,6 @@ class WorkController():
     
     def _set_count(self):
         count = len(self._editor.problems)
-        print(count)
         self.view.info_view.set_count(count)
 
     def _connect_editor(self):

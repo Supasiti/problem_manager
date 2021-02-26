@@ -1,0 +1,22 @@
+{
+    "11": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "red",
+        "grade": {
+            "difficulty": "mid",
+            "range": "purple"
+        },
+        "id": 11,
+        "sector": "mid",
+        "set_by": "d",
+        "set_date": "2021-02-25",
+        "strip_date": "2021-02-26",
+        "styles": [
+            "d"
+        ]
+    }
+}
