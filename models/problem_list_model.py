@@ -57,6 +57,7 @@ class ProblemListCellData(NamedTuple):
     text_colour : Colour
     hover_colour : Colour
     height : int = 36
+    width  : int = 900
 
 class ProblemListCellDataBuilder():
 

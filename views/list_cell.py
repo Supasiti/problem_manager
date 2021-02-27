@@ -16,7 +16,9 @@ class ListCell(QLabel):
     def __init__(self, data: ProblemListCellData):
         super().__init__()
         self.height = data.height
+        self.width = data.width
         self.setFixedHeight(self.height) 
+        self.setMinimumWidth(self.width)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
         self._init_UI()
         self.set_data(data)
@@ -24,7 +26,7 @@ class ListCell(QLabel):
     def _init_UI(self):
         layout = QHBoxLayout()
         layout.setSpacing(2)
-        layout.setContentsMargins(2,2,2,2)
+        layout.setContentsMargins(20,2,20,2)
 
         self._label_id  = FixedSizeLabel(48, self.height)
         self._label_id.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)

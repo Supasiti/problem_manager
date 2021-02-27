@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QScrollArea
-from PyQt5.QtWidgets import QGridLayout, QVBoxLayout
+from PyQt5.QtWidgets import QGridLayout, QVBoxLayout,QLayout
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QSizePolicy
@@ -32,26 +32,35 @@ class ProblemListView(Frame):
         layout.setContentsMargins(0,0,0,0)
         
         self.scrollarea  = QScrollArea()
-        self.widget      = QLabel('')
-        self.widget.setFixedWidth(400)
-        self.widget.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.set_colours(self.widget,Colour(255,0,0),Colour(0,0,0))
+        self.scrollarea.setWidgetResizable(True)
+        self.widget      = QWidget(parent=self)
+        # self.set_colours(self,Colour(0,255,0),Colour(240,240,240))
+        # self.set_colours(self.widget,Colour(255,0,0),Colour(0,0,0))
+        
         self.list_layout = QVBoxLayout()
         self.list_layout.setSpacing(2)
         self.list_layout.setContentsMargins(10,0,10,0)
-        self.list_layout.setAlignment(Qt.AlignTop)
-    
+        self.list_layout.setAlignment(Qt.AlignTop) 
+
         self.widget.setLayout(self.list_layout)
         self.scrollarea.setWidget(self.widget)
 
-        layout.addWidget(self.scrollarea, 0,0)
+        layout.addWidget(self.scrollarea)
         self.setLayout(layout)
+        print('frame : {}'.format(self.sizeHint()))
 
     def set_data(self, arg:bool):
         self._clear_list()
         for cell in self.model.data:
             self.list_layout.addWidget(ListCell(cell))
-      
+          
+
+        # # self.widget.adjustSize()
+        # print(self.list_layout.count())
+        # self.widget.updateGeometry()
+        # self.widget.adjustSize()
+        print('layout size : {}'.format(self.list_layout.sizeHint()))
+        print('layout size : {}'.format(self.list_layout.contentsRect()))
 
 
     def _clear_list(self):
@@ -59,7 +68,7 @@ class ProblemListView(Frame):
             self.list_layout.itemAt(i).widget().setParent(None)
 
     def _connect_other(self):
-        self.model.cellsChanged.connect(self._init_UI)
+        self.model.cellsChanged.connect(self.set_data)
 
     def set_colours(self, element,
         colour: Colour, text_colour: Colour):
