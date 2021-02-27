@@ -16,7 +16,7 @@ class ListCell(QLabel):
     def __init__(self, data: ProblemListCellData):
         super().__init__()
         self.height = data.height
-        self.width = data.width
+        self.width  = data.width
         self.setFixedHeight(self.height) 
         self.setMinimumWidth(self.width)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
@@ -63,17 +63,31 @@ class ListCell(QLabel):
 
     def set_data(self, data:ProblemListCellData):
         self._data = data
-        problem = self._data.problem
         self._set_colours(self._data.bg_colour, self._data.text_colour)
-        self._label_id.setText(str(problem.id))
-        self._label_RIC.setText(str(problem.RIC))
-        self._label_grade.setText(str(problem.grade))
-        self._label_colour.setText(str(problem.colour))
-        self._set_style_text()
-        self._label_set_by.setText(str(problem.set_by))
-        self._label_set_date.setText(problem.set_date.isoformat())
-        self._label_strip_date.setText(problem.strip_date.isoformat())
         self._add_mouse_effect()
+        
+        problem = self._data.problem
+        if not problem is None:
+            self._label_id.setText(str(problem.id))
+            self._label_RIC.setText(str(problem.RIC))
+            self._label_grade.setText(str(problem.grade))
+            self._label_colour.setText(str(problem.colour))
+            self._set_style_text()
+            self._label_set_by.setText(str(problem.set_by))
+            self._label_set_date.setText(problem.set_date.isoformat())
+            self._label_strip_date.setText(problem.strip_date.isoformat())
+        else:
+            self._label_id.setText('Id')
+            self._label_RIC.setText('RIC')
+            self._label_grade.setText('Grade')
+            self._label_colour.setText('Colour')
+            self._label_style0.setText('Styles')
+            self._label_style1.setText('')
+            self._label_style2.setText('')
+            self._label_set_by.setText('Setter')
+            self._label_set_date.setText('Set on')
+            self._label_strip_date.setText('Stripped on')
+        
 
     def _set_style_text(self):
         styles = self._data.problem.styles
@@ -101,3 +115,4 @@ class ListCell(QLabel):
     
     def _remove_hover_effect(self, event):
         self._set_colours(self._data.bg_colour, self._data.text_colour)
+

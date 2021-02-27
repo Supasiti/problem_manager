@@ -32,10 +32,8 @@ class ProblemListView(Frame):
         layout.setContentsMargins(0,0,0,0)
         
         self.scrollarea  = QScrollArea()
-        self.scrollarea.setWidgetResizable(True)
+        self.scrollarea.setWidgetResizable(True)  # so scrollarea can adjust size with child widget
         self.widget      = QWidget(parent=self)
-        # self.set_colours(self,Colour(0,255,0),Colour(240,240,240))
-        # self.set_colours(self.widget,Colour(255,0,0),Colour(0,0,0))
         
         self.list_layout = QVBoxLayout()
         self.list_layout.setSpacing(2)
@@ -47,21 +45,11 @@ class ProblemListView(Frame):
 
         layout.addWidget(self.scrollarea)
         self.setLayout(layout)
-        print('frame : {}'.format(self.sizeHint()))
 
     def set_data(self, arg:bool):
         self._clear_list()
-        for cell in self.model.data:
+        for cell in self.model.data[1:]:   # 0: header
             self.list_layout.addWidget(ListCell(cell))
-          
-
-        # # self.widget.adjustSize()
-        # print(self.list_layout.count())
-        # self.widget.updateGeometry()
-        # self.widget.adjustSize()
-        print('layout size : {}'.format(self.list_layout.sizeHint()))
-        print('layout size : {}'.format(self.list_layout.contentsRect()))
-
 
     def _clear_list(self):
         for i in reversed(range(self.list_layout.count())): 
@@ -70,11 +58,11 @@ class ProblemListView(Frame):
     def _connect_other(self):
         self.model.cellsChanged.connect(self.set_data)
 
-    def set_colours(self, element,
-        colour: Colour, text_colour: Colour):
+    # def set_colours(self, element,
+    #     colour: Colour, text_colour: Colour):
         
-        element.setAutoFillBackground(True)
-        pal = QPalette()
-        pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
-        pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
-        element.setPalette(pal)
+    #     element.setAutoFillBackground(True)
+    #     pal = QPalette()
+    #     pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
+    #     pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
+    #     element.setPalette(pal)

@@ -22,6 +22,7 @@ class ProblemListDataBuilder():
 
     def from_problems(self, problems:tuple[Problem,...]) -> ProblemListData:
         cells = [self._builder.from_row(i,p) for i, p in enumerate(problems)]
+        cells.insert(0, self._builder.header())
         return ProblemListData(cells)
 
 class ProblemListModel(QObject):
@@ -58,6 +59,7 @@ class ProblemListCellData(NamedTuple):
     hover_colour : Colour
     height : int = 36
     width  : int = 900
+    header : bool = False 
 
 class ProblemListCellDataBuilder():
 
@@ -72,3 +74,11 @@ class ProblemListCellDataBuilder():
         hover_colour = self._setting.get_hover_colour(colour)
 
         return ProblemListCellData(row, problem, bg_colour, text_colour, hover_colour)
+    
+    def header(self):
+
+        bg_colour = self._setting.get_bg_colour('default_light')
+        text_colour = self._setting.get_text_colour('default_light')
+        hover_colour = self._setting.get_hover_colour('default_light')
+
+        return ProblemListCellData(0, None, bg_colour, text_colour, hover_colour, header=True)
