@@ -62,17 +62,30 @@ class ProblemListView(Frame):
 
     def set_data(self, arg:bool):
         self._set_colours(self.model.data.bg_colour, self.model.data.text_colour)
+        
+        self._setup_rows()
+        self._set_problem_data()
 
-        self._clear_list()
-        for index,problem in enumerate(self.model.data.problems): 
-            cell_data = self.model.data.even_row if index % 2 ==0 else self.model.data.odd_row
-            list_cell = ListCell(cell_data)
-            list_cell.set_problem_data(problem) 
-            self.list_layout.addWidget(list_cell)
+    def _setup_rows(self):
+        n_problems = len(self.model.data.problems)
+        n_rows     = self.list_layout.count()
+        if n_rows > n_problems:
+            self._remove_rows(n_problems, n_rows)
+        if n_problems > n_rows:
+            self._add_rows(n_rows, n_problems)
 
-    def _clear_list(self):
-        for i in reversed(range(self.list_layout.count())): 
+    def _add_rows(self, start:int, end:int) ->None:
+        for i in range(end)[start:]:
+            cell_data = self.model.data.even_row if i % 2 ==0 else self.model.data.odd_row
+            self.list_layout.addWidget(ListCell(cell_data))
+    
+    def _remove_rows(self, start:int, end:int ) ->None:
+        for i in reversed(range(end)[start:]):
             self.list_layout.itemAt(i).widget().setParent(None)
+    
+    def _set_problem_data(self) -> None:
+        for i,problem in enumerate(self.model.data.problems):
+            self.list_layout.itemAt(i).widget().set_problem_data(problem) 
 
     def _connect_other(self):
         self.model.cellsChanged.connect(self.set_data)
