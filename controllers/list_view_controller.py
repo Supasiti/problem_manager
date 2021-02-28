@@ -36,5 +36,8 @@ class ProblemListController():
     def _set_view_data(self, arg:bool)->None:
         self.model.data = self._builder.from_problems(self._viewer.problems)
 
+    def sort_by(self, text:str):
+        print(text)
+
     
        
