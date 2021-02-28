@@ -14,7 +14,7 @@ class ProblemListCellData(NamedTuple):
     text_colour : Colour
     hover_colour : Colour
     height : int = 36
-    width  : int = 900
+    width  : int = 840
     header : bool = False 
 
 class ProblemListCellDataBuilder():
@@ -67,7 +67,7 @@ class ProblemListDataBuilder():
         header   = self._builder.header()
         even_row = self._builder.from_row(0)
         odd_row  = self._builder.from_row(1)
-        
+
         return ProblemListData(bg_colour, text_colour, header, even_row, odd_row, problems)
 
 class ProblemListModel(QObject):

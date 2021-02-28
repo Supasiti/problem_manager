@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QSizePolicy
+from PyQt5.QtWidgets import QSizePolicy, QFrame
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
@@ -21,6 +21,7 @@ class ListCell(QLabel):
         self.setFixedHeight(self.height) 
         self.setMinimumWidth(self.width)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
+
         self._init_UI()
         self.set_data(data)
     
@@ -31,8 +32,15 @@ class ListCell(QLabel):
 
         self._label_id  = QLabel()
         self._label_id.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-        self._label_RIC = QLabel()
-        self._label_RIC.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self._label_R = QLabel()
+        self._label_R.setFixedWidth(32)
+        self._label_R.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self._label_I = QLabel()
+        self._label_I.setFixedWidth(32)
+        self._label_I.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        self._label_C = QLabel()
+        self._label_C.setFixedWidth(32)
+        self._label_C.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._label_grade = QLabel()
         self._label_grade.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._label_colour = QLabel()
@@ -51,7 +59,9 @@ class ListCell(QLabel):
         self._label_strip_date.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         
         layout.addWidget(self._label_id)
-        layout.addWidget(self._label_RIC)
+        layout.addWidget(self._label_R)
+        layout.addWidget(self._label_I)
+        layout.addWidget(self._label_C)
         layout.addWidget(self._label_grade)
         layout.addWidget(self._label_colour)
         layout.addWidget(self._label_style0)
@@ -70,7 +80,9 @@ class ListCell(QLabel):
     def set_problem_data(self, problem:Problem):
         if not problem is None:
             self._label_id.setText(str(problem.id))
-            self._label_RIC.setText(str(problem.RIC))
+            self._label_R.setText(str(problem.RIC.R))
+            self._label_I.setText(str(problem.RIC.I))
+            self._label_C.setText(str(problem.RIC.C))
             self._label_grade.setText(str(problem.grade))
             self._label_colour.setText(str(problem.colour))
             self._set_style_text(problem)
@@ -79,7 +91,9 @@ class ListCell(QLabel):
             self._label_strip_date.setText(problem.strip_date.isoformat())
         else:
             self._label_id.setText('')
-            self._label_RIC.setText('')
+            self._label_R.setText('')
+            self._label_I.setText('')
+            self._label_C.setText('')
             self._label_grade.setText('')
             self._label_colour.setText('')
             self._label_style0.setText('')
@@ -125,18 +139,23 @@ class ListCellHeader(QLabel):
         self.height = data.height
         self.width  = data.width
         self.setFixedHeight(self.height) 
-        # self.setMinimumWidth(self.width)
+        self.setMinimumWidth(self.width)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed) 
         self._init_UI()
         self.set_data(data)
 
     def _init_UI(self):
-        layout = QHBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(20,2,20,2)
+        self.layout = QHBoxLayout()
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(20,2,20,2)
 
         self._label_id  = ListCellHeaderLabel('Id', self._clicked_command)
-        self._label_RIC = ListCellHeaderLabel('RIC', self._clicked_command)
+        self._label_R   = ListCellHeaderLabel('R', self._clicked_command)
+        self._label_R.setFixedWidth(32)
+        self._label_I   = ListCellHeaderLabel('I', self._clicked_command)
+        self._label_I.setFixedWidth(32)
+        self._label_C   = ListCellHeaderLabel('C', self._clicked_command)
+        self._label_C.setFixedWidth(32)
         self._label_grade = ListCellHeaderLabel('Grade', self._clicked_command)
         self._label_colour = ListCellHeaderLabel('Colour', self._clicked_command)
         self._label_style0 = ListCellHeaderLabel('Styles', self._clicked_command)
@@ -146,17 +165,19 @@ class ListCellHeader(QLabel):
         self._label_set_date = ListCellHeaderLabel('Set on', self._clicked_command)
         self._label_strip_date = ListCellHeaderLabel('Stripped on', self._clicked_command)
         
-        layout.addWidget(self._label_id)
-        layout.addWidget(self._label_RIC)
-        layout.addWidget(self._label_grade)
-        layout.addWidget(self._label_colour)
-        layout.addWidget(self._label_style0)
-        layout.addWidget(self._label_style1)
-        layout.addWidget(self._label_style2)
-        layout.addWidget(self._label_set_by)
-        layout.addWidget(self._label_set_date)
-        layout.addWidget(self._label_strip_date)
-        self.setLayout(layout)
+        self.layout.addWidget(self._label_id)
+        self.layout.addWidget(self._label_R)
+        self.layout.addWidget(self._label_I)
+        self.layout.addWidget(self._label_C)
+        self.layout.addWidget(self._label_grade)
+        self.layout.addWidget(self._label_colour)
+        self.layout.addWidget(self._label_style0)
+        self.layout.addWidget(self._label_style1)
+        self.layout.addWidget(self._label_style2)
+        self.layout.addWidget(self._label_set_by)
+        self.layout.addWidget(self._label_set_date)
+        self.layout.addWidget(self._label_strip_date)
+        self.setLayout(self.layout)
     
     def set_data(self, data:ProblemListCellData):
         self._data = data
@@ -185,7 +206,9 @@ class ListCellHeader(QLabel):
     def set_clicked_command(self, command):
         self._clicked_command = command
         self._label_id.set_clicked_command(command)
-        self._label_RIC.set_clicked_command(command)
+        self._label_R.set_clicked_command(command)
+        self._label_I.set_clicked_command(command)
+        self._label_C.set_clicked_command(command)
         self._label_grade.set_clicked_command(command)
         self._label_colour.set_clicked_command(command)
         self._label_style0.set_clicked_command(command)
