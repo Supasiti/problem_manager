@@ -63,6 +63,7 @@ class EditorView(FixedSizeLabel):
         self.dropdown_c = QComboBox()
         self.dropdown_c.addItems(['1','2','3','4','5'])
         self.layout_combo = QHBoxLayout()
+        self.layout_combo.setContentsMargins(2,2,2,2)
         self.layout_combo.addWidget(self.dropdown_r)
         self.layout_combo.addWidget(self.dropdown_i)
         self.layout_combo.addWidget(self.dropdown_c)

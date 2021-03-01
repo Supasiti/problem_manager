@@ -33,6 +33,6 @@ class App(QApplication):
 
 if __name__ == '__main__':
     app = App(sys.argv)
-    # app.setStyle('Fusion')
-    app.setStyle('Macintosh')
+    app.setStyle('Fusion')
+    # app.setStyle('Macintosh')
     sys.exit(app.exec_())   

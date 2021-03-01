@@ -5,17 +5,31 @@ from services.old_problem_viewer import OldProblemViewer
 from services.setting import Setting
 from services.colour_setting import ColourSetting
 from models.problem_list_model import ProblemListModel, ProblemListDataBuilder
-from views.problem_list_view import ProblemListView
+from views.problem_list_view import ProblemListMainView
 
 class ProblemListController():
 
     _dependency   : DependencyService
+    _sort_dict = { 
+        'Id' : lambda x : x.id,
+        'R'  : lambda x : x.RIC.R,
+        'I'  : lambda x : x.RIC.I,
+        'C'  : lambda x : x.RIC.C,
+        'Grade' : lambda x : str(x.grade),
+        'Colour' : lambda x : x.colour,
+        'Styles' : lambda x : x.styles[0],
+        'Setter' : lambda x : x.set_by.lower(),
+        'Set on' : lambda x : x.set_date,
+        'Stripped on' : lambda x : x.strip_date
+    }
+
+
 
     def __init__(self,dependency:DependencyService):
         self._setup_dependencies(dependency)
         self._builder = ProblemListDataBuilder(self._colour_setting)
         self.model    = ProblemListModel()
-        self.view     = ProblemListView(self, self.model)
+        self.view     = ProblemListMainView(self, self.model)
         self._set_view_data(True)
         self._connect_other()
 
@@ -37,7 +51,8 @@ class ProblemListController():
         self.model.data = self._builder.from_problems(self._viewer.problems)
 
     def sort_by(self, text:str):
-        print(text)
-
+        if text in self._sort_dict.keys():
+            sort_function = self._sort_dict[text]
+            self.model.sort_problems_by(sort_function)
     
        

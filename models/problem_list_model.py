@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import NamedTuple
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
+from collections.abc import Callable
 
 from services.colour_setting import ColourSetting
 from APImodels.colour import Colour
@@ -68,7 +69,7 @@ class ProblemListDataBuilder():
         even_row = self._builder.from_row(0)
         odd_row  = self._builder.from_row(1)
 
-        return ProblemListData(bg_colour, text_colour, header, even_row, odd_row, problems)
+        return ProblemListData(bg_colour, text_colour, header, even_row, odd_row, list(problems))
 
 class ProblemListModel(QObject):
 
@@ -94,3 +95,6 @@ class ProblemListModel(QObject):
         self._data = value
         self.cellsChanged.emit(True)
 
+    def sort_problems_by(self, predicate:Callable[[Problem],object])-> None:
+        self._data.problems.sort(key= predicate)
+        self.cellsChanged.emit(True)

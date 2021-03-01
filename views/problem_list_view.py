@@ -9,7 +9,7 @@ from views.label import FixedSizeLabel
 from views.frame import Frame
 from views.list_cell import ListCell
 
-class ProblemListView(Frame):
+class ProblemListMainView(Frame):
 
     scrollarea  : QScrollArea
     widget      : QWidget
@@ -32,7 +32,7 @@ class ProblemListView(Frame):
         self.title.setFont(QFont('.AppleSystemUIFont', 28))
         self.title.setMargin(20)
 
-        self.scrollarea = ListView(self.controller, self.model)
+        self.scrollarea = ProblemListView(self.controller, self.model)
 
         layout.addWidget(self.title)
         layout.addWidget(self.scrollarea)
@@ -45,7 +45,7 @@ class ProblemListView(Frame):
         self.model.cellsChanged.connect(self.set_data)
 
 
-class ListView(QScrollArea):
+class ProblemListView(QScrollArea):
 
     def __init__(self, controller,model, parent=None):
         QScrollArea.__init__(self, parent)

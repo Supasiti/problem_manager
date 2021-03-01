@@ -30,6 +30,7 @@ class TopStation(FixedSizeFrame):
 
     def _set_layout(self):
         layout = QHBoxLayout()
+        layout.setContentsMargins(2,2,2,2)
         layout.addWidget(self.date_label)
         layout.addWidget(self.date_lineedit)
         self.setLayout(layout)
