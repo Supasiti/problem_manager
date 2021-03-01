@@ -33,13 +33,13 @@ class MainController():
         self.top_controller    = TopController(self._dependency)
         self.work_controller   = WorkController(self._dependency)
         self.tool_controller   = ToolController(self._dependency)
-        # self.work_controller   = ProblemListController(self._dependency)
 
         self.model = MainModel(dynamic_data = self._view_data()) # load model
-        self.view  = MainView(self, self.model)          # load view
-        self.view.show()
+        self.view  = MainView(self, self.model)                  # load view
         self._connect_other()
-    
+        self.view.show()
+        self.open_current_set()
+        
     def _setup_dependencies(self, dependency: DependencyService):
         self.editor        = ProblemsEditor(EditingProblemsEditor())
         self._dependency   = dependency
