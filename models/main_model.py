@@ -24,7 +24,7 @@ class MainViewStaticData(NamedTuple):
 
     @staticmethod
     def default():
-        return MainViewStaticData('Problem Manager', 1200, 800)
+        return MainViewStaticData('Problem Manager', 1200, 300)
 
 class MainViewDynamicData(NamedTuple):
     # contains all the dynamic data required by Main View

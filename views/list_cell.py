@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QSizePolicy, QFrame
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
+
 from PyQt5.QtCore import Qt 
 
 from APImodels.colour import Colour
@@ -133,8 +134,8 @@ class ListCell(QLabel):
 
 class ListCellHeader(QLabel):
 
-    def __init__(self, data: ProblemListCellData):
-        super().__init__()
+    def __init__(self, data: ProblemListCellData, parent=None):
+        super().__init__(parent=parent)
         self._clicked_command = None
         self.height = data.height
         self.width  = data.width
@@ -215,7 +216,6 @@ class ListCellHeader(QLabel):
         self._label_set_by.set_clicked_command(command)
         self._label_set_date.set_clicked_command(command)
         self._label_strip_date.set_clicked_command(command)
-
 
 
 
