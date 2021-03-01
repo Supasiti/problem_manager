@@ -1,9 +1,8 @@
 from PyQt5.QtWidgets import QLabel
-from PyQt5.QtWidgets import QSizePolicy, QFrame
+from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtWidgets import QHBoxLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
-
 from PyQt5.QtCore import Qt 
 
 from APImodels.colour import Colour

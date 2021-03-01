@@ -31,9 +31,9 @@ class MainController():
         # load other controllers
         self.bottom_controller = BottomController(self._dependency)
         self.top_controller    = TopController(self._dependency)
-        # self.work_controller   = WorkController(self._dependency)
+        self.work_controller   = WorkController(self._dependency)
         self.tool_controller   = ToolController(self._dependency)
-        self.work_controller   = ProblemListController(self._dependency)
+        # self.work_controller   = ProblemListController(self._dependency)
 
         self.model = MainModel(dynamic_data = self._view_data()) # load model
         self.view  = MainView(self, self.model)          # load view
@@ -73,20 +73,27 @@ class MainController():
         self._state.show_save_dialog()
 
     def open_current_set(self):
+        if type(self.work_controller) == ProblemListController:
+            self._update_work_controller(WorkController(self._dependency))
         self.editor.change_to_state(EditingProblemsEditor())
         self.bottom_controller.open_directory()
   
     def open_previous_set(self):
+        if type(self.work_controller) == ProblemListController:
+            self._update_work_controller(WorkController(self._dependency))
         self.editor.change_to_state(ViewingProblemsEditor())
 
     def open_problem_list_viewer(self):
         # open problem list view
         # change state to view only
         # open problem filter
-        # set up dependency
-            # get filepath for history
-            # 
-        pass
+        self._update_work_controller(ProblemListController(self._dependency))
+        self.change_to_state(ViewingProblemsEditor())
+
+    def _update_work_controller(self, controller):
+        self.work_controller.view.setParent(None)
+        self.work_controller = controller
+        self.model.dynamic_data = self._view_data()
 
 class MainControllerState(ABC):
 
