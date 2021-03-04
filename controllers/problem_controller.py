@@ -6,8 +6,10 @@ from services.setting import Setting
 from services.grade_setting import GradeSetting
 
 from services.sector_setting import SectorSetting
-from models.problem_area_model import ProblemAreaModel
+from models.problem_area_model import ProblemAreaModel, ProblemAreaPanelData
 from views.scroll_area import ProblemArea
+from controllers.sector_controller import SectorAreaController
+from controllers.grade_controller import GradeAreaController
 from APImodels.RIC import RIC
 from APImodels.problem import Problem
 
@@ -17,12 +19,22 @@ class ProblemAreaController():
     _dependency     : DependencyService
     _editor         : ProblemsEditor
 
-    def __init__(self, dependency:DependencyService, parent=None):
-        self._parent = parent
+    def __init__(self, dependency:DependencyService):
         self._setup_dependencies(dependency)
-        self.model   = ProblemAreaModel()   # load model
-        self.view    = ProblemArea(self, self.model)                   # load view
+
+        self.sector_controller = SectorAreaController(self._dependency)
+        self.grade_controller  = GradeAreaController(self._dependency)
+
+        self.model   = ProblemAreaModel(self._view_data())            # load model
+        self.view    = ProblemArea(self, self.model) # load view
         self._connect_editor()
+
+    def _view_data(self) -> ProblemAreaPanelData:
+        return ProblemAreaPanelData(
+            None, 
+            self.sector_controller.view,
+            self.grade_controller.view
+        )
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency

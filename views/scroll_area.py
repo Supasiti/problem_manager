@@ -1,7 +1,5 @@
-from PyQt5.QtWidgets import QScrollArea
-from PyQt5.QtWidgets import QFrame
-from PyQt5.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QMargins
 from PyQt5.QtCore import Qt 
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
@@ -50,9 +48,19 @@ class ProblemArea(ScrollArea):
         self.model      = model
         
         self._init_UI()
+        self._connect_scroll_bars()
         self._connect_with_model()
     
     def _init_UI(self):
+        self.panels   = self.model.panels
+        self.margins  = QMargins(self.panels.left_margin, self.panels.top_margin, 0, 0)
+        self.setViewportMargins(self.margins)
+
+        self.header     = self.panels.sector_view
+        self.left_panel = self.panels.grade_view
+        self.header.setParent(self)
+        self.left_panel.setParent(self)
+
         self.widget     = QWidget()
         self.layout     = QGridLayout()
         self.layout.setSpacing(2)
@@ -68,14 +76,20 @@ class ProblemArea(ScrollArea):
         cell.set_clicked_command(self.controller.on_cell_clicked)
         self.layout.addWidget(cell, cell_data.row, cell_data.col)
 
-    def connect_horizontal_scroll_bar(self, command):
-        self.horizontalScrollBar().valueChanged.connect(command)
+    def _connect_scroll_bars(self):
+        self.horizontalScrollBar().valueChanged.connect(lambda x : self.header.horizontalScrollBar().setValue(x))
+        self.header.horizontalScrollBar().valueChanged.connect(lambda x : self.horizontalScrollBar().setValue(x))
+        self.verticalScrollBar().valueChanged.connect(lambda x : self.left_panel.verticalScrollBar().setValue(x))
+        self.left_panel.verticalScrollBar().valueChanged.connect(lambda x : self.verticalScrollBar().setValue(x))
+        
+    # def connect_horizontal_scroll_bar(self, command):
+    #     self.horizontalScrollBar().valueChanged.connect(command)
     
-    def connect_vertical_scroll_bar(self, command):
-        self.verticalScrollBar().valueChanged.connect(command)
+    # def connect_vertical_scroll_bar(self, command):
+    #     self.verticalScrollBar().valueChanged.connect(command)
     
-    def set_vertical_bar_value(self, value: int):
-        self.verticalScrollBar().setValue(value)
+    # def set_vertical_bar_value(self, value: int):
+    #     self.verticalScrollBar().setValue(value)
 
     def _connect_with_model(self):
         self.model.cellsChanged.connect(self._set_cell_data)
@@ -85,6 +99,15 @@ class ProblemArea(ScrollArea):
             cell = self.layout.itemAtPosition(cell_data.row, cell_data.col).widget()
             cell.set_data(cell_data)
 
+    def resizeEvent(self, event):
+        rect = self.viewport().geometry()
+        self.header.setGeometry(
+            rect.x(), 0, rect.width(), self.margins.top()-4
+            )
+        self.left_panel.setGeometry(
+            0, rect.y(), self.margins.left()-4, rect.height()
+        )
+        QScrollArea.resizeEvent(self, event)
 
 class SectorArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
@@ -118,9 +141,6 @@ class SectorArea(FixedHeightScrollArea):
 
     def _hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
-    
-    def set_horizontal_bar_value(self, value: int):
-        self.horizontalScrollBar().setValue(value)
     
     def _connect_with_model(self):
         self.model.cellsChanged.connect(self._set_cell_data)
@@ -161,12 +181,6 @@ class GradeArea(FixedWidthScrollArea):
      
     def _hide_scroll_bar(self):
         self.verticalScrollBar().setStyleSheet("QScrollBar {width:0px;}")
-    
-    def set_vertical_bar_value(self, value: int):
-        self.verticalScrollBar().setValue(value)
-
-    def connect_vertical_scroll_bar(self, command):
-        self.verticalScrollBar().valueChanged.connect(command)
 
     def _connect_model(self):
         self.model.countsChanged.connect(self._set_count_data)

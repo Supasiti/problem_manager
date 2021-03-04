@@ -1,3 +1,4 @@
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from typing import NamedTuple
@@ -5,12 +6,21 @@ from typing import NamedTuple
 from services.setting import Setting
 from services.grade_setting import GradeSetting
 from services.sector_setting import SectorSetting
+from services.colour_setting import ColourSetting
 from models.problem_cell_data import ProblemCellDataBuilder, ProblemCellData
 from APImodels.problem import Problem
+from APImodels.colour import Colour
+
+class ProblemAreaPanelData(NamedTuple):
+    info_view   : QWidget
+    sector_view : QWidget
+    grade_view  : QWidget
+    top_margin  : int = 52 
+    left_margin : int = 164
 
 class ProblemAreaData(NamedTuple):
-    cells : tuple[ProblemCellData,...] = tuple()
-
+    cells : tuple[ProblemCellData,...] 
+    
 class ProblemAreaDataBuilder(QObject):
 
     def __init__(self):
@@ -67,11 +77,12 @@ class ProblemAreaModel(QObject):
     cellsChanged = pyqtSignal(bool)
     _changes     : ProblemAreaData
 
-    def __init__(self):
+    def __init__(self, side_panels:ProblemAreaPanelData):
         super().__init__()
         self._builder = ProblemAreaDataBuilder()
         self.data    = self._builder.no_problems()
         self.changes = self._builder.no_problems() 
+        self.panels  = side_panels
 
     @property
     def changes(self):
@@ -112,3 +123,24 @@ class ProblemAreaModel(QObject):
         # We only need to change that cell. 
         assert(type(problem) == Problem)
         self.changes = self._builder.empty_cell(problem)
+
+
+class InfoCellData(NamedTuple):
+
+    bg_colour   : Colour
+    text_colour : Colour 
+    width  : int = 160
+    height : int = 48
+    inner_width  : int = 52
+    inner_height : int = 23
+
+    @staticmethod
+    def default() -> InfoCellData:
+        setting = Setting.get(ColourSetting)
+        bg_colour = setting.get_bg_colour('default')
+        text_colour = setting.get_text_colour('default')
+        return InfoCellData(bg_colour, text_colour)
+
+# class InfoCellModel(self):
+
+#     cellsChanged = pyqtSignal(bool)

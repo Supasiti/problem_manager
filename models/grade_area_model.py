@@ -76,7 +76,7 @@ class GradeCountDataBuilder():
 
 class GradeAreaData(NamedTuple):
     cells : tuple[GradeCellData,...]
-    width : int =160
+    width : int = 160
     
 class GradeAreaDataBuilder():
 

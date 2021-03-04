@@ -6,7 +6,6 @@ from typing import NamedTuple
 from services.setting import Setting
 from services.colour_setting import ColourSetting
 from services.sector_setting import SectorSetting
-# from models.cell_data import SectorCellData, SectorCellDataBuilder
 from APImodels.sector import Sector
 from APImodels.problem import Problem
 from APImodels.colour import Colour

@@ -1,6 +1,6 @@
 # main work station with the overview of the current problems in the gym
 
-from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QVBoxLayout
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 
@@ -21,35 +21,48 @@ class WorkStation(Frame):
         self.controller   = controller
         self.model        = model
 
-        self.__init_static_UI()
-        self.__init_dynamic_UI()
-        self.__connect_scroll_bars()
-        self.__connect_model()
+        self._init_UI()
+        self._populate_main_view()
+        # self.__connect_scroll_bars()
+        self._connect_model()
 
-    def __init_static_UI(self):
+    def _init_UI(self):
         data        = self.model.static_data
-        self.top_right_pad   = FixedSizeLabel(10, 48)
-        self.bottom_left_pad = FixedSizeLabel(154, 10)
+        # self.top_right_pad   = FixedSizeLabel(10, 48)
+        # self.bottom_left_pad = FixedSizeLabel(154, 10)
         self.set_background_colour(data.bg_colour)
         
-    def __init_dynamic_UI(self):
-        data              = self.model.dynamic_data
-        self.layout = QGridLayout()
+        self.layout = QVBoxLayout()
         self.layout.setContentsMargins(2,2,2,2)
         self.layout.setSpacing(4)
-
-        self.info_view    = InfoCell(160, 48, 52, 23, Colour(30,30,30), Colour(240,240,240))
-        self.sector_view  = data.sector_view
-        self.grade_view   = data.grade_view  
-        self.problem_view = data.problem_view   
-
-        self.layout.addWidget(self.info_view,      0, 0)
-        self.layout.addWidget(self.sector_view,    0, 1)
-        self.layout.addWidget(self.grade_view,     1, 0)
-        self.layout.addWidget(self.problem_view,   1, 1, 2, 2)
-        self.layout.addWidget(self.top_right_pad,  0, 2)
-        self.layout.addWidget(self.bottom_left_pad,2, 0)
         self.setLayout(self.layout)
+    
+    def _populate_main_view(self):
+        self.main_view = self.model.dynamic_data.main_view  
+        self.layout.addWidget(self.main_view)
+
+    def _connect_model(self):
+        self.model.dataChanged.connect(self._update_UI)
+    
+    def _update_UI(self) ->None:
+        self._remove_all_widgets_from_layout()
+        self._populate_main_view()
+
+    def _remove_all_widgets_from_layout(self) -> None:
+        self.layout.removeWidget(self.main_view)
+
+        # self.info_view    = InfoCell(160, 48, 52, 23, Colour(30,30,30), Colour(240,240,240))
+        # self.sector_view  = data.sector_view
+        # self.grade_view   = data.grade_view  
+        # self.problem_view = data.problem_view   
+
+        # self.layout.addWidget(self.info_view,      0, 0)
+        # self.layout.addWidget(self.sector_view,    0, 1)
+        # self.layout.addWidget(self.grade_view,     1, 0)
+        # self.layout.addWidget(self.problem_view,   1, 1, 2, 2)
+        # self.layout.addWidget(self.top_right_pad,  0, 2)
+        # self.layout.addWidget(self.bottom_left_pad,2, 0)
+        # self.setLayout(self.layout)
 
     def set_background_colour(self, colour:Colour):
         pal = QPalette()
@@ -69,5 +82,5 @@ class WorkStation(Frame):
         self.grade_view.set_vertical_bar_value(value)
         self.problem_view.set_vertical_bar_value(value)
 
-    def __connect_model(self):
-        self.model.dataChanged.connect(self.__init_dynamic_UI)
+    def _connect_model(self):
+        self.model.dataChanged.connect(self._update_UI)
