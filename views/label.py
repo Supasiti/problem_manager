@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 
 from APImodels.colour import Colour
 from models.problem_cell_data import ProblemCellData
-from models.cell_data import GradeCellData, GradeCountData
+from models.grade_area_model import GradeCellData, GradeCountData
 from models.sector_area_model import SectorCellData
 
 
