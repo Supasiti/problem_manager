@@ -15,7 +15,6 @@ class EditorController():
     
     _editor         : ProblemsEditor
     _colour_setting : ColourSetting
-    _setting        : Setting
 
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
@@ -27,8 +26,7 @@ class EditorController():
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
         self._editor         = self._dependency.get(ProblemsEditor)
-        self._setting        = self._dependency.get(Setting)
-        self._colour_setting = self._setting.get(ColourSetting)
+        self._colour_setting = Setting.get(ColourSetting)
 
     def _connect_other(self):
         self._editor.problemTypeChanged.connect(self._on_problem_type_changed)

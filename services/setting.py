@@ -8,54 +8,55 @@ from services.grade_setting  import GradeSetting, GradeSettingParser
 from services.colour_setting import ColourSetting, ColourSettingParser
 from services.sector_setting import SectorSetting, SectorSettingParser
 
-class Setting():
-
-    padlock        = Lock()
-    settingChanged = Signal(type)
-    
-    def __init__(self):
-        self._settings        = dict()
-        self._init_all_setting()
-
-    def _init_all_setting(self) -> None:
-        file_parser = FileSettingParser()
-        self._register(FileSetting, file_parser.get_data(), file_parser)
-
-        grade_parser = GradeSettingParser()
-        self._register(GradeSetting, grade_parser.get_data(), grade_parser)
-
-        colour_parser = ColourSettingParser()
-        self._register(ColourSetting, colour_parser.get_data(), colour_parser)
-        
-        sector_parser = SectorSettingParser()
-        self._register(SectorSetting, sector_parser.get_data(), sector_parser)
-
-    def get(self, class_type:type) -> object:
-        if class_type in self._settings.keys():
-            return self._settings[class_type].setting
-        return None
-
-    def _register(self, class_type: type, setting:object, parser:object) -> bool:
-        if isinstance(setting, class_type):
-            with self.padlock:
-                self._settings[class_type] = SettingParserData(setting, parser)
-            return True
-        raise ValueError('_register(): Trying to register an incorrect setting class.')
-
-    def update(self, class_type:type, value:object) ->bool:
-        if class_type in self._settings.keys():
-            parser = self._settings[class_type].parser
-            parser.set_data(value)
-            self._register(class_type, parser.get_data(), parser)
-            self.settingChanged.emit(class_type)
-            return True
-        raise ValueError('This setting has not been registered.')
-
-    def write(self, class_type:type):
-        if class_type in self._settings.keys():
-            parser = self._settings[class_type].parser
-            parser.write()
-
 class SettingParserData(NamedTuple):
     setting : object
     parser  : SettingParser
+
+
+class Setting():
+    
+    settingChanged = Signal(type)
+    _padlock = Lock()
+    _parsers = {
+        FileSetting   : FileSettingParser, 
+        GradeSetting  : GradeSettingParser,
+        ColourSetting : ColourSettingParser,
+        SectorSetting : SectorSettingParser
+    }
+
+    _settings = dict.fromkeys(_parsers.keys())
+
+    @classmethod
+    def get(cls, class_type:type) -> object:
+        if class_type in cls._settings.keys():
+            if cls._settings[class_type] is None:
+                parser = cls._parsers[class_type]
+                instance = parser()
+                cls._register(class_type, instance.get_data(), instance)
+            return cls._settings[class_type].setting
+        return None
+
+    @classmethod
+    def _register(cls, class_type: type, setting:object, parser:object) -> bool:
+        if isinstance(setting, class_type):
+            with cls._padlock:
+                cls._settings[class_type] = SettingParserData(setting, parser)
+            return True
+        raise ValueError('_register(): Trying to register an incorrect setting class.')
+    
+    @classmethod
+    def update(cls, class_type:type, value:object) ->bool:
+        if class_type in cls._settings.keys():
+            parser = cls._settings[class_type].parser
+            parser.set_data(value)
+            cls._register(class_type, parser.get_data(), parser)
+            cls.settingChanged.emit(class_type)
+            return True
+        raise ValueError('This setting has not been registered.')
+
+    @classmethod
+    def write(cls, class_type:type):
+        if class_type in cls._settings.keys():
+            parser = cls._settings[class_type].parser
+            parser.write()
+

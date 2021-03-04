@@ -34,8 +34,7 @@ class WorkController():
         self._set_count()
 
     def _set_aim(self):
-        setting       = self._dependency.get(Setting)
-        grade_setting = setting.get(GradeSetting)
+        grade_setting = Setting.get(GradeSetting)
         aim           = grade_setting.get_total_aim()
         self.view.info_view.set_aim(aim)
     

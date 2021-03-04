@@ -32,7 +32,7 @@ class LocalProblemRepository(ProblemRepository):
             self.set_filepath(filepath)
         
     def _lazy_init(self, filepath:str):
-        if os.path.getsize(filepath) == 0:
+        if not os.path.exists(filepath) or os.path.getsize(filepath) == 0:
             self._data     = dict()
             self._next_id  = 1
             self._problems = tuple()

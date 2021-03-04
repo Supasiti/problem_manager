@@ -1,9 +1,10 @@
-from tests.test_problem_editor import MockRepository
-from datetime import date
+# from tests.test_problem_editor import MockRepository
+# from datetime import date
 
+from services.setting import Setting
+from services.file_setting import FileSetting
 if __name__ == '__main__':
-    
-    numbers = [1, 1,1,1,2,3,3,3,4,4,4,5]
 
-    uniques = list(dict.fromkeys(numbers).keys())
-    print(uniques)
+
+    file_setting = Setting.get(FileSetting)
+    print(type(file_setting))

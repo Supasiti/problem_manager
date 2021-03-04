@@ -48,7 +48,7 @@ class BottomStation(FixedHeightFrame):
         directory = QFileDialog.getExistingDirectory(self, "Open Directory",
                     "~/Desktop", QFileDialog.ShowDirsOnly | QFileDialog.DontResolveSymlinks)
         if directory: 
-            self.controller.open_directory(directory)
+            self.controller.set_new_directory(directory)
 
     def _connect_model(self):
         self.model.contentPathChanged.connect(self.path_info.setText)

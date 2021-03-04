@@ -6,6 +6,10 @@ from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.contents_path_manager import ContentsPathManager
 from services.json_writer import JsonWriter, StrippedProblemWriter
+from services.file_setting import FileSetting
+from services.problem_repository import LocalProblemRepository
+from services.setting import Setting
+
 from models.main_model import MainModel, MainViewDynamicData
 from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
@@ -45,6 +49,7 @@ class MainController():
         self._dependency   = dependency
         self._dependency.register(ProblemsEditor, self.editor)
         self.path_manager = self._dependency.get(ContentsPathManager)
+        self._repo        = self._dependency.get(LocalProblemRepository)
         self.writer       = self._dependency.get(JsonWriter)
         self.strip_writer = self._dependency.get(StrippedProblemWriter)
 
@@ -56,7 +61,13 @@ class MainController():
         return MainViewDynamicData(self.top_controller.view, self.work_controller.view, self.bottom_controller.view, self.tool_controller.view)
     
     def _connect_other(self):
+        # setting = self._dependency.get(Setting)
+        Setting.settingChanged.connect(self._on_file_setting_changed)
         self.editor.stateChanged.connect(self._on_state_changed)
+
+    def _on_file_setting_changed(self, class_type:type) -> None:
+        if class_type == FileSetting:
+            self._open_directory()
     
     def _on_state_changed(self, state_name:str):
         if state_name == 'editing':
@@ -75,9 +86,16 @@ class MainController():
     def open_current_set(self):
         if type(self.work_controller) == ProblemListController:
             self._update_work_controller(WorkController(self._dependency))
+        self._open_directory()
+    
+    def _open_directory(self):
+        # setting   = self._dependency.get(Setting)
+        directory = Setting.get(FileSetting).content_path 
+        self.path_manager.directory  = directory
+        self._repo.set_filepath(self.path_manager.filepath)
+        self.editor.load_problems(self._repo)
         self.editor.change_to_state(EditingProblemsEditor())
-        self.bottom_controller.open_directory()
-  
+
     def open_previous_set(self):
         if type(self.work_controller) == ProblemListController:
             self._update_work_controller(WorkController(self._dependency))

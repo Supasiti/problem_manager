@@ -24,9 +24,8 @@ class SectorAreaController():
     
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
-        self._setting        = self._dependency.get(Setting)
-        self._colour_setting = self._setting.get(ColourSetting)
-        self._sector_setting = self._setting.get(SectorSetting)
+        self._colour_setting = Setting.get(ColourSetting)
+        self._sector_setting = Setting.get(SectorSetting)
 
     def _connect_editor(self):
         editor = self._dependency.get(ProblemsEditor)

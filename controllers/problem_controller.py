@@ -19,7 +19,6 @@ class ProblemAreaController():
     _grade_setting  : GradeSetting
     _colour_setting : ColourSetting
     _sector_setting : SectorSetting
-    _setting        : Setting
 
     def __init__(self, dependency:DependencyService, parent=None):
         self._parent = parent
@@ -33,10 +32,9 @@ class ProblemAreaController():
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
         self._editor         = self._dependency.get(ProblemsEditor)
-        self._setting        = self._dependency.get(Setting)
-        self._grade_setting  = self._setting.get(GradeSetting)
-        self._colour_setting = self._setting.get(ColourSetting)
-        self._sector_setting = self._setting.get(SectorSetting)
+        self._grade_setting  = Setting.get(GradeSetting)
+        self._colour_setting = Setting.get(ColourSetting)
+        self._sector_setting = Setting.get(SectorSetting)
 
     def _connect_editor(self):
         self._editor.problemsChanged.connect(self._on_problems_changed)

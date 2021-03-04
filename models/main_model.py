@@ -2,18 +2,9 @@
 #
 # contains all the informations being presented on MainView
 from typing import NamedTuple
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
-
-# from models.dicts import GradeDict, SectorDict
-# from models.problem_scroll_area_model import ProblemScrollAreaModel
-# from models.sector_scroll_area_model import SectorScrollAreaModel
-# from models.bottom_model import BottomStationModel
-
-from views.bottom_station import BottomStation
-from views.tool_station import ToolStation
-from views.work_station import WorkStation
-from views.top_station import TopStation 
 
 class MainViewStaticData(NamedTuple):
     # contains all the static data required by Main View
@@ -30,10 +21,10 @@ class MainViewDynamicData(NamedTuple):
     # contains all the dynamic data required by Main View
     # especially references to all 4 stations
 
-    top_station : TopStation
-    work_station : WorkStation
-    bottom_station : BottomStation
-    tool_station : ToolStation
+    top_station : QWidget
+    work_station : QWidget
+    bottom_station : QWidget
+    tool_station : QWidget
 
     @staticmethod
     def default():

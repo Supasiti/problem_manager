@@ -64,7 +64,9 @@ class ContentsPathManager():
         self._directory = value
         if not self._current_directory_exists(value):
             json_dir = os.path.join(value, 'current')
+            hist_dir = os.path.join(value, 'history')
             os.mkdir(json_dir)
+            os.mkdir(hist_dir)
         self.filepath = self._latest_set_filepath()
 
     def _current_directory_exists(self, directory:str):

@@ -23,8 +23,6 @@ class ProblemListController():
         'Stripped on' : lambda x : x.strip_date
     }
 
-
-
     def __init__(self,dependency:DependencyService):
         self._setup_dependencies(dependency)
         self._builder = ProblemListDataBuilder(self._colour_setting)
@@ -41,8 +39,7 @@ class ProblemListController():
         directory    = self._path_manager.history_dir
         self._IO.set_dir(directory)
         self._viewer.set_dir_IO(self._IO)
-        self._setting        = self._dependency.get(Setting)
-        self._colour_setting = self._setting.get(ColourSetting)
+        self._colour_setting = Setting.get(ColourSetting)
 
     def _connect_other(self):
         self._viewer.problemsChanged.connect(self._set_view_data)
