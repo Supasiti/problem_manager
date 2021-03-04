@@ -4,10 +4,10 @@ from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
 from services.setting import Setting
 from services.grade_setting import GradeSetting
-
 from services.sector_setting import SectorSetting
-from models.problem_area_model import ProblemAreaModel, ProblemAreaPanelData
+from models.problem_area_model import ProblemAreaModel, ProblemAreaPanelData, InfoCellModel
 from views.scroll_area import ProblemArea
+from views.label import InfoCell
 from controllers.sector_controller import SectorAreaController
 from controllers.grade_controller import GradeAreaController
 from APImodels.RIC import RIC
@@ -24,14 +24,15 @@ class ProblemAreaController():
 
         self.sector_controller = SectorAreaController(self._dependency)
         self.grade_controller  = GradeAreaController(self._dependency)
+        self.info_controller   = InfoController(self._dependency)
 
         self.model   = ProblemAreaModel(self._view_data())            # load model
         self.view    = ProblemArea(self, self.model) # load view
-        self._connect_editor()
+        self._connect()
 
     def _view_data(self) -> ProblemAreaPanelData:
         return ProblemAreaPanelData(
-            None, 
+            self.info_controller.view, 
             self.sector_controller.view,
             self.grade_controller.view
         )
@@ -40,7 +41,8 @@ class ProblemAreaController():
         self._dependency     = dependency
         self._editor         = self._dependency.get(ProblemsEditor)
 
-    def _connect_editor(self):
+    def _connect(self):
+        self.model.cellsChanged.connect(self.view.set_cell_data)
         self._editor.problemsChanged.connect(self._on_problems_changed)
         self._editor.problemAdded.connect(self._on_problem_added)
         self._editor.problemRemoved.connect(self._on_problem_removed)
@@ -71,3 +73,26 @@ class ProblemAreaController():
 
         return Problem(_id, RIC(1,1,1), _grade, _hold, _sector, (), '', date.today(), 'on')
 
+
+
+class InfoController():
+
+    def __init__(self, dependency:DependencyService):
+        self._setup_dependencies(dependency)
+        self.model   = InfoCellModel()            # load model
+        self.view    = InfoCell(self, self.model) # load view
+        self._connect()
+
+    def _setup_dependencies(self, dependency:DependencyService):
+        self._dependency     = dependency
+        self._editor         = self._dependency.get(ProblemsEditor)
+
+    def _connect(self) -> None:
+        self.model.countsChanged.connect(self.view.set_count)
+        self.model.aimChanged.connect(self.view.set_aim)
+        self._editor.problemsChanged.connect(self._on_problems_changed)
+        self._editor.problemAdded.connect(self._on_problems_changed)
+        self._editor.problemRemoved.connect(self._on_problems_changed)
+
+    def _on_problems_changed(self, arg:bool) -> None:
+        self.model.counts = len(self._editor.problems)

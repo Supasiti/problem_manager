@@ -92,7 +92,8 @@ class EditorView(FixedSizeLabel):
         self.layout.setFormAlignment(Qt.AlignTop)
         self.layout.setLabelAlignment(Qt.AlignRight)
         self.layout.setContentsMargins(2,2,2,2)
-        
+        self.layout.setSpacing(4)
+
         self.layout.addRow(label_title)
         self.layout.addRow(label_id,    self.text_id)
         self.layout.addRow('RIC:',   self.layout_combo)

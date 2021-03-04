@@ -14,7 +14,7 @@ class EditorStaticData(NamedTuple):
 
     @staticmethod
     def default():
-        return EditorStaticData(276, 420)
+        return EditorStaticData(276, 400)
 
 class EditorData(NamedTuple):
 

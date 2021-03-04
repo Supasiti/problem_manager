@@ -1,3 +1,4 @@
+from __future__ import annotations
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
@@ -136,11 +137,41 @@ class InfoCellData(NamedTuple):
 
     @staticmethod
     def default() -> InfoCellData:
-        setting = Setting.get(ColourSetting)
+        setting   = Setting.get(ColourSetting)
         bg_colour = setting.get_bg_colour('default')
         text_colour = setting.get_text_colour('default')
         return InfoCellData(bg_colour, text_colour)
 
-# class InfoCellModel(self):
+class InfoCellModel(QObject):
 
-#     cellsChanged = pyqtSignal(bool)
+    countsChanged = pyqtSignal(int)
+    aimChanged    = pyqtSignal(int)
+
+    _aim    : int
+    _counts : int
+
+    def __init__(self):
+        super().__init__()
+        self.static_data = InfoCellData.default()
+        self.aim    = Setting.get(GradeSetting).get_total_aim()
+        self.counts = 0
+
+    @property
+    def aim(self) -> int:
+        return self._aim
+    
+    @aim.setter
+    def aim(self, value:int) -> None:
+        self._aim = value
+        self.aimChanged.emit(value)
+
+    @property 
+    def counts(self) -> None:
+        return self._counts
+
+    @counts.setter
+    def counts(self, value:int) -> None:
+        self._counts = value
+        self.countsChanged.emit(value)
+
+        
