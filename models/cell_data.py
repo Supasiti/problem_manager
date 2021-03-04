@@ -1,57 +1,9 @@
 from typing import NamedTuple
 
+from services.setting import Setting
 from services.grade_setting import GradeSetting
 from services.colour_setting import ColourSetting
-from services.sector_setting import SectorSetting
-from APImodels.sector import Sector
 from APImodels.colour import Colour
-
-class SectorCellData(NamedTuple):
-    # cell model containing data for sector cell
-
-    col   : int
-    width : int
-    bg_colour : Colour
-    text_colour : Colour
-    text : str
-    problem_count : str
-
-class SectorCellDataBuilder():
-    # build sector cell data from either:
-    #  - sectors
-    #  - col - in case there isn't one
-
-    def __init__(self, sector_setting: SectorSetting, colour_setting: ColourSetting):
-        self.sector_setting = sector_setting
-        self.colour_setting = colour_setting
-
-    def from_sector(self, sector:Sector):
-
-        col   = self.sector_setting.get_col(sector.name)
-        width = 96 
-        text  = sector.name.upper()
-        count = str(sector.count)
-        bg_colour   = self._background_colour(sector.setting)
-        text_colour = self._text_colour(sector.setting)
-    
-        return SectorCellData(col, width, bg_colour, text_colour, text, count)
-
-    def _background_colour(self, setting:bool):
-        colour_str = 'setting' if setting else 'default'
-        return self.colour_setting.get_bg_colour(colour_str) 
-
-    def _text_colour(self, setting:bool):
-        colour_str = 'setting' if setting else 'default'
-        return self.colour_setting.get_text_colour(colour_str)
-    
-    def from_col(self, col:int):
-        width        = 96 
-        text         = self.sector_setting.get_sector(col).upper()
-        bg_colour    = self._background_colour(False)
-        text_colour  = self._text_colour(False)
-
-        return SectorCellData(col, width, bg_colour, text_colour, text, '0') 
-
 
 class GradeCellData(NamedTuple):
     # model for grade cell
@@ -70,7 +22,7 @@ class GradeCellDataBuilder():
     #  - row 
 
     def __init__(self, grade_setting: GradeSetting):
-        self.grade_setting  = grade_setting
+        self.grade_setting  = Setting.get(GradeSetting)
 
     def build(self, row:int):
         width  = 160
@@ -98,8 +50,8 @@ class GradeCountDataBuilder():
     #  - row + count
 
     def __init__(self, grade_setting: GradeSetting, colour_setting: ColourSetting):
-        self._grade_setting  = grade_setting
-        self._colour_setting = colour_setting
+        self._grade_setting  = Setting.get(GradeSetting)
+        self._colour_setting = Setting.get(ColourSetting)
 
     def build(self, row:int, count:int):
         

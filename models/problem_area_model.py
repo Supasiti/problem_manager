@@ -2,27 +2,22 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from typing import NamedTuple
 
+from services.setting import Setting
 from services.grade_setting import GradeSetting
-from services.colour_setting import ColourSetting
 from services.sector_setting import SectorSetting
 from models.problem_cell_data import ProblemCellDataBuilder, ProblemCellData
 from APImodels.problem import Problem
 
 class ProblemAreaData(NamedTuple):
-    cells : tuple[ProblemCellData,...]
+    cells : tuple[ProblemCellData,...] = tuple()
 
 class ProblemAreaDataBuilder(QObject):
 
-    def __init__(self, 
-        grade_setting : GradeSetting, 
-        colour_setting: ColourSetting, 
-        sector_setting: SectorSetting):
+    def __init__(self):
         super().__init__()
-        self._grade_setting  = grade_setting
-        self._colour_setting = colour_setting
-        self._sector_setting = sector_setting
-        self._builder = ProblemCellDataBuilder(
-                        self._grade_setting, self._colour_setting, self._sector_setting)
+        self._grade_setting  = Setting.get(GradeSetting)
+        self._sector_setting = Setting.get(SectorSetting)
+        self._builder        = ProblemCellDataBuilder()
         
         self._n_row = self._grade_setting.length()
         self._n_col = self._sector_setting.length()
@@ -51,7 +46,6 @@ class ProblemAreaDataBuilder(QObject):
         new_cell_data += empty_cells
         return ProblemAreaData(tuple(new_cell_data))
 
-
     def _cell_data(self, problem:Problem):
         return self._builder.from_problem(problem)
 
@@ -67,32 +61,54 @@ class ProblemAreaDataBuilder(QObject):
         cell_data = self._builder.empty_cell(_row, _col) 
         return ProblemAreaData((cell_data,))
     
+
 class ProblemAreaModel(QObject):
 
     cellsChanged = pyqtSignal(bool)
     _changes     : ProblemAreaData
 
-    def __init__(self, data : ProblemAreaData):
+    def __init__(self):
         super().__init__()
-        self.data     = data
-        self.n_row    = max([d.row for d in self.data.cells ])+ 1
-        self.n_col    = max([d.col for d in self.data.cells ])+ 1
-        self.changes  = data
+        self._builder = ProblemAreaDataBuilder()
+        self.data    = self._builder.no_problems()
+        self.changes = self._builder.no_problems() 
 
     @property
     def changes(self):
         return self._changes
 
     @changes.setter
-    def changes(self, value: ProblemAreaData):
+    def changes(self, value: ProblemAreaData) -> None:
         self._update_data(value)
         self._changes = value
         self.cellsChanged.emit(True)
 
-    def _update_data(self, value: ProblemAreaData):
+    def _update_data(self, value: ProblemAreaData) -> None:
         old_data  = list(self.data.cells)
         new_data  = list(value.cells)
         new_cells = [(d.row, d.col) for d in new_data]
         old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
         new_data += old_data_to_retain
         self.data = ProblemAreaData(tuple(new_data))
+
+    def add_problem(self, problem: Problem) -> None:
+        # Call when the editor notifies that a problem is added to that cell. 
+        # We only need to change that cell. 
+        assert(type(problem) == Problem)
+        self.changes = self._builder.from_problem(problem)
+
+    def update_problems(self, problems:tuple[Problem,...]) -> None:
+        # call when the editor notifies that a new set of problems is available and this 
+        # set contains all the problems to be shown on screen.
+        # To optimise algo, all non-empty cell will be converted either to new data or
+        # empty cell. We are expecting about 60 problems on screens at any one time, so
+        # at most we only need to convert 120 cells, instead of 247 cells
+
+        non_empty_cells = [(c.row, c.col) for c in self.data.cells if c.id != 0]
+        self.changes = self._builder.from_problems(problems, tuple(non_empty_cells))
+
+    def remove_problem(self, problem: Problem) -> None:
+        # Call when the editor notifies that a problem is removed from that cell. 
+        # We only need to change that cell. 
+        assert(type(problem) == Problem)
+        self.changes = self._builder.empty_cell(problem)

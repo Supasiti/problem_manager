@@ -8,7 +8,7 @@ from PyQt5.QtGui import QColor
 
 from views.label import ProblemCell, GradeCell, SectorCell
 from models.problem_cell_data import ProblemCellData
-from models.cell_data import SectorCellData
+from models.sector_area_model import SectorCellData
 
 class ScrollArea(QScrollArea):
 

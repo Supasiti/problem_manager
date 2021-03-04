@@ -1,5 +1,5 @@
 from typing import NamedTuple
-
+from services.setting import Setting
 from services.grade_setting import GradeSetting
 from services.colour_setting import ColourSetting
 from services.sector_setting import SectorSetting
@@ -22,13 +22,10 @@ class ProblemCellDataBuilder():
     #  - problem
     #  - row, col - in case there isn't one
 
-    def __init__(self, 
-        grade_setting : GradeSetting, 
-        colour_setting: ColourSetting, 
-        sector_setting: SectorSetting):
-        self._grade_setting  = grade_setting
-        self._colour_setting = colour_setting
-        self._sector_setting = sector_setting
+    def __init__(self):
+        self._grade_setting  = Setting.get(GradeSetting)
+        self._colour_setting = Setting.get(ColourSetting)
+        self._sector_setting = Setting.get(SectorSetting)
 
     def from_problem(self, problem:Problem):
 
