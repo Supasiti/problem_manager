@@ -4,7 +4,7 @@ from services.old_problem_IO import OldProblemIO
 from services.old_problem_viewer import OldProblemViewer
 from services.setting import Setting
 from services.colour_setting import ColourSetting
-from models.problem_list_model import ProblemListModel, ProblemListDataBuilder
+from models.problem_list_model import ProblemListModel
 from views.problem_list_view import ProblemListMainView
 
 class ProblemListController():
@@ -25,11 +25,11 @@ class ProblemListController():
 
     def __init__(self,dependency:DependencyService):
         self._setup_dependencies(dependency)
-        self._builder = ProblemListDataBuilder(self._colour_setting)
         self.model    = ProblemListModel()
         self.view     = ProblemListMainView(self, self.model)
+        self._connect()
         self._set_view_data(True)
-        self._connect_other()
+        
 
     def _setup_dependencies(self, dependency: DependencyService):
         self._dependency = dependency
@@ -41,11 +41,12 @@ class ProblemListController():
         self._viewer.set_dir_IO(self._IO)
         self._colour_setting = Setting.get(ColourSetting)
 
-    def _connect_other(self):
+    def _connect(self):
+        self.model.cellsChanged.connect(self.view.set_data)
         self._viewer.problemsChanged.connect(self._set_view_data)
 
     def _set_view_data(self, arg:bool)->None:
-        self.model.data = self._builder.from_problems(self._viewer.problems)
+        self.model.set_problems(self._viewer.problems)
 
     def sort_by(self, text:str):
         if text in self._sort_dict.keys():

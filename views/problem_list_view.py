@@ -20,7 +20,6 @@ class ProblemListMainView(Frame):
         self.controller   = controller
         self.model        = model
         self._init_UI()
-        self._connect_other()
 
     def _init_UI(self):
         layout = QVBoxLayout()
@@ -40,9 +39,6 @@ class ProblemListMainView(Frame):
 
     def set_data(self, arg:bool):
         self.scrollarea.set_data(True)
-
-    def _connect_other(self):
-        self.model.cellsChanged.connect(self.set_data)
 
 
 class ProblemListView(QScrollArea):

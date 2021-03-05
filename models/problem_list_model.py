@@ -4,6 +4,7 @@ from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 from collections.abc import Callable
 
+from services.setting import Setting
 from services.colour_setting import ColourSetting
 from APImodels.colour import Colour
 from APImodels.problem import Problem
@@ -20,8 +21,8 @@ class ProblemListCellData(NamedTuple):
 
 class ProblemListCellDataBuilder():
 
-    def __init__(self, colour_setting: ColourSetting):
-        self._setting = colour_setting
+    def __init__(self):
+        self._setting = Setting.get(ColourSetting)
 
     def from_row(self, row:int) -> ProblemListCellData:
 
@@ -57,9 +58,9 @@ class ProblemListData(NamedTuple):
 
 class ProblemListDataBuilder():
     
-    def __init__(self, colour_setting: ColourSetting):
-        self._setting = colour_setting
-        self._builder = ProblemListCellDataBuilder(self._setting)
+    def __init__(self):
+        self._setting = Setting.get(ColourSetting)
+        self._builder = ProblemListCellDataBuilder()
 
     def from_problems(self, problems:tuple[Problem,...]) -> ProblemListData:
 
@@ -75,12 +76,11 @@ class ProblemListModel(QObject):
 
     cellsChanged = pyqtSignal(bool)
 
-    def __init__(self,
-        static_data: ProblemListStaticData = ProblemListStaticData(), 
-        data : ProblemListData = ProblemListData()):
+    def __init__(self):
         super().__init__()
-        self._static_data = static_data
-        self._data = data
+        self._builder = ProblemListDataBuilder()
+        self._static_data = ProblemListStaticData()
+        self._data   = ProblemListData()
     
     @property
     def static_data(self) -> ProblemListStaticData:
@@ -98,3 +98,6 @@ class ProblemListModel(QObject):
     def sort_problems_by(self, predicate:Callable[[Problem],object])-> None:
         self._data.problems.sort(key= predicate)
         self.cellsChanged.emit(True)
+
+    def set_problems(self, problems:tuple[Problem,...]) -> None:
+        self.data = self._builder.from_problems(problems)

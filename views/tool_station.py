@@ -14,8 +14,6 @@ class ToolStation(FixedWidthFrame):
         super().__init__(self.width)
     
         self._init__UI()
-        self._set_data()
-        self._connect_model()
 
     def _init__UI(self):
         self.layout = QVBoxLayout()
@@ -23,22 +21,23 @@ class ToolStation(FixedWidthFrame):
         self.layout.setContentsMargins(1,1,1,1)
         self.layout.setAlignment(Qt.AlignTop)
 
-        self.seperator = FixedSizeLabel(self.width - 12, 1)
-        self.seperator.set_colours(Colour(240,240,240), Colour(240,240,240))
-
-    def _set_data(self):
-        data           = self.model.view_data
-        self.editor    = data.editor
-        self.file_view = data.file_view
-
-        self.layout.addWidget(self.editor,    alignment=Qt.AlignHCenter)
-        self.layout.addWidget(self.seperator, alignment=Qt.AlignHCenter)
-        self.layout.addWidget(self.file_view, alignment=Qt.AlignHCenter)
-
         self.setLayout(self.layout)
+        self._add_all_widgets()
 
-    def _connect_model(self):
-        self.model.dataChanged.connect(self._set_data)
-        return True
+    def set_data(self):
+        self._remove_all_widgets()
+        self._add_all_widgets()
+
+    def _add_all_widgets(self) -> None:
+        widgets  = self.model.view_data.tools
+        for widget in widgets:
+            seperator = FixedSizeLabel(self.width - 12, 1)
+            seperator.set_colours(Colour(240,240,240), Colour(240,240,240))
+            self.layout.addWidget(widget,    alignment=Qt.AlignHCenter)
+            self.layout.addWidget(seperator, alignment=Qt.AlignHCenter)
+
+    def _remove_all_widgets(self) -> None:
+        for index in reversed(range(self.layout.count())):
+            self.layout.removeWidget(self.layout.itemAt(index).widget())
 
         

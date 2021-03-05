@@ -7,4 +7,3 @@ if __name__ == '__main__':
 
 
     file_setting = Setting.get(FileSetting)
-    print(type(file_setting))

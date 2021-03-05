@@ -15,7 +15,7 @@ from views.main_window import MainView
 from views.dialogs import SaveAsDialog, SaveDialog, WarningDialog
 from controllers.top_controller import TopController
 from controllers.work_controller import WorkController
-from controllers.tool_controller import ToolController
+from controllers.tool_controller import ToolController, ToolControllerState
 from controllers.bottom_controller import BottomController
 from controllers.list_view_controller import ProblemListController
 
@@ -61,11 +61,10 @@ class MainController():
         return MainViewDynamicData(self.top_controller.view, self.work_controller.view, self.bottom_controller.view, self.tool_controller.view)
     
     def _connect_other(self):
-        # setting = self._dependency.get(Setting)
-        Setting.settingChanged.connect(self._on_file_setting_changed)
+        Setting.settingChanged.connect(self._on_setting_changed)
         self.editor.stateChanged.connect(self._on_state_changed)
 
-    def _on_file_setting_changed(self, class_type:type) -> None:
+    def _on_setting_changed(self, class_type:type) -> None:
         if class_type == FileSetting:
             self._open_directory()
     
@@ -89,24 +88,25 @@ class MainController():
         self._open_directory()
     
     def _open_directory(self):
-        # setting   = self._dependency.get(Setting)
         directory = Setting.get(FileSetting).content_path 
         self.path_manager.directory  = directory
         self._repo.set_filepath(self.path_manager.filepath)
         self.editor.load_problems(self._repo)
         self.editor.change_to_state(EditingProblemsEditor())
+        self.tool_controller.change_to_state(ToolControllerState.Edit)
 
     def open_previous_set(self):
         if type(self.work_controller) == ProblemListController:
             self._update_work_controller(WorkController(self._dependency))
-        self.editor.change_to_state(ViewingProblemsEditor())
+        self.editor.change_to_state(ViewingProblemsEditor())   
+        self.tool_controller.change_to_state(ToolControllerState.View)
 
     def open_problem_list_viewer(self):
         # open problem list view
         # change state to view only
         # open problem filter
         self._update_work_controller(ProblemListController(self._dependency))
-        self.change_to_state(ViewingProblemsEditor())
+        self.change_to_state(ViewingMainController())
 
     def _update_work_controller(self, controller):
         self.work_controller.view.setParent(None)

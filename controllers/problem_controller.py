@@ -74,7 +74,6 @@ class ProblemAreaController():
         return Problem(_id, RIC(1,1,1), _grade, _hold, _sector, (), '', date.today(), 'on')
 
 
-
 class InfoController():
 
     def __init__(self, dependency:DependencyService):
