@@ -8,6 +8,7 @@ from services.dependency_service import DependencyService
 from services.old_problem_viewer import OldProblemViewer
 from models.filter_view_model import FilterSelectorModel, BaseFilterModel
 from views.filter_view import FilterView, BaseFilterView
+from APImodels.grade import Grade
 
 class BaseFilterController(ABC):
 
@@ -51,6 +52,8 @@ class RiskFilterController(BaseFilterController):
 
     def on_item_selected(self, items:list[str]) -> None :
         risks = [int(item) for item in items]
+        if len(items) == 0:
+            risks = self.viewer.get_risks()
         self.viewer.set_filter_R(risks)
         self.viewer.filter_problems()
 
@@ -65,6 +68,8 @@ class IntensityFilterController(BaseFilterController):
 
     def on_item_selected(self, items:list[str]) -> None :
         intensities = [int(item) for item in items]
+        if len(items) == 0:
+            intensities = self.viewer.get_intensities()
         self.viewer.set_filter_I(intensities)
         self.viewer.filter_problems()
 
@@ -79,6 +84,8 @@ class ComplexityFilterController(BaseFilterController):
 
     def on_item_selected(self, items:list[str]) -> None :
         complexities = [int(item) for item in items]
+        if len(items) == 0:
+            complexities = self.viewer.get_complexities()
         self.viewer.set_filter_C(complexities)
         self.viewer.filter_problems()
 
@@ -92,6 +99,8 @@ class ColourFilterController(BaseFilterController):
         self.model.items = tuple([ str(h) for h in self.viewer.get_holds()])
 
     def on_item_selected(self, items:list[str]) -> None :
+        if len(items) == 0:
+            items = self.viewer.get_holds()
         self.viewer.set_filter_holds(items)
         self.viewer.filter_problems()
 
@@ -105,7 +114,10 @@ class GradeFilterController(BaseFilterController):
         self.model.items = tuple([ str(h) for h in self.viewer.get_grades()])
 
     def on_item_selected(self, items:list[str]) -> None :
-        self.viewer.set_filter_grades(items)
+        grades = [Grade.from_str(item) for item in items]
+        if len(items) == 0:
+            grades = self.viewer.get_grades()
+        self.viewer.set_filter_grades(grades)
         self.viewer.filter_problems()
 
 
@@ -119,6 +131,8 @@ class SectorFilterController(BaseFilterController):
 
     def on_item_selected(self, items:list[str]) -> None :
         sectors = [item.lower() for item in items]
+        if len(items) == 0:
+            sectors = self.viewer.get_sectors()
         self.viewer.set_filter_sectors(sectors)
         self.viewer.filter_problems()
 
@@ -132,6 +146,8 @@ class StyleFilterController(BaseFilterController):
         self.model.items = tuple([ str(h) for h in self.viewer.get_styles()])
 
     def on_item_selected(self, items:list[str]) -> None :
+        if len(items) == 0:
+            items = self.viewer.get_styles()
         self.viewer.set_filter_styles(items)
         self.viewer.filter_problems()
 
@@ -145,6 +161,8 @@ class SetterFilterController(BaseFilterController):
         self.model.items = tuple([ str(h) for h in self.viewer.get_setters()])
 
     def on_item_selected(self, items:list[str]) -> None :
+        if len(items) == 0:
+            items = self.viewer.get_setters()
         self.viewer.set_filter_setters(items)
         self.viewer.filter_problems()
 
