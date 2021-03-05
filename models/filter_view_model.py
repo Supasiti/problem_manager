@@ -1,8 +1,11 @@
 from __future__ import annotations
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import QObject
+from PyQt5.QtCore import QDate
 from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import Qt 
 from typing import NamedTuple
+from datetime import date
 
 from services.setting import Setting
 from services.colour_setting import ColourSetting
@@ -17,12 +20,16 @@ class FilterViewStaticData(NamedTuple):
 class FilterSelectorModel(QObject):
     
     viewsChanged = pyqtSignal(bool)
+    minDateChanged = pyqtSignal(QDate)
+    maxDateChanged = pyqtSignal(QDate)
     _views = tuple()
 
     def __init__(self):
         super().__init__()
         self.static_data = FilterViewStaticData()
-        self.views = tuple()
+        self.views    = tuple()
+        self.min_date = QDate(2000,1,1)
+        self.max_date = QDate(2000,1,1)
 
     @property
     def views(self):
@@ -33,6 +40,13 @@ class FilterSelectorModel(QObject):
         self._views = data
         self.viewsChanged.emit(True)
 
+    def set_min_date(self, min_date:date) -> None:
+        self.min_date = QDate.fromString(min_date.isoformat(), Qt.ISODate)
+        self.minDateChanged.emit(self.min_date)
+    
+    def set_max_date(self, max_date:date) -> None:
+        self.max_date = QDate.fromString(max_date.isoformat(), Qt.ISODate)
+        self.maxDateChanged.emit(self.max_date)
 
 class BaseFilterModel(QObject):
 

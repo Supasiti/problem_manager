@@ -1,6 +1,6 @@
 from __future__ import annotations
-from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QSizePolicy, QLayout
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QLayout, QFormLayout
+from PyQt5.QtWidgets import QLabel, QDateEdit, QSizePolicy
 from PyQt5.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 from PyQt5.QtCore import Qt 
 
@@ -29,6 +29,22 @@ class FilterView(FixedWidthLabel):
         self.title.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
         self.title.set_colours(data.bg_colour, data.text_colour)
 
+        self.dateedit_start = QDateEdit()
+        self.dateedit_start.setCalendarPopup(True)
+        self.dateedit_start.userDateChanged.connect(self._on_start_date_changed)
+        self.dateedit_end   = QDateEdit()
+        self.dateedit_end.setCalendarPopup(True)
+        self.dateedit_end.userDateChanged.connect(self._on_end_date_changed)
+
+        self.layout_date = QFormLayout()
+        self.layout_date.setFormAlignment(Qt.AlignTop)
+        self.layout_date.setLabelAlignment(Qt.AlignRight)
+        self.layout_date.setContentsMargins(2,2,2,2)
+        self.layout_date.setSpacing(4)
+
+        self.layout_date.addRow('Start Date:', self.dateedit_start)
+        self.layout_date.addRow('End Date :',  self.dateedit_end )
+
         self.layout_RIC = QHBoxLayout()
         self.layout_RIC.setSpacing(4)
         self.layout_RIC.setContentsMargins(0,0,0,0)
@@ -40,6 +56,7 @@ class FilterView(FixedWidthLabel):
         self.layout_other.setAlignment(Qt.AlignTop)
 
         self.layout.addWidget(self.title)
+        self.layout.addLayout(self.layout_date)
         self.layout.addLayout(self.layout_RIC)
         self.layout.addLayout(self.layout_other)
         self._add_all_widgets()
@@ -66,13 +83,27 @@ class FilterView(FixedWidthLabel):
         self._remove_widgets_from(self.layout_RIC)
         self._remove_widgets_from(self.layout_other)
 
-
     def _remove_widgets_from(self, layout:QLayout) -> None:
         for index in reversed(range(layout.count())):
             widget = layout.itemAt(index).widget()
             layout.removeWidget(widget)
             widget.setParent(None)
 
+    def _on_start_date_changed(self, date)-> None:
+        self.controller.on_start_date_changed(date)
+    
+    def _on_end_date_changed(self, date)-> None:
+        self.controller.on_end_date_changed(date)
+
+    def set_min_date(self, date) -> None:
+        self.dateedit_start.setMinimumDate(date)
+        self.dateedit_end.setMinimumDate(date)
+        self.dateedit_start.setDate(date)
+
+    def set_max_date(self, date) -> None:
+        self.dateedit_start.setMaximumDate(date)
+        self.dateedit_end.setMaximumDate(date)
+        self.dateedit_end.setDate(date)
 
 
 class BaseFilterView(QLabel):

@@ -1,5 +1,8 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from datetime import date
+from PyQt5.QtCore import QDate
+from PyQt5.QtCore import Qt 
 
 from services.dependency_service import DependencyService
 from services.old_problem_viewer import OldProblemViewer
@@ -105,6 +108,7 @@ class GradeFilterController(BaseFilterController):
         self.viewer.set_filter_grades(items)
         self.viewer.filter_problems()
 
+
 class SectorFilterController(BaseFilterController):
 
     def set_title(self) -> None:
@@ -117,6 +121,7 @@ class SectorFilterController(BaseFilterController):
         sectors = [item.lower() for item in items]
         self.viewer.set_filter_sectors(sectors)
         self.viewer.filter_problems()
+
 
 class StyleFilterController(BaseFilterController):
 
@@ -143,6 +148,7 @@ class SetterFilterController(BaseFilterController):
         self.viewer.set_filter_setters(items)
         self.viewer.filter_problems()
 
+
 class FilterController():
     
     _dependency   : DependencyService
@@ -158,6 +164,7 @@ class FilterController():
         self.model = FilterSelectorModel()            # load model
         self.view  = FilterView(self, self.model)     # load view
         self._connect()
+        self._set_min_max_date()
         self._show_filters()
 
     def _setup_dependencies(self, dependency:DependencyService):
@@ -166,7 +173,24 @@ class FilterController():
 
     def _connect(self):
         self.model.viewsChanged.connect(self.view.set_data) 
+        self.model.minDateChanged.connect(self.view.set_min_date)
+        self.model.maxDateChanged.connect(self.view.set_max_date)
+
+    def _set_min_max_date(self) ->None:
+        set_dates = list(self._viewer.get_set_dates())
+        self.model.set_max_date(max(set_dates))
+        self.model.set_min_date(min(set_dates))
 
     def _show_filters(self) -> None:
         self._controllers = tuple([controller(self._dependency) for controller in self._filters ])
         self.model.views  = tuple([controller.view for controller in self._controllers])
+
+    def on_start_date_changed(self, _date:QDate) -> None:
+        iso_date = _date.toString(Qt.ISODate) 
+        self._viewer.set_filter_start_date(date.fromisoformat(iso_date))
+        self._viewer.filter_problems()
+
+    def on_end_date_changed(self, _date:QDate) -> None:
+        iso_date = _date.toString(Qt.ISODate) 
+        self._viewer.set_filter_end_date(date.fromisoformat(iso_date))
+        self._viewer.filter_problems()
