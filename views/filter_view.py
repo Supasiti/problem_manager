@@ -1,11 +1,10 @@
 from __future__ import annotations
 from PyQt5.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QLayout, QFormLayout
-from PyQt5.QtWidgets import QLabel, QDateEdit, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QDateEdit, QSizePolicy, QPushButton
 from PyQt5.QtWidgets import QListWidget, QAbstractItemView, QListWidgetItem
 from PyQt5.QtCore import Qt 
 
 from views.label import FixedWidthLabel, FixedSizeLabel
-
 
 class FilterView(FixedWidthLabel):
 
@@ -55,10 +54,14 @@ class FilterView(FixedWidthLabel):
         self.layout_other.setContentsMargins(0,0,0,0)
         self.layout_other.setAlignment(Qt.AlignTop)
 
+        self.button_reset = QPushButton('Reset')
+        self.button_reset.clicked.connect(self._reset_filters)
+
         self.layout.addWidget(self.title)
         self.layout.addLayout(self.layout_date)
         self.layout.addLayout(self.layout_RIC)
         self.layout.addLayout(self.layout_other)
+        self.layout.addWidget(self.button_reset)
         self._add_all_widgets()
 
     def set_data(self, arg:bool) -> None:
@@ -105,6 +108,20 @@ class FilterView(FixedWidthLabel):
         self.dateedit_end.setMaximumDate(date)
         self.dateedit_end.setDate(date)
 
+    def _reset_filters(self) -> None:
+        min_date = self.dateedit_start.minimumDate()
+        self.dateedit_start.setDate(min_date)
+        max_date = self.dateedit_end.maximumDate()
+        self.dateedit_end.setDate(max_date)
+        self._unselect_all_widgets_in(self.layout_RIC)
+        self._unselect_all_widgets_in(self.layout_other)
+        self.controller.reset()
+    
+    def _unselect_all_widgets_in(self, layout:QLayout) -> None:
+        for index in reversed(range(layout.count())):
+            widget = layout.itemAt(index).widget()
+            widget.clear_selection()
+
 
 class BaseFilterView(QLabel):
 
@@ -130,12 +147,10 @@ class BaseFilterView(QLabel):
         self.list_view.setFixedHeight(100)
         self.list_view.setSelectionMode(QAbstractItemView.MultiSelection)
         self.list_view.itemSelectionChanged.connect(self._on_item_selected)
-        # self.list_view.hide()
 
         self.layout.addWidget(self.title)
         self.layout.addWidget(self.list_view)
 
-        # self.title.mousePressEvent = self._toggle_list_view_visibility
     
     def set_title(self, text:str) -> None:
         self.title.setText(text)
@@ -154,10 +169,6 @@ class BaseFilterView(QLabel):
         selected = [item.text() for item in self.list_view.selectedItems()]
         self.controller.on_item_selected(selected)
 
-    # def _toggle_list_view_visibility(self, event) -> None:
-    #     if self.list_view.isHidden():
-    #         self.list_view.setFixedHeight(100)
-    #         self.list_view.show()
-    #     else:
-    #         # self.list_view.setFixedHeight(0)
-    #         self.list_view.hide()
+    def clear_selection(self) -> None:
+        self.list_view.clearSelection()
+        

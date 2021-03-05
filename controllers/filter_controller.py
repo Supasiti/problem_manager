@@ -194,3 +194,6 @@ class FilterController():
         iso_date = _date.toString(Qt.ISODate) 
         self._viewer.set_filter_end_date(date.fromisoformat(iso_date))
         self._viewer.filter_problems()
+
+    def reset(self) -> None:
+        self._viewer.reset()

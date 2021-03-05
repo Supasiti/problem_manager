@@ -31,17 +31,20 @@ class OldProblemViewer():
     def set_dir_IO(self, dirIO:OldProblemIO) ->None:
         self._repo = dirIO
         if not dirIO is None:
-            self._filter_Rs = self.get_risks()
-            self._filter_Is = self.get_intensities()
-            self._filter_Cs = self.get_complexities()
-            self._filter_grades = self.get_grades()
-            self._filter_setters = self.get_setters()
-            self._filter_sectors = self.get_sectors()
-            self._filter_start_date = min(self.get_set_dates())
-            self._filter_end_date = max(self.get_set_dates())
-            self._filter_styles0 = self.get_styles()
-            self._filter_holds = self.get_holds()
-            self.filter_problems() 
+            self.reset()
+
+    def reset(self) ->None:
+        self._filter_Rs = self.get_risks()
+        self._filter_Is = self.get_intensities()
+        self._filter_Cs = self.get_complexities()
+        self._filter_grades = self.get_grades()
+        self._filter_setters = self.get_setters()
+        self._filter_sectors = self.get_sectors()
+        self._filter_start_date = min(self.get_set_dates())
+        self._filter_end_date = max(self.get_set_dates())
+        self._filter_styles0 = self.get_styles()
+        self._filter_holds = self.get_holds()
+        self.filter_problems() 
 
     @property
     def problems(self) -> tuple[Problem,...]:
