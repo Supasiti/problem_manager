@@ -17,6 +17,7 @@ class ProblemListController():
         'C'  : lambda x : x.RIC.C,
         'Grade' : lambda x : str(x.grade),
         'Colour' : lambda x : x.colour,
+        'Sector' : lambda x : x.sector,
         'Styles' : lambda x : x.styles[0],
         'Setter' : lambda x : x.set_by.lower(),
         'Set on' : lambda x : x.set_date,

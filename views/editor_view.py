@@ -3,8 +3,6 @@ from PyQt5.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QComboBox
 from PyQt5.QtWidgets import QLineEdit
 from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtWidgets import QSizePolicy
-from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import Qt 
 from datetime import date
 
@@ -22,8 +20,8 @@ class EditorView(FixedSizeLabel):
         super().__init__(self.width, self.height)
     
         self._init__UI()
-        self._set_data()
-        self._connect_model()
+        self.set_data()
+
 
     def _init__UI(self):
         label_title = FixedSizeLabel(self.width -6, 40, 'Problem Editor')
@@ -110,7 +108,7 @@ class EditorView(FixedSizeLabel):
         self.setLayout(self.layout)
 
 
-    def _set_data(self):
+    def set_data(self):
         data = self.model.dynamic_data
         _problem = data.problem
         self.text_id.setText(str(_problem.id))
@@ -153,7 +151,10 @@ class EditorView(FixedSizeLabel):
     def _set_lineedit_styles(self, styles:tuple[str,...]):
         for index in range(3):
             _lineedit = getattr(self, 'lineedit_styles_' + str(index))
-            _lineedit.setText(styles[index]) if len(styles) > index else _lineedit.setText('')
+            if len(styles) > index:
+                _lineedit.setText(styles[index]) 
+            else:
+                _lineedit.setText('')
 
     def _set_lineedit_set_date(self, _date:date = None):
         if _date is None:
@@ -162,9 +163,6 @@ class EditorView(FixedSizeLabel):
         self.lineedit_set_date.setText(_date.isoformat())
         return True
 
-    def _connect_model(self):
-        self.model.dataChanged.connect(self._set_data)
-        return True
 
     def _update_problem(self, event):
         self.controller.update_problem()

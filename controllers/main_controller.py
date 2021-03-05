@@ -104,9 +104,10 @@ class MainController():
     def open_problem_list_viewer(self):
         # open problem list view
         # change state to view only
-        # open problem filter
+        # open problem filter 
         self._update_work_controller(ProblemListController(self._dependency))
         self.change_to_state(ViewingMainController())
+        self.tool_controller.change_to_state(ToolControllerState.ListView)
 
     def _update_work_controller(self, controller):
         self.work_controller.view.setParent(None)

@@ -1,6 +1,5 @@
 from __future__ import annotations 
 from enum import Enum
-from PyQt5.QtWidgets import QWidget
 
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
@@ -44,6 +43,11 @@ class ToolController():
 
     def change_to_state(self, state:ToolControllerState) -> None:
         if state in self._state_dict.keys():
+            self._remove_current_views()
             self._controllers = tuple([controller(self._dependency) for controller in self._state_dict[state]])
             widgets = (controller.view for controller in self._controllers)
             self.model.set_widgets(widgets)
+
+    def _remove_current_views(self):
+        for controller in self._controllers:
+            controller.view.setParent(None)

@@ -139,7 +139,7 @@ class OldProblemViewer():
         if isinstance(value, (list,tuple)):
             self._filter_sectors = value
     
-    def set_filter_start_date(self,value:date) ->None:
+    def set_filter_start_date(self, value:date) ->None:
         if isinstance(value, date) and value <= self._filter_end_date:
             self._filter_start_date = value
     

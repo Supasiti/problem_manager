@@ -16,10 +16,10 @@ class FileController():
     def __init__(self, dependency: DependencyService):
         self._setup_dependencies(dependency)
 
-        self.model = FileViewModel(data = FileData(tuple())) # load model
-        self.view  = FileView(self, self.model)               # load view
-        self.view.hide()
+        self.model = FileViewModel()            # load model
+        self.view  = FileView(self, self.model) # load view
         self._connect_other()
+        self._show_filenames()
 
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
@@ -35,10 +35,13 @@ class FileController():
             self.view.hide()
         elif state_name == 'viewing':
             self.view.show()
-            self.model.view_data = FileData(tuple(self._path_manager.filenames))
+            self._show_filenames()
         else:
             raise ValueError('incorrect state')
     
+    def _show_filenames(self):
+        self.model.view_data = FileData(tuple(self._path_manager.filenames))
+
     def on_item_clicked(self, item_text:str):
         self._path_manager.filename = item_text
         self._repo.set_filepath(self._path_manager.filepath)

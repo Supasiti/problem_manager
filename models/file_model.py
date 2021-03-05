@@ -7,30 +7,20 @@ from PyQt5.QtCore import pyqtSignal
 
 class FileStaticData(NamedTuple):
 
-    width      : int
+    width : int = 276
    
-    @staticmethod
-    def default():
-        return FileStaticData(276)
-
-
 class FileData(NamedTuple):
 
-    filenames : tuple[str]
-
+    filenames : tuple[str] = tuple()
 
 class FileViewModel(QObject):
     
     dataChanged = pyqtSignal(bool) 
 
-    def __init__(self, 
-        static_data  : FileStaticData = FileStaticData.default(),
-        data         : FileData = FileData(tuple())
-        ):
-
+    def __init__(self):
         super().__init__()
-        self._static_data  = static_data
-        self._data = data
+        self._static_data  =  FileStaticData()
+        self._data = FileData()
     
     @property
     def static_data(self):

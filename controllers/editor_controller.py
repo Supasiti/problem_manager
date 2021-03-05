@@ -29,6 +29,7 @@ class EditorController():
         self._colour_setting = Setting.get(ColourSetting)
 
     def _connect_other(self):
+        self.model.dataChanged.connect(self.view.set_data)
         self._editor.problemTypeChanged.connect(self._on_problem_type_changed)
         self._editor.stateChanged.connect(self._on_state_changed)
 
