@@ -14,8 +14,7 @@ class FileView(FixedWidthLabel):
         super().__init__(self.width)
 
         self._init__UI()
-        self._set_data()
-        self._connect_model()
+        self.set_data()
 
     def _init__UI(self):
         self.layout = QVBoxLayout()
@@ -34,14 +33,11 @@ class FileView(FixedWidthLabel):
         self.layout.addWidget(self.viewer,      alignment=Qt.AlignHCenter)
         self.setLayout(self.layout)
 
-    def _set_data(self):
+    def set_data(self):
         data        = self.model.view_data 
         self.viewer.clear()
         self.viewer.addItems(data.filenames)
 
-    def _connect_model(self):
-        self.model.dataChanged.connect(self._set_data)
-        return True
     
     def _item_clicked(self, item):
         self.controller.on_item_clicked(item.text())

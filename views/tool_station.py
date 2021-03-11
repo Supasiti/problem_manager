@@ -38,6 +38,8 @@ class ToolStation(FixedWidthFrame):
 
     def _remove_all_widgets(self) -> None:
         for index in reversed(range(self.layout.count())):
-            self.layout.removeWidget(self.layout.itemAt(index).widget())
+            widget = self.layout.itemAt(index).widget()
+            widget.setParent(None)
+            self.layout.removeWidget(widget)
 
         

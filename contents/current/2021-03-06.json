@@ -1,0 +1,63 @@
+{
+    "6": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "purple",
+        "grade": {
+            "difficulty": "mid",
+            "range": "purple"
+        },
+        "id": 6,
+        "sector": "tower",
+        "set_by": "d",
+        "set_date": "2021-02-25",
+        "strip_date": null,
+        "styles": [
+            "e"
+        ]
+    },
+    "8": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "green",
+        "grade": {
+            "difficulty": "easy",
+            "range": "green"
+        },
+        "id": 8,
+        "sector": "cave l",
+        "set_by": "f",
+        "set_date": "2021-02-25",
+        "strip_date": null,
+        "styles": [
+            "f"
+        ]
+    },
+    "9": {
+        "RIC": {
+            "C": 1,
+            "I": 1,
+            "R": 1
+        },
+        "colour": "green",
+        "grade": {
+            "difficulty": "easy",
+            "range": "green"
+        },
+        "id": 9,
+        "sector": "slab l",
+        "set_by": "Anasha",
+        "set_date": "2021-03-06",
+        "strip_date": null,
+        "styles": [
+            "glide"
+        ]
+    },
+    "next_id": 10
+}

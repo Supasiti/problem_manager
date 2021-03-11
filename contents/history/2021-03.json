@@ -1,0 +1,23 @@
+{
+    "1": {
+        "RIC": {
+            "C": 3,
+            "I": 4,
+            "R": 4
+        },
+        "colour": "red",
+        "grade": {
+            "difficulty": "mid",
+            "range": "red"
+        },
+        "id": 1,
+        "sector": "arch l",
+        "set_by": "Thara",
+        "set_date": "2021-01-02",
+        "strip_date": "2021-03-06",
+        "styles": [
+            "toe hook",
+            "pop"
+        ]
+    }
+}

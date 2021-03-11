@@ -18,7 +18,7 @@ class FileController():
 
         self.model = FileViewModel()            # load model
         self.view  = FileView(self, self.model) # load view
-        self._connect_other()
+        self._connect()
         self._show_filenames()
 
     def _setup_dependencies(self, dependency:DependencyService):
@@ -27,17 +27,8 @@ class FileController():
         self._path_manager   = self._dependency.get(ContentsPathManager)
         self._repo           = self._dependency.get(LocalProblemRepository)
     
-    def _connect_other(self):
-        self._editor.stateChanged.connect(self._on_state_changed)
-
-    def _on_state_changed(self, state_name:str):
-        if state_name == 'editing':
-            self.view.hide()
-        elif state_name == 'viewing':
-            self.view.show()
-            self._show_filenames()
-        else:
-            raise ValueError('incorrect state')
+    def _connect(self):
+        self.model.dataChanged.connect(self.view.set_data)
     
     def _show_filenames(self):
         self.model.view_data = FileData(tuple(self._path_manager.filenames))
