@@ -4,6 +4,7 @@ from datetime import date
 
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
+from services.problems_editor_history import ProblemsEditorHistory
 from services.contents_path_manager import ContentsPathManager
 from services.json_writer import JsonWriter, StrippedProblemWriter
 from services.file_setting import FileSetting
@@ -46,8 +47,10 @@ class MainController():
         
     def _setup_dependencies(self, dependency: DependencyService):
         self.editor        = ProblemsEditor(EditingProblemsEditor())
+        self.history       = ProblemsEditorHistory(self.editor)
         self._dependency   = dependency
         self._dependency.register(ProblemsEditor, self.editor)
+        self._dependency.register(ProblemsEditorHistory, self.history)
         self.path_manager = self._dependency.get(ContentsPathManager)
         self._repo        = self._dependency.get(LocalProblemRepository)
         self.writer       = self._dependency.get(JsonWriter)
@@ -94,6 +97,8 @@ class MainController():
         self.editor.load_problems(self._repo)
         self.editor.change_to_state(EditingProblemsEditor())
         self.tool_controller.change_to_state(ToolControllerState.Edit)
+        self.history.clear()
+        self.history.backup()
 
     def open_previous_set(self):
         if type(self.work_controller) == ProblemListController:

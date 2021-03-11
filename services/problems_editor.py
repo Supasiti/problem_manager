@@ -1,19 +1,51 @@
 from __future__ import annotations
 from abc import abstractmethod, ABC
-from datetime import date
+from datetime import date, datetime
 
 from services.signal import Signal
 from services.problem_repository import ProblemRepository
 from services.json_writer import JsonWriter, StrippedProblemWriter
 from APImodels.problem import Problem, ProblemEditingType
 
+class Snapshot(ABC):
+
+    @abstractmethod
+    def get_timestamp(self) -> str:
+        pass 
+
+class EditorSnapshot(Snapshot):
+
+    def __init__(self, init:dict, to_add:dict, to_remove:dict, next_id:int) ->None:
+        self._problems_init     = init  
+        self._problems_to_add   = to_add  
+        self._problems_to_strip = to_remove
+        self._next_id           = next_id
+        self._timestamp         = str(datetime.now())[:19]
+
+    def get_timestamp(self) -> str:
+        return self._timestamp
+
+    @property
+    def problems_init(self) -> dict:
+        return self._problems_init
+    
+    @property
+    def problems_to_add(self) -> dict:
+        return self._problems_to_add
+    
+    @property
+    def problems_to_strip(self) -> dict:
+        return self._problems_to_strip
+
+    @property
+    def next_id(self) -> int:
+        return self._next_id
+
 
 class ProblemsEditor():
     # handle all problems editing 
 
     stateChanged         = Signal(str)
-    oldProblemChanged    = Signal(bool)  # true : can strip,  false : can't do anything
-    newProblemChanged    = Signal(bool)  # true : can delete, false : can only be added
     problemTypeChanged   = Signal(ProblemEditingType)
     problemsChanged      = Signal(bool)
     problemAdded         = Signal(Problem)
@@ -115,6 +147,16 @@ class ProblemsEditor():
     def save_this_set(self, writer:JsonWriter, for_stripped:StrippedProblemWriter):
         self._state.save_this_set(writer, for_stripped)
 
+    # for saving history
+    def save_snapshot(self) -> EditorSnapshot:
+        return EditorSnapshot(self._problems_init, self._problems_to_add, self._problems_to_strip, self.next_id)
+
+    def restore_from(self, snapshot:EditorSnapshot) -> None:
+        self._problems_init = snapshot.problems_init
+        self._problems_to_add = snapshot.problems_to_add
+        self._problems_to_strip = snapshot.problems_to_strip
+        self.next_id = snapshot.next_id
+        self.problemsChanged.emit(True)
 
 
 class ProblemsEditorState(ABC):

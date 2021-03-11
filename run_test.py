@@ -14,6 +14,8 @@ from tests.test_setting_parsers import TestColourSettingParser   # involve read 
 from tests.test_problem_editor import TestProblemEditor
 from tests.test_old_problem_IO import TestOldProblemIO           # involve read file
 from tests.test_old_problem_viewer import TestOldProblemViewer 
+from tests.test_problems_editor_history import TestProblemEditorHistory
 
 if __name__ =='__main__':
     unittest.main()
+    

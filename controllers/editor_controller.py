@@ -2,6 +2,7 @@ from datetime import date
 
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor
+from services.problems_editor_history import ProblemsEditorHistory
 from services.setting import Setting
 from services.colour_setting import ColourSetting
 from models.editor_model import EditorModel, EditorData 
@@ -26,6 +27,7 @@ class EditorController():
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
         self._editor         = self._dependency.get(ProblemsEditor)
+        self._history        = self._dependency.get(ProblemsEditorHistory)
         self._colour_setting = Setting.get(ColourSetting)
 
     def _connect_other(self):
@@ -57,6 +59,7 @@ class EditorController():
  
         if not _problem is None: 
             self._editor.add_new_problem(_problem)
+            self._history.backup()
             self._reset_placeholder_texts()
 
     def _cell_selected(self):
@@ -117,6 +120,7 @@ class EditorController():
         if _id != '':
             _id = int(_id)
             self._editor.delete_problem(_id)
+            self._history.backup()
 
     def strip_problem(self) -> None:
         # strip the problem : assume that buttons only offer all the actions available
@@ -127,6 +131,7 @@ class EditorController():
         if _id != '':
             _id   = int(_id)
             self._editor.strip_problem(_id, strip_date)
+            self._history.backup()
             self._reset_placeholder_texts()
             self.view.lineedit_strip_date.setText('')
 
