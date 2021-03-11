@@ -149,7 +149,7 @@ class ProblemsEditor():
 
     # for saving history
     def save_snapshot(self) -> EditorSnapshot:
-        return EditorSnapshot(self._problems_init, self._problems_to_add, self._problems_to_strip, self.next_id)
+        return EditorSnapshot(self._problems_init.copy(), self._problems_to_add.copy(), self._problems_to_strip.copy(), self.next_id)
 
     def restore_from(self, snapshot:EditorSnapshot) -> None:
         self._problems_init = snapshot.problems_init

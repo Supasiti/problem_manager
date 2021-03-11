@@ -92,6 +92,15 @@ class MainView(QMainWindow):
             '&Save as', 'Ctrl+Shift+S', 'Save as new set', 
             self.controller.show_save_as_dialog, parent=self)
 
+        action_undo = MenuAction(
+            'Undo', 'Ctrl+Z', 'Undo',
+            self.controller.undo_editing, parent=self
+        )
+        action_redo = MenuAction(
+            'Redo', 'Ctrl+Shift+Z', 'Redo',
+            self.controller.redo_editing, parent=self
+        )
+
         self.statusBar()
         menuBar    = self.menuBar()
         fileMenu   = menuBar.addMenu('&File')
@@ -103,6 +112,10 @@ class MainView(QMainWindow):
         fileMenu.addAction(action_save_as)
         fileMenu.addSeparator()
         fileMenu.addAction(action_exit)
+
+        editMenu = menuBar.addMenu('&Edit')
+        editMenu.addAction(action_undo)
+        editMenu.addAction(action_redo)
 
     def set_colours(self, colour: Colour, text_colour:Colour):
         self.setAutoFillBackground(True)

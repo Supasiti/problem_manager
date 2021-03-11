@@ -23,14 +23,15 @@ class TestProblemEditorHistory(unittest.TestCase):
     def test_backup_then_undo(self):
         problem4 = Problem(id=4, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
         self.editor.add_new_problem(problem4)
+        self.assertEqual(len(self.editor.problems), 4)
         self.history.backup()
         self.history.undo()
 
-        self.assertTrue(len(self.editor.problems), 3)
-        self.assertTrue(self.editor.next_id, 4)
+        self.assertEqual(len(self.editor.problems), 3)
+        self.assertEqual(self.editor.next_id, 4)
         self.history.undo()
-        self.assertTrue(len(self.editor.problems), 3)
-        self.assertTrue(self.editor.next_id, 4)
+        self.assertEqual(len(self.editor.problems), 3)
+        self.assertEqual(self.editor.next_id, 4)
 
     def test_undo_then_redo(self):
         problem4 = Problem(id=4, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
@@ -40,9 +41,9 @@ class TestProblemEditorHistory(unittest.TestCase):
         self.history.redo()
         problem  = self.editor.get_problem_by_id(4)
 
-        self.assertTrue(len(self.editor.problems), 4)
-        self.assertTrue(self.editor.next_id, 5)
-        self.assertTrue(problem.colour, "green")
+        self.assertEqual(len(self.editor.problems), 4)
+        self.assertEqual(self.editor.next_id, 5)
+        self.assertEqual(problem.colour, "green")
 
     def test_undo_then_backup(self):
         problem4 = Problem(id=4, RIC=RIC(1, 1, 1), grade=Grade('green', 'easy'), colour='green', sector='tower r', styles=('s',), set_by='s', set_date=datetime.date(2021, 2, 16), strip_date=None)
@@ -54,9 +55,9 @@ class TestProblemEditorHistory(unittest.TestCase):
         self.history.backup()
         problem  = self.editor.get_problem_by_id(4)
 
-        self.assertTrue(len(self.editor.problems), 4)
-        self.assertTrue(self.editor.next_id, 5)
-        self.assertTrue(problem.colour, "orange")
+        self.assertEqual(len(self.editor.problems), 4)
+        self.assertEqual(self.editor.next_id, 5)
+        self.assertEqual(problem.colour, "orange")
 
 
 class MockRepository(ProblemRepository):

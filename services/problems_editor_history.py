@@ -1,44 +1,5 @@
-from abc import ABC, abstractmethod
-from datetime import datetime
 
 from services.problems_editor import ProblemsEditor
-
-
-# class Snapshot(ABC):
-
-#     @abstractmethod
-#     def get_timestamp(self) -> str:
-#         pass 
-
-
-# class EditorSnapshot(Snapshot):
-
-#     def __init__(self, init:dict, to_add:dict, to_remove:dict, next_id:int) ->None:
-#         self._problems_init     = init  
-#         self._problems_to_add   = to_add  
-#         self._problems_to_strip = to_remove
-#         self._next_id           = next_id
-#         self._timestamp         = str(datetime.now())[:19]
-
-
-#     def get_timestamp(self) -> str:
-#         return self._timestamp
-
-#     @property
-#     def problems_init(self) -> dict:
-#         return self._problems_init
-    
-#     @property
-#     def problems_to_add(self) -> dict:
-#         return self._problems_to_add
-    
-#     @property
-#     def problems_to_strip(self) -> dict:
-#         return self._problems_to_strip
-
-#     @property
-#     def next_id(self) -> int:
-#         return self._next_id
 
 
 class ProblemsEditorHistory():
