@@ -6,8 +6,8 @@ from typing import NamedTuple
 
 from services.setting import Setting
 from services.grade_setting import GradeSetting
-from services.sector_setting import SectorSetting
 from services.colour_setting import ColourSetting
+from services.sector_editor import SectorEditor
 from models.problem_cell_data import ProblemCellDataBuilder, ProblemCellData
 from APImodels.problem import Problem
 from APImodels.colour import Colour
@@ -24,14 +24,15 @@ class ProblemAreaData(NamedTuple):
     
 class ProblemAreaDataBuilder(QObject):
 
-    def __init__(self):
+    def __init__(self, sector_editor:SectorEditor):
         super().__init__()
         self._grade_setting  = Setting.get(GradeSetting)
-        self._sector_setting = Setting.get(SectorSetting)
-        self._builder        = ProblemCellDataBuilder()
+        self._sector_setting = sector_editor
+        self._builder        = ProblemCellDataBuilder(sector_editor)
         
         self._n_row = self._grade_setting.length()
-        self._n_col = self._sector_setting.length()
+        self._n_col = self._sector_setting.length() 
+        print('problem area data builder : {}'.format(self._n_col))
 
     @property 
     def n_cell(self):
@@ -78,9 +79,9 @@ class ProblemAreaModel(QObject):
     cellsChanged = pyqtSignal(bool)
     _changes     : ProblemAreaData
 
-    def __init__(self, side_panels:ProblemAreaPanelData):
+    def __init__(self, side_panels:ProblemAreaPanelData, sector_editor:SectorEditor):
         super().__init__()
-        self._builder = ProblemAreaDataBuilder()
+        self._builder = ProblemAreaDataBuilder(sector_editor)
         self.data    = self._builder.no_problems()
         self.changes = self._builder.no_problems() 
         self.panels  = side_panels

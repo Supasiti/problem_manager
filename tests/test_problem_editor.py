@@ -106,6 +106,9 @@ class MockRepository(ProblemRepository):
     def get_problem_by_id(self):
         pass
 
+    def get_all_sectors(self):
+        pass
+
     @property
     def next_id(self):
         return self._next_id

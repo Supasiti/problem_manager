@@ -5,10 +5,11 @@ from APImodels.problem import Problem
 
 class JsonWriter():
 
-    def __init__(self, filepath:str='', problems:tuple[Problem,...]=tuple(), next_id:int=0):
-        self._filepath = filepath
-        self._problems = problems
-        self._next_id  = next_id
+    def __init__(self):
+        self._filepath = ''
+        self._problems = tuple()
+        self._next_id  = 0
+        self._sectors  = dict()
 
     def set_problems(self, problems:tuple[Problem,...]):
         self._problems = problems
@@ -19,6 +20,9 @@ class JsonWriter():
     def set_filepath(self, filepath:str):
         self._filepath = filepath
 
+    def set_sectors(self, sectors:dict):
+        self._sectors = sectors
+
     def write(self):
         data = self._json_data()
         with open(self._filepath, 'w' ) as fid:
@@ -27,8 +31,10 @@ class JsonWriter():
             fid.close()
 
     def _json_data(self):
-        data = dict({str(p.id): p.to_dict() for p in self._problems})
+        data = dict()
+        data['problems'] = dict({str(p.id): p.to_dict() for p in self._problems})
         data['next_id'] = self._next_id
+        data['sectors'] = self._sectors
         return data
 
 

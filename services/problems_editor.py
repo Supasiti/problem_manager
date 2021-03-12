@@ -13,7 +13,7 @@ class Snapshot(ABC):
     def get_timestamp(self) -> str:
         pass 
 
-class EditorSnapshot(Snapshot):
+class ProblemsEditorSnapshot(Snapshot):
 
     def __init__(self, init:dict, to_add:dict, to_remove:dict, next_id:int) ->None:
         self._problems_init     = init  
@@ -148,10 +148,10 @@ class ProblemsEditor():
         self._state.save_this_set(writer, for_stripped)
 
     # for saving history
-    def save_snapshot(self) -> EditorSnapshot:
-        return EditorSnapshot(self._problems_init.copy(), self._problems_to_add.copy(), self._problems_to_strip.copy(), self.next_id)
+    def save_snapshot(self) -> ProblemsEditorSnapshot:
+        return ProblemsEditorSnapshot(self._problems_init.copy(), self._problems_to_add.copy(), self._problems_to_strip.copy(), self.next_id)
 
-    def restore_from(self, snapshot:EditorSnapshot) -> None:
+    def restore_from(self, snapshot:ProblemsEditorSnapshot) -> None:
         self._problems_init = snapshot.problems_init
         self._problems_to_add = snapshot.problems_to_add
         self._problems_to_strip = snapshot.problems_to_strip

@@ -1,6 +1,7 @@
 
 from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
+from services.sector_editor import SectorEditor
 from models.sector_area_model import SectorAreaModel
 from views.scroll_area import SectorArea
 
@@ -11,12 +12,13 @@ class SectorAreaController():
 
     def __init__(self, dependency : DependencyService):
         self._setup_dependencies(dependency)
-        self.model    = SectorAreaModel()               # load model
-        self.view     = SectorArea(self, self.model)    # load view
+        self.model    = SectorAreaModel(self._sector_editor) # load model
+        self.view     = SectorArea(self, self.model)         # load view
         self._connect()
     
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency = dependency
+        self._sector_editor = self._dependency.get(SectorEditor)
 
     def _connect(self):
         editor = self._dependency.get(ProblemsEditor)

@@ -5,7 +5,7 @@ from typing import NamedTuple
 
 from services.setting import Setting
 from services.colour_setting import ColourSetting
-from services.sector_setting import SectorSetting
+from services.sector_editor import SectorEditor
 from APImodels.sector import Sector
 from APImodels.problem import Problem
 from APImodels.colour import Colour
@@ -26,8 +26,8 @@ class SectorCellDataBuilder():
     #  - sectors
     #  - col - in case there isn't one
 
-    def __init__(self):
-        self.sector_setting = Setting.get(SectorSetting)
+    def __init__(self, sector_editor:SectorEditor):
+        self.sector_setting = sector_editor
         self.colour_setting = Setting.get(ColourSetting)
 
     def from_sector(self, sector:Sector):
@@ -64,10 +64,9 @@ class SectorAreaData(NamedTuple):
     
 class SectorAreaDataBuilder():
    
-    def __init__(self):
-        super().__init__()
-        self._builder        = SectorCellDataBuilder()
-        self._sector_setting = Setting.get(SectorSetting)
+    def __init__(self, sector_editor:SectorEditor):
+        self._builder        = SectorCellDataBuilder(sector_editor)
+        self._sector_setting = sector_editor
         self.n_col           = self._sector_setting.length()
         self._sectors        = self._sector_setting.get_all_sectors()
 
@@ -98,9 +97,9 @@ class SectorAreaModel(QObject):
     cellsChanged = pyqtSignal(bool)
     _changes : SectorAreaData
 
-    def __init__(self):
+    def __init__(self, sector_editor:SectorEditor):
         super().__init__()
-        self._builder = SectorAreaDataBuilder()
+        self._builder = SectorAreaDataBuilder(sector_editor)
         self._data   = self._builder.default()
         self.changes = self._builder.default()
 

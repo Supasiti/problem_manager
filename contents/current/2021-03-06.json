@@ -1,63 +1,82 @@
 {
-    "6": {
-        "RIC": {
-            "C": 1,
-            "I": 1,
-            "R": 1
+    "next_id" : 4,
+    "problems" : {
+        "1" : {
+            "RIC": {
+                "C": 3,
+                "I": 4,
+                "R": 4
+            },
+            "colour": "red",
+            "grade": {
+                "difficulty": "mid",
+                "range": "red"
+            },
+            "id": 1,
+            "sector": "arch l",
+            "set_by": "Thara",
+            "set_date": "2021-01-02",
+            "strip_date": null,
+            "styles": [
+                "toe hook",
+                "pop"
+            ]
         },
-        "colour": "purple",
-        "grade": {
-            "difficulty": "mid",
-            "range": "purple"
+        "2" : {
+            "RIC": {
+                "C": 3,
+                "I": 2,
+                "R": 5
+            },
+            "colour": "orange",
+            "grade": {
+                "difficulty": "mid",
+                "range": "black"
+            },
+            "id": 2,
+            "sector": "arch l",
+            "set_by": "Aaron",
+            "set_date": "2021-02-02",
+            "strip_date": null,
+            "styles": [
+                "run",
+                "press"
+            ]
         },
-        "id": 6,
-        "sector": "tower",
-        "set_by": "d",
-        "set_date": "2021-02-25",
-        "strip_date": null,
-        "styles": [
-            "e"
-        ]
+        "3" : {
+            "RIC": {
+                "C": 1,
+                "I": 1,
+                "R": 1
+            },
+            "colour": "green",
+            "grade": {
+                "difficulty": "easy",
+                "range": "green"
+            },
+            "id": 3,
+            "sector": "35c",
+            "set_by": "s",
+            "set_date": "2021-02-16",
+            "strip_date": null,
+            "styles": [
+                "s"
+            ]
+        }
     },
-    "8": {
-        "RIC": {
-            "C": 1,
-            "I": 1,
-            "R": 1
-        },
-        "colour": "green",
-        "grade": {
-            "difficulty": "easy",
-            "range": "green"
-        },
-        "id": 8,
-        "sector": "cave l",
-        "set_by": "f",
-        "set_date": "2021-02-25",
-        "strip_date": null,
-        "styles": [
-            "f"
-        ]
-    },
-    "9": {
-        "RIC": {
-            "C": 1,
-            "I": 1,
-            "R": 1
-        },
-        "colour": "green",
-        "grade": {
-            "difficulty": "easy",
-            "range": "green"
-        },
-        "id": 9,
-        "sector": "slab l",
-        "set_by": "Anasha",
-        "set_date": "2021-03-06",
-        "strip_date": null,
-        "styles": [
-            "glide"
-        ]
-    },
-    "next_id": 10
+    "sectors": {
+        "front l" : 0,
+        "front r" : 1,
+        "mid"     : 2,
+        "tower"      : 3,
+        "hangover l" : 4,
+        "hangover r" : 5,
+        "back slab" : 6,
+        "35c"       : 7,
+        "arch r"  : 8,
+        "slab r"  : 9,
+        "arch l"  : 10,
+        "slab l"  : 11,
+        "slab"    : 12
+    }
 }

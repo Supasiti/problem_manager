@@ -23,7 +23,7 @@ class SectorSetting():
     def get_col(self, name: str):
         if name.lower() in self._data.keys():
             return self._data[name]
-        raise ValueError('The sector name does not exist!')
+        raise ValueError('The sector name does not exist!: {}'.format(name))
     
     def get_sector(self, col:int):
         keys   = list(self._data.keys())

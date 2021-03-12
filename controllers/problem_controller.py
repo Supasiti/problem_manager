@@ -4,7 +4,8 @@ from services.problems_editor import ProblemsEditor
 from services.dependency_service import DependencyService
 from services.setting import Setting
 from services.grade_setting import GradeSetting
-from services.sector_setting import SectorSetting
+from services.sector_editor import SectorEditor
+
 from models.problem_area_model import ProblemAreaModel, ProblemAreaPanelData, InfoCellModel
 from views.scroll_area import ProblemArea
 from views.label import InfoCell
@@ -26,7 +27,7 @@ class ProblemAreaController():
         self.grade_controller  = GradeAreaController(self._dependency)
         self.info_controller   = InfoController(self._dependency)
 
-        self.model   = ProblemAreaModel(self._view_data())            # load model
+        self.model   = ProblemAreaModel(self._view_data(), self._sector_editor)            # load model
         self.view    = ProblemArea(self, self.model) # load view
         self._connect()
 
@@ -40,6 +41,7 @@ class ProblemAreaController():
     def _setup_dependencies(self, dependency:DependencyService):
         self._dependency     = dependency
         self._editor         = self._dependency.get(ProblemsEditor)
+        self._sector_editor = self._dependency.get(SectorEditor)
 
     def _connect(self):
         self.model.cellsChanged.connect(self.view.set_cell_data)
@@ -69,7 +71,7 @@ class ProblemAreaController():
         _id     = self._editor.next_id
         _grade  = Setting.get(GradeSetting).get_grade(row)
         _hold   = str(_grade).split(' ')[0]
-        _sector = Setting.get(SectorSetting).get_sector(col)
+        _sector = self._dependency.get(SectorEditor).get_sector(col)
 
         return Problem(_id, RIC(1,1,1), _grade, _hold, _sector, (), '', date.today(), 'on')
 

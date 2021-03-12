@@ -5,7 +5,7 @@ from tests.test_RIC import TestRIC
 from tests.test_problem import TestProblem
 from tests.test_dependency_service import TestDependencyService
 from tests.test_problem_repository import TestProblemRepository  # involve read file
-from tests.test_json_writer import TestJsonWriter                # involve read / write file
+# from tests.test_json_writer import TestJsonWriter                # involve read / write file
 from tests.test_signal import TestSignal
 from tests.test_setting_parsers import TestFileSettingParser     # involve read file
 from tests.test_setting_parsers import TestGradeSettingParser    # involve read file
@@ -15,6 +15,7 @@ from tests.test_problem_editor import TestProblemEditor
 from tests.test_old_problem_IO import TestOldProblemIO           # involve read file
 from tests.test_old_problem_viewer import TestOldProblemViewer 
 from tests.test_problems_editor_history import TestProblemEditorHistory
+from tests.test_sectors_editor import TestSectorEditor
 
 if __name__ =='__main__':
     unittest.main()

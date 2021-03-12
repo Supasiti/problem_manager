@@ -2,7 +2,7 @@ from typing import NamedTuple
 from services.setting import Setting
 from services.grade_setting import GradeSetting
 from services.colour_setting import ColourSetting
-from services.sector_setting import SectorSetting
+from services.sector_editor import SectorEditor
 from APImodels.problem import Problem 
 from APImodels.colour import Colour
 
@@ -22,10 +22,10 @@ class ProblemCellDataBuilder():
     #  - problem
     #  - row, col - in case there isn't one
 
-    def __init__(self):
+    def __init__(self, sector_editor: SectorEditor):
         self._grade_setting  = Setting.get(GradeSetting)
         self._colour_setting = Setting.get(ColourSetting)
-        self._sector_setting = Setting.get(SectorSetting)
+        self._sector_setting = sector_editor
 
     def from_problem(self, problem:Problem):
 

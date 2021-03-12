@@ -10,6 +10,7 @@ from services.problem_repository import LocalProblemRepository
 from services.json_writer import JsonWriter, StrippedProblemWriter
 from services.old_problem_viewer import OldProblemViewer
 from services.old_problem_IO import OldProblemIO
+from services.sector_editor import SectorEditor
 
 '''
     Application
@@ -26,6 +27,7 @@ class App(QApplication):
         self.dependency.register(StrippedProblemWriter)
         self.dependency.register(OldProblemIO)
         self.dependency.register(OldProblemViewer)
+        self.dependency.register(SectorEditor)
 
         self.main_controller = MainController(self.dependency)
 

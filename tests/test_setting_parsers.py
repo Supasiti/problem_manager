@@ -3,7 +3,6 @@ import os
 
 from services.file_setting import FileSetting, FileSettingParser
 from services.grade_setting import GradeSetting, GradeStyle, GradeSettingParser
-from services.sector_setting import SectorSetting, SectorStyle, SectorSettingParser
 from services.colour_setting import ColourSetting, ColourStyle, ColourSettingParser
 from APImodels.grade import Grade
 from APImodels.colour import Colour
@@ -77,41 +76,6 @@ class TestGradeSettingParser(TestSettingParser):
         self.assertEqual(grade0, Grade('yellow','hard'))
         self.assertEqual(grade1, Grade('yellow','mid'))
 
-
-class TestSectorSettingParser(TestSettingParser):
-    
-    def setUp(self):
-        self.data_path  = self.create_filepath('data', 'test_sector_setting_data.json')
-        self.parser     = SectorSettingParser()
-        self.parser.set_filepath(self.data_path)
-
-    def test_get_data(self):
-        result  = self.parser.get_data()
-        sectors = result.get_all_sectors()
-        
-        self.assertEqual(type(result) , SectorSetting)
-        self.assertEqual(type(sectors[0]) , str)
-        self.assertEqual(result.length() , 13)
-    
-    def test_set_duplicate_data(self):
-        # when set data it should check for duplicate and make sure that data.keys() is a
-        # list from 0, ..., n
-
-        style = SectorStyle('mid',4)
-        with self.assertRaises(ValueError):
-            self.parser.set_data(style)
-
-    def test_swap_col(self):
-        style2 = SectorStyle('mid',3)
-        style3 = SectorStyle('cave l', 2)
-        styles = (style2, style3)
-        self.parser.set_data(styles)
-        setting = self.parser.get_data()
-        col3  = setting.get_col('mid')
-        col2  = setting.get_col('cave l')
-
-        self.assertEqual(col3, 3)
-        self.assertEqual(col2, 2)
 
 
 class TestColourSettingParser(TestSettingParser):

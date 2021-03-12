@@ -6,7 +6,6 @@ from services.setting_parser import SettingParser
 from services.file_setting import FileSetting,   FileSettingParser
 from services.grade_setting  import GradeSetting, GradeSettingParser
 from services.colour_setting import ColourSetting, ColourSettingParser
-from services.sector_setting import SectorSetting, SectorSettingParser
 
 class SettingParserData(NamedTuple):
     setting : object
@@ -21,7 +20,6 @@ class Setting():
         FileSetting   : FileSettingParser, 
         GradeSetting  : GradeSettingParser,
         ColourSetting : ColourSettingParser,
-        SectorSetting : SectorSettingParser
     }
 
     _settings = dict.fromkeys(_parsers.keys())

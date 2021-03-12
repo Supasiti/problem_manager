@@ -5,10 +5,12 @@ from datetime import date
 from services.dependency_service import DependencyService
 from services.problems_editor import ProblemsEditor, EditingProblemsEditor, ViewingProblemsEditor
 from services.problems_editor_history import ProblemsEditorHistory
+from services.sector_editor import SectorEditor
 from services.contents_path_manager import ContentsPathManager
 from services.json_writer import JsonWriter, StrippedProblemWriter
 from services.file_setting import FileSetting
 from services.problem_repository import LocalProblemRepository
+
 from services.setting import Setting
 
 from models.main_model import MainModel, MainViewDynamicData
@@ -51,10 +53,12 @@ class MainController():
         self._dependency   = dependency
         self._dependency.register(ProblemsEditor, self.editor)
         self._dependency.register(ProblemsEditorHistory, self.history)
+        self.sector_editor = self._dependency.get(SectorEditor)
         self.path_manager = self._dependency.get(ContentsPathManager)
         self._repo        = self._dependency.get(LocalProblemRepository)
         self.writer       = self._dependency.get(JsonWriter)
         self.strip_writer = self._dependency.get(StrippedProblemWriter)
+        self._setup_editors()
 
     def change_to_state(self, state:MainControllerState) -> None:
         self._state = state
@@ -96,12 +100,16 @@ class MainController():
             self._update_work_controller(WorkController(self._dependency))
         self._open_directory()
     
-    def _open_directory(self) -> None:
+    def _setup_editors(self):
         directory = Setting.get(FileSetting).content_path 
         self.path_manager.directory  = directory
         self._repo.set_filepath(self.path_manager.filepath)
+        self.sector_editor.load_sectors(self._repo)
         self.editor.load_problems(self._repo)
         self.editor.change_to_state(EditingProblemsEditor())
+
+    def _open_directory(self) -> None:
+        self._setup_editors()
         self.tool_controller.change_to_state(ToolControllerState.Edit)
         self.history.clear()
         self.history.backup()
