@@ -1,0 +1,102 @@
+{
+    "next_id": 5,
+    "problems": {
+        "1": {
+            "RIC": {
+                "C": 3,
+                "I": 4,
+                "R": 4
+            },
+            "colour": "red",
+            "grade": {
+                "difficulty": "mid",
+                "range": "red"
+            },
+            "id": 1,
+            "sector": "arch l",
+            "set_by": "Thara",
+            "set_date": "2021-01-02",
+            "strip_date": null,
+            "styles": [
+                "toe hook",
+                "pop"
+            ]
+        },
+        "2": {
+            "RIC": {
+                "C": 3,
+                "I": 2,
+                "R": 5
+            },
+            "colour": "orange",
+            "grade": {
+                "difficulty": "mid",
+                "range": "black"
+            },
+            "id": 2,
+            "sector": "arch l",
+            "set_by": "Aaron",
+            "set_date": "2021-02-02",
+            "strip_date": null,
+            "styles": [
+                "run",
+                "press"
+            ]
+        },
+        "3": {
+            "RIC": {
+                "C": 1,
+                "I": 1,
+                "R": 1
+            },
+            "colour": "green",
+            "grade": {
+                "difficulty": "easy",
+                "range": "green"
+            },
+            "id": 3,
+            "sector": "35c",
+            "set_by": "s",
+            "set_date": "2021-02-16",
+            "strip_date": null,
+            "styles": [
+                "s"
+            ]
+        },
+        "4": {
+            "RIC": {
+                "C": 1,
+                "I": 1,
+                "R": 1
+            },
+            "colour": "blue",
+            "grade": {
+                "difficulty": "mid",
+                "range": "blue"
+            },
+            "id": 4,
+            "sector": "hangover l",
+            "set_by": "s",
+            "set_date": "2021-03-13",
+            "strip_date": null,
+            "styles": [
+                "s"
+            ]
+        }
+    },
+    "sectors": {
+        "35c": 7,
+        "arch l": 10,
+        "arch r": 8,
+        "back slab": 6,
+        "front l": 0,
+        "front r": 1,
+        "hangover l": 4,
+        "hangover r": 5,
+        "mid": 2,
+        "slab": 12,
+        "slab l": 11,
+        "slab r": 9,
+        "tower": 3
+    }
+}

@@ -93,5 +93,5 @@ class SectorEditor():
         self._sectors[change_to] = col
         self.sectorsChanged.emit(True)
 
-    def save_config(self, writer:JsonWriter):
+    def save_sectors(self, writer:JsonWriter):
         writer.set_sectors(self._sectors.copy())

@@ -162,8 +162,10 @@ class EditingMainController(MainControllerState):
     def _save_this_set(self) -> None:
         path = self._context.path_manager.filepath 
         self._context.writer.set_filepath(path)
+        self._context.sector_editor.save_sectors(self._context.writer)
         self._set_strip_writer_filepath()
         self._context.editor.save_this_set(self._context.writer, self._context.strip_writer)
+        self._context.open_current_set()
 
     def show_save_as_dialog(self) ->None:
         filename = self._context.top_controller.get_filename()
@@ -175,6 +177,7 @@ class EditingMainController(MainControllerState):
         if is_savable:
             path   = self._context.path_manager.filepath_to_save
             self._context.writer.set_filepath(path)
+            self._context.sector_editor.save_sectors(self._context.writer)
             self._set_strip_writer_filepath()
             self._context.editor.save_this_set(self._context.writer, self._context.strip_writer)
     

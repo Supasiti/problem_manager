@@ -223,7 +223,8 @@ class SectorCell(QLabel):
             self.mousePressEvent = self._on_mouse_clicked
 
     def _on_context_menu(self, point):
-        self._popup_menu.exec_(self.mapToGlobal(point))  
+        if not self._popup_menu is None:
+            self._popup_menu.exec_(self.mapToGlobal(point))  
 
     def set_context_menu(self, popup_menu:QMenu) -> None:
         self._popup_menu = popup_menu

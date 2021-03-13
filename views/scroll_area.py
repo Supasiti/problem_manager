@@ -93,9 +93,11 @@ class ProblemArea(ScrollArea):
                     self._remove_cell(row, col)
     
     def _remove_cell(self, row:int, col:int) -> None:
-        cell = self.layout.itemAtPosition(row, col).widget()
-        self.layout.removeWidget(cell)
-        cell.setParent(None)
+        item = self.layout.itemAtPosition(row, col) 
+        if not item is None:
+            cell = self.layout.itemAtPosition(row, col).widget()
+            self.layout.removeWidget(cell)
+            cell.setParent(None)
 
     def _remove_right_cols(self) -> None:
         current_cols = self.layout.columnCount()
@@ -193,9 +195,11 @@ class SectorArea(FixedHeightScrollArea):
                 self._remove_cell(col)
     
     def _remove_cell(self, col:int) -> None:
-        cell = self.layout.itemAtPosition(0, col).widget()
-        self.layout.removeWidget(cell)
-        cell.setParent(None)
+        item = self.layout.itemAtPosition(0, col) 
+        if not item is None:
+            cell = item.widget()
+            self.layout.removeWidget(cell)
+            cell.setParent(None)
 
     def _set_cell_data(self):
         for cell_data in self.model.changes.cells:
@@ -218,6 +222,17 @@ class SectorArea(FixedHeightScrollArea):
         text, ok = QInputDialog.getText(self, 'Rename Sector', 'Please enter new sector name:')
         if ok:
             self.controller.rename_sector(text)
+    
+    def set_popup_menu_visibility(self, is_visible:bool) -> None:
+        for i in range(self.layout.columnCount()):
+            item = self.layout.itemAtPosition(0, i)
+            if not item is None:
+                cell = item.widget()
+                if is_visible:
+                    cell.set_context_menu(self.popup_menu)
+                else:
+                    cell.set_context_menu(None)
+
 
 class GradeArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym
