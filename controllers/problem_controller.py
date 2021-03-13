@@ -39,12 +39,12 @@ class ProblemAreaController():
         )
 
     def _setup_dependencies(self, dependency:DependencyService):
-        self._dependency     = dependency
-        self._editor         = self._dependency.get(ProblemsEditor)
+        self._dependency    = dependency
+        self._editor        = self._dependency.get(ProblemsEditor)
         self._sector_editor = self._dependency.get(SectorEditor)
 
     def _connect(self):
-        self.model.cellsChanged.connect(self.view.set_cell_data)
+        self.model.cellsChanged.connect(self.view.update_UI)
         self._editor.problemsChanged.connect(self._on_problems_changed)
         self._editor.problemAdded.connect(self._on_problem_added)
         self._editor.problemRemoved.connect(self._on_problem_removed)

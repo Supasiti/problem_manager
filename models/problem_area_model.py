@@ -21,6 +21,8 @@ class ProblemAreaPanelData(NamedTuple):
 
 class ProblemAreaData(NamedTuple):
     cells : tuple[ProblemCellData,...] 
+    n_row : int
+    n_col : int
     
 class ProblemAreaDataBuilder(QObject):
 
@@ -29,49 +31,72 @@ class ProblemAreaDataBuilder(QObject):
         self._grade_setting  = Setting.get(GradeSetting)
         self._sector_setting = sector_editor
         self._builder        = ProblemCellDataBuilder(sector_editor)
-        
-        self._n_row = self._grade_setting.length()
-        self._n_col = self._sector_setting.length() 
-        print('problem area data builder : {}'.format(self._n_col))
+
+    @property
+    def n_row(self) ->int :
+        return self._grade_setting.length()
+
+    @property
+    def n_col(self) ->int :
+        return self._sector_setting.length() 
 
     @property 
-    def n_cell(self):
-        return self._n_row * self._n_col
+    def n_cell(self) -> int:
+        return self.n_row * self.n_col
     
     def _cell_coord(self, index:int):
-        return (index // self._n_col, index % self._n_col)
+        return (index // self.n_col, index % self.n_col)
 
     def no_problems(self):
         cells = [self._builder.empty_cell(*self._cell_coord(index))
                 for index in range(self.n_cell)]
-        return ProblemAreaData(tuple(cells))
-
-    def from_problems(self, problems:tuple[Problem,...], non_empty_cells:tuple ):
+        return ProblemAreaData(tuple(cells), self.n_row, self.n_col)
+    
+    def from_problems(self, problems:tuple[Problem,...], previous_data:ProblemAreaData) -> ProblemAreaData:
         # Arguments:
-        #   problems        : a tuple of type Problem
-        #   non_empty_cells : a tuple of type (row, col) - indicate that these are non empty
-        new_cell_data  = [self._cell_data(p) for p in problems]
-        new_cell_coord = [(d.row, d.col) for d in new_cell_data]
-        empty_cells    = [self._builder.empty_cell(*_tuple) 
-                            for _tuple in non_empty_cells
+        #   problems      : a tuple of type Problem
+        #   previous_data : ProblemAreaData 
+        new_cell_data   = [self._cell_data(p) for p in problems]
+        new_cell_coord  = [(d.row, d.col) for d in new_cell_data]
+        cell_to_update  = self._cell_to_update_coord(problems, previous_data)
+        new_empty_cells = [ self._builder.empty_cell(*_tuple) 
+                            for _tuple in cell_to_update
                             if not _tuple in new_cell_coord]
-        new_cell_data += empty_cells
-        return ProblemAreaData(tuple(new_cell_data))
+        new_cell_data  += new_empty_cells
+        return ProblemAreaData(tuple(new_cell_data), self.n_row, self.n_col) 
 
+    def _cell_to_update_coord(self, problems:tuple[Problem,...], previous_data:ProblemAreaData) -> list:
+        # return a list of tuple (row, col) of coordinates of cells to be updated
+        cell_to_update = [(c.row, c.col) for c in previous_data.cells if c.id != 0]
+        if previous_data.n_row < self.n_row:
+            # add bottom rows
+            max_col     = min(previous_data.n_col, self.n_col)
+            bottom_rows = [(row,col) for row in range(self.n_row)[previous_data.n_row:] for col in range(max_col)]
+            cell_to_update += bottom_rows
+
+        if previous_data.n_col < self.n_col:
+            # add right hand columns
+            max_row    = max(previous_data.n_row, self.n_row)
+            right_cols = [(row,col) for row in range(max_row) for col in range(self.n_col)[previous_data.n_col:]]
+            cell_to_update += right_cols
+        return cell_to_update
+            
     def _cell_data(self, problem:Problem):
         return self._builder.from_problem(problem)
 
     def from_problem(self, problem:Problem):
+        # assume that no column or row being added/removed
         assert(type(problem) == Problem)
         cell_data = self._cell_data(problem)
-        return ProblemAreaData((cell_data,))
+        return ProblemAreaData((cell_data,), self.n_row, self.n_col)
     
     def empty_cell(self, problem :Problem):
+        # assume that no column or row being added/removed
         assert(type(problem) == Problem)
         _row      = self._grade_setting.get_row(problem.grade)
         _col      = self._sector_setting.get_col(problem.sector)
         cell_data = self._builder.empty_cell(_row, _col) 
-        return ProblemAreaData((cell_data,))
+        return ProblemAreaData((cell_data,), self.n_row, self.n_col)
     
 
 class ProblemAreaModel(QObject):
@@ -99,10 +124,10 @@ class ProblemAreaModel(QObject):
     def _update_data(self, value: ProblemAreaData) -> None:
         old_data  = list(self.data.cells)
         new_data  = list(value.cells)
-        new_cells = [(d.row, d.col) for d in new_data]
+        new_cells = ((d.row, d.col) for d in new_data)
         old_data_to_retain = [ d for d in old_data if not (d.row, d.col) in new_cells]
         new_data += old_data_to_retain
-        self.data = ProblemAreaData(tuple(new_data))
+        self.data = ProblemAreaData(tuple(new_data), value.n_row, value.n_col) 
 
     def add_problem(self, problem: Problem) -> None:
         # Call when the editor notifies that a problem is added to that cell. 
@@ -116,9 +141,7 @@ class ProblemAreaModel(QObject):
         # To optimise algo, all non-empty cell will be converted either to new data or
         # empty cell. We are expecting about 60 problems on screens at any one time, so
         # at most we only need to convert 120 cells, instead of 247 cells
-
-        non_empty_cells = [(c.row, c.col) for c in self.data.cells if c.id != 0]
-        self.changes = self._builder.from_problems(problems, tuple(non_empty_cells))
+        self.changes = self._builder.from_problems(problems, self.data)
 
     def remove_problem(self, problem: Problem) -> None:
         # Call when the editor notifies that a problem is removed from that cell. 

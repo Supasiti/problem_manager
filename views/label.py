@@ -48,14 +48,18 @@ class FixedSizeLabel(QLabel):
         self.setPalette(pal)
 
 
-class ProblemCell(FixedSizeLabel):
+
+
+class ProblemCell(QLabel):
     # cell displaying info on problem if there is no problem on this particular
     # cell. This is the base problem cell.
 
     _data : ProblemCellData
 
     def __init__(self, width:int, height:int, data: ProblemCellData):
-        super().__init__(width, height)
+        super().__init__()
+        self._width  = width
+        self._height = height
         self._init_UI()
         self._clicked_command = None
         self.set_data(data)
@@ -63,6 +67,10 @@ class ProblemCell(FixedSizeLabel):
     # TODO width, height in problem cell data
 
     def _init_UI(self):
+        self.setMinimumWidth(self._width) 
+        self.setFixedHeight(self._height) 
+        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
@@ -76,7 +84,7 @@ class ProblemCell(FixedSizeLabel):
 
     def set_data(self, data: ProblemCellData):
         self._data = data
-        self.set_colours(self._data.bg_colour, self._data.text_colour)
+        self._set_colours(self._data.bg_colour, self._data.text_colour)
         self._add_mouse_effect()
         self.text_style.setText(self._data.text)
         self.text_ric.setText(self._data.RIC)
@@ -94,16 +102,23 @@ class ProblemCell(FixedSizeLabel):
             self._clicked_command(self._data.id, self._data.row, self._data.col)
     
     def _add_hover_effect(self, event):
-        self.set_colours(self._data.hover_colour, self._data.text_colour)
+        self._set_colours(self._data.hover_colour, self._data.text_colour)
     
     def _remove_hover_effect(self, event):
-        self.set_colours(self._data.bg_colour, self._data.text_colour)
+        self._set_colours(self._data.bg_colour, self._data.text_colour)
 
     def set_clicked_command(self, command):
         self._clicked_command = command
         self.mousePressEvent = self._on_mouse_clicked
 
-    
+    def _set_colours(self, colour: Colour, text_colour: Colour):
+        
+        self.setAutoFillBackground(True)
+        pal = QPalette()
+        pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
+        pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
+        self.setPalette(pal)
+
 class GradeCell(FixedSizeLabel):
     # cell displaying info related to the grade
     _data  : GradeCellData
@@ -154,19 +169,24 @@ class GradeCell(FixedSizeLabel):
         self.text_count.set_colours(self._count.bg_colour, self._count.text_colour)
 
 
-class SectorCell(FixedSizeLabel):
+class SectorCell(QLabel):
     # cell displaying info on each sector
 
     _data : SectorCellData
 
-    def __init__(self, height:int, data:SectorCellData):
-        super().__init__(data.width, height)
+    def __init__(self, height:int, data:SectorCellData) -> None:
+        super().__init__()
+        self._width = data.width
+        self._height = height
         self._init_UI()
         self.set_data(data)
 
-
     # TODO put width and height in SectorCellData
-    def _init_UI(self):
+    def _init_UI(self) -> None:
+        self.setMinimumWidth(self._width) 
+        self.setFixedHeight(self._height) 
+        self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+
         layout = QVBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(2,2,2,2)
@@ -178,11 +198,18 @@ class SectorCell(FixedSizeLabel):
         layout.addWidget(self.text_count)
         self.setLayout(layout)
 
-    def set_data(self, data:SectorCellData):
+    def set_data(self, data:SectorCellData) -> None:
         self._data = data
-        self.set_colours(self._data.bg_colour, self._data.text_colour)
+        self._set_colours(self._data.bg_colour, self._data.text_colour)
         self.text_sector.setText(self._data.text)
         self.text_count.setText(self._data.problem_count)
+    
+    def _set_colours(self, colour: Colour, text_colour: Colour) -> None:
+        self.setAutoFillBackground(True)
+        pal = QPalette()
+        pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
+        pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
+        self.setPalette(pal)
 
 
 class InfoCell(FixedSizeLabel):

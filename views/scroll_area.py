@@ -54,6 +54,7 @@ class ProblemArea(ScrollArea):
         self.panels   = self.model.panels
         self.margins  = QMargins(self.panels.left_margin, self.panels.top_margin, 0, 0)
         self.setViewportMargins(self.margins)
+        self.setWidgetResizable(True) 
 
         self.header     = self.panels.sector_view
         self.left_panel = self.panels.grade_view
@@ -66,27 +67,57 @@ class ProblemArea(ScrollArea):
         self.layout     = QGridLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
-        for cell_data in self.model.changes.cells:
-            self._generate_cell(cell_data, 96, 48)
+        
+        self._set_cell_data()
 
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
 
-    def _generate_cell(self, cell_data: ProblemCellData, width: int, height:int):
-        cell  = ProblemCell(width, height, cell_data)
-        cell.set_clicked_command(self.controller.on_cell_clicked)
-        self.layout.addWidget(cell, cell_data.row, cell_data.col)
-
+    
     def _connect_scroll_bars(self):
         self.horizontalScrollBar().valueChanged.connect(lambda x : self.header.horizontalScrollBar().setValue(x))
         self.header.horizontalScrollBar().valueChanged.connect(lambda x : self.horizontalScrollBar().setValue(x))
         self.verticalScrollBar().valueChanged.connect(lambda x : self.left_panel.verticalScrollBar().setValue(x))
         self.left_panel.verticalScrollBar().valueChanged.connect(lambda x : self.verticalScrollBar().setValue(x))
     
-    def set_cell_data(self):
+    def update_UI(self):
+        self._remove_bottom_rows()
+        self._remove_right_cols()
+        self._set_cell_data()
+
+    def _remove_bottom_rows(self) -> None:
+        current_rows = self.layout.rowCount()
+        new_rows     = self.model.changes.n_row
+        if new_rows < current_rows:
+            for row in reversed(range(current_rows)[new_rows:]):
+                for col in reversed(range(self.layout.columnCount())):
+                    self._remove_cell(row, col)
+    
+    def _remove_cell(self, row:int, col:int) -> None:
+        cell = self.layout.itemAtPosition(row, col).widget()
+        self.layout.removeWidget(cell)
+        cell.setParent(None)
+
+    def _remove_right_cols(self) -> None:
+        current_cols = self.layout.columnCount()
+        new_cols     = self.model.changes.n_col
+        if new_cols < current_cols:
+            for row in reversed(range(self.layout.rowCount())):
+                for col in reversed(range(current_cols)[new_cols:]):
+                    self._remove_cell(row, col)
+
+    def _set_cell_data(self):
         for cell_data in self.model.changes.cells:
-            cell = self.layout.itemAtPosition(cell_data.row, cell_data.col).widget()
-            cell.set_data(cell_data)
+            if self.layout.itemAtPosition(cell_data.row, cell_data.col) is None:
+                self._generate_cell(cell_data, 96, 48)
+            else:
+                cell = self.layout.itemAtPosition(cell_data.row, cell_data.col).widget()
+                cell.set_data(cell_data)
+    
+    def _generate_cell(self, cell_data: ProblemCellData, width: int, height:int):
+        cell  = ProblemCell(width, height, cell_data)
+        cell.set_clicked_command(self.controller.on_cell_clicked)
+        self.layout.addWidget(cell, cell_data.row, cell_data.col)
 
     def resizeEvent(self, event):
         rect = self.viewport().geometry()
@@ -113,15 +144,40 @@ class SectorArea(FixedHeightScrollArea):
         self._hide_scroll_bar()
     
     def _init_UI(self):
+        self.setWidgetResizable(True) 
         self.widget = QWidget()
         self.layout = QGridLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(0,0,0,0)
-        for cell_data in self.model.changes.cells:
-            self._generate_cell(cell_data, self.height)
+        
+        self._set_cell_data()
 
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
+
+    def update_UI(self):
+        self._remove_cols()
+        self._set_cell_data()
+
+    def _remove_cols(self):
+        current_cols = self.layout.columnCount()
+        new_cols     = self.model.changes.n_col
+        if new_cols < current_cols:
+            for col in reversed(range(current_cols)[new_cols:]):
+                self._remove_cell(col)
+    
+    def _remove_cell(self, col:int) -> None:
+        cell = self.layout.itemAtPosition(0, col).widget()
+        self.layout.removeWidget(cell)
+        cell.setParent(None)
+
+    def _set_cell_data(self):
+        for cell_data in self.model.changes.cells:
+            if self.layout.itemAtPosition(0, cell_data.col) is None:
+                self._generate_cell(cell_data, self.height)
+            else:
+                cell = self.layout.itemAtPosition(0, cell_data.col).widget()
+                cell.set_data(cell_data)
 
     def _generate_cell(self, cell_data: SectorCellData, height:int):
         cell  = SectorCell(height, cell_data)
@@ -130,11 +186,6 @@ class SectorArea(FixedHeightScrollArea):
     def _hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
     
-    def set_cell_data(self):
-        for cell_data in self.model.changes.cells:
-            cell = self.layout.itemAtPosition(0, cell_data.col).widget()
-            cell.set_data(cell_data)
-
 
 class GradeArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym

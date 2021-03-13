@@ -25,7 +25,7 @@ class SectorAreaController():
         editor.problemsChanged.connect(self._on_problems_changed)
         editor.problemAdded.connect(self._on_problems_changed)
         editor.problemRemoved.connect(self._on_problems_changed)
-        self.model.cellsChanged.connect(self.view.set_cell_data)
+        self.model.cellsChanged.connect(self.view.update_UI)
 
     def _on_problems_changed(self, arg:bool):
         editor    = self._dependency.get(ProblemsEditor)

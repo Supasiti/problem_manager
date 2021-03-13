@@ -60,6 +60,7 @@ class SectorCellDataBuilder():
 
 class SectorAreaData(NamedTuple):
     cells  : tuple[SectorCellData,...]
+    n_col  : int
     height : int = 48
     
 class SectorAreaDataBuilder():
@@ -67,23 +68,29 @@ class SectorAreaDataBuilder():
     def __init__(self, sector_editor:SectorEditor):
         self._builder        = SectorCellDataBuilder(sector_editor)
         self._sector_setting = sector_editor
-        self.n_col           = self._sector_setting.length()
-        self._sectors        = self._sector_setting.get_all_sectors()
+
+    @property
+    def n_col(self) -> int:
+        return self._sector_setting.length()
+
+    @property
+    def sectors(self) -> tuple:
+        return self._sector_setting.get_all_sectors()
 
     def default(self):
         cells = [self._builder.from_col(index) for index in range(self.n_col)]
         cells.sort(key= lambda x : x.col)
-        return SectorAreaData(tuple(cells))
+        return SectorAreaData(tuple(cells), self.n_col)
 
     def from_problems(self, problems:tuple[Problem,...]):
         prob = tuple(problems)
         if len(prob) == 0 :
             return self.default()
         set_date = self._last_setting_date(prob)
-        sectors  = [Sector.from_problems(s, prob, set_date) for s in self._sectors]
+        sectors  = [Sector.from_problems(s, prob, set_date) for s in self.sectors]
         cells    = list([self._builder.from_sector(s) for s in sectors ])
         cells.sort(key= lambda x : x.col)
-        return SectorAreaData(tuple(cells))
+        return SectorAreaData(tuple(cells), self.n_col)
 
     def _last_setting_date(self, problems:tuple[Problem,...]):
         prob = tuple(problems)
@@ -119,7 +126,7 @@ class SectorAreaModel(QObject):
         new_cells = [d.col for d in new_data]
         old_data_to_retain = [ d for d in old_data if not d.col in new_cells]
         new_data += old_data_to_retain
-        self._data = SectorAreaData(tuple(new_data))
+        self._data = SectorAreaData(tuple(new_data), value.n_col)
 
     def problems_changed(self, problems: tuple[Problem,...]) -> None:
         self.changes = self._builder.from_problems(problems)

@@ -10,7 +10,6 @@ from services.contents_path_manager import ContentsPathManager
 from services.json_writer import JsonWriter, StrippedProblemWriter
 from services.file_setting import FileSetting
 from services.problem_repository import LocalProblemRepository
-
 from services.setting import Setting
 
 from models.main_model import MainModel, MainViewDynamicData
@@ -58,7 +57,7 @@ class MainController():
         self._repo        = self._dependency.get(LocalProblemRepository)
         self.writer       = self._dependency.get(JsonWriter)
         self.strip_writer = self._dependency.get(StrippedProblemWriter)
-        self._setup_editors()
+        # self._setup_editors()
 
     def change_to_state(self, state:MainControllerState) -> None:
         self._state = state
