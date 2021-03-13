@@ -48,6 +48,7 @@ class ProblemAreaController():
         self._editor.problemsChanged.connect(self._on_problems_changed)
         self._editor.problemAdded.connect(self._on_problem_added)
         self._editor.problemRemoved.connect(self._on_problem_removed)
+        self._sector_editor.sectorsChanged.connect(self._on_problems_changed)
 
     def _on_problems_changed(self, arg:bool):
         self.model.update_problems(self._editor.problems)

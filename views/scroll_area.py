@@ -73,7 +73,6 @@ class ProblemArea(ScrollArea):
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
 
-    
     def _connect_scroll_bars(self):
         self.horizontalScrollBar().valueChanged.connect(lambda x : self.header.horizontalScrollBar().setValue(x))
         self.header.horizontalScrollBar().valueChanged.connect(lambda x : self.horizontalScrollBar().setValue(x))
@@ -133,18 +132,20 @@ class SectorArea(FixedHeightScrollArea):
     # area displaying sectors in the gym
 
     widget : QWidget
+    popup_menu : QMenu
 
     def __init__(self, controller, model):
         self.controller = controller
         self.model     = model
         self.height    = self.model.changes.height
         super().__init__(self.height)
-        
         self._init_UI()
         self._hide_scroll_bar()
     
     def _init_UI(self):
         self.setWidgetResizable(True) 
+        self._create_context_menu()
+
         self.widget = QWidget()
         self.layout = QGridLayout()
         self.layout.setSpacing(2)
@@ -154,6 +155,31 @@ class SectorArea(FixedHeightScrollArea):
 
         self.widget.setLayout(self.layout)
         self.setWidget(self.widget)
+
+    def _create_context_menu(self):
+        self.popup_menu = QMenu(self)
+        self.popup_menu.addAction(PopupAction(
+            'Rename sector', 
+            connect=self._rename_sector,
+            parent=self
+            ))
+        self.popup_menu.addSeparator()
+        self.popup_menu.addAction(PopupAction(
+            'Insert sector to the left', 
+            connect=self.controller.insert_sector_to_the_left,
+            parent=self
+            ))
+        self.popup_menu.addAction(PopupAction(
+            'Insert sector to the right', 
+            connect=self.controller.insert_sector_to_the_right,
+            parent=self
+            ))
+        self.popup_menu.addSeparator()
+        self.popup_menu.addAction(PopupAction(
+            'Delete sector', 
+            connect=self.controller.delete_sector,
+            parent=self
+            ))
 
     def update_UI(self):
         self._remove_cols()
@@ -181,11 +207,17 @@ class SectorArea(FixedHeightScrollArea):
 
     def _generate_cell(self, cell_data: SectorCellData, height:int):
         cell  = SectorCell(height, cell_data)
+        cell.set_context_menu(self.popup_menu)
+        cell.set_clicked_command(self.controller.select_sector)
         self.layout.addWidget(cell, 0, cell_data.col)
 
     def _hide_scroll_bar(self):
         self.horizontalScrollBar().setStyleSheet("QScrollBar {height:0px;}")
     
+    def _rename_sector(self) -> None:
+        text, ok = QInputDialog.getText(self, 'Rename Sector', 'Please enter new sector name:')
+        if ok:
+            self.controller.rename_sector(text)
 
 class GradeArea(FixedWidthScrollArea):
     # scroll area displaying grades in the gym
@@ -221,3 +253,12 @@ class GradeArea(FixedWidthScrollArea):
         for count_data in self.model.counts.cells:
             cell = self.layout.itemAtPosition(count_data.row, 0).widget()
             cell.set_count_data(count_data)
+
+
+class PopupAction(QAction):
+
+    def __init__(self, text, connect =None, parent=None):
+        super().__init__(text, parent=parent)
+
+        if not connect is None:
+            self.triggered.connect(connect)

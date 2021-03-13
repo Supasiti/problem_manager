@@ -44,6 +44,7 @@ class SectorEditor():
         else :
             self._shift_col_up(col, self.length())
             self._sectors[name] = col
+        self.sectorsChanged.emit(True)
 
     # remove sector 
     def remove_sector(self, name:str) -> None:
@@ -52,6 +53,7 @@ class SectorEditor():
         col = self.get_col(name)
         self._sectors.pop(name)
         self._shift_col_down(col, self.length())
+        self.sectorsChanged.emit(True)
     
     # move sector to index
     def move_sector(self, name:str, col:int) -> None:
@@ -66,6 +68,7 @@ class SectorEditor():
         elif current_col > col:
             self._shift_col_up(col, current_col)
         self._sectors[name] = col
+        self.sectorsChanged.emit(True)
     
     def _shift_col_up(self, start:int, end:int) -> None:
         assert ( end > start)
@@ -88,6 +91,7 @@ class SectorEditor():
         col = self._sectors[original]
         self._sectors.pop(original)
         self._sectors[change_to] = col
+        self.sectorsChanged.emit(True)
 
     def save_config(self, writer:JsonWriter):
         writer.set_sectors(self._sectors.copy())

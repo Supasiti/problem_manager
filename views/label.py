@@ -3,6 +3,7 @@
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtWidgets import QVBoxLayout, QGridLayout
+from PyQt5.QtWidgets import QMenu
 from PyQt5.QtGui import QPalette
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt 
@@ -112,7 +113,6 @@ class ProblemCell(QLabel):
         self.mousePressEvent = self._on_mouse_clicked
 
     def _set_colours(self, colour: Colour, text_colour: Colour):
-        
         self.setAutoFillBackground(True)
         pal = QPalette()
         pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
@@ -176,9 +176,12 @@ class SectorCell(QLabel):
 
     def __init__(self, height:int, data:SectorCellData) -> None:
         super().__init__()
-        self._width = data.width
-        self._height = height
+        self._width   = data.width
+        self._height  = height
+        self._popup_menu      = None
+        self._clicked_command = None
         self._init_UI()
+        self._add_mouse_effect()
         self.set_data(data)
 
     # TODO put width and height in SectorCellData
@@ -210,6 +213,31 @@ class SectorCell(QLabel):
         pal.setColor(QPalette.Window, QColor(colour.red, colour.green, colour.blue))
         pal.setColor(QPalette.WindowText, QColor(text_colour.red, text_colour.green, text_colour.blue))
         self.setPalette(pal)
+    
+    def _add_mouse_effect(self):
+        self.setFocusPolicy(Qt.StrongFocus)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        if not self._popup_menu is None:
+            self.customContextMenuRequested.connect(self._on_context_menu)
+        if not self._clicked_command is None :
+            self.mousePressEvent = self._on_mouse_clicked
+
+    def _on_context_menu(self, point):
+        self._popup_menu.exec_(self.mapToGlobal(point))  
+
+    def set_context_menu(self, popup_menu:QMenu) -> None:
+        self._popup_menu = popup_menu
+        self.customContextMenuRequested.connect(self._on_context_menu)
+
+    def _on_mouse_clicked(self, event):
+        if not self._clicked_command is None:
+            if event.button() == Qt.RightButton:
+                self._clicked_command(self._data.col)
+    
+    def set_clicked_command(self, command):
+        self._clicked_command = command
+        self.mousePressEvent = self._on_mouse_clicked
+
 
 
 class InfoCell(FixedSizeLabel):

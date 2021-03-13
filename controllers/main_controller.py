@@ -57,7 +57,6 @@ class MainController():
         self._repo        = self._dependency.get(LocalProblemRepository)
         self.writer       = self._dependency.get(JsonWriter)
         self.strip_writer = self._dependency.get(StrippedProblemWriter)
-        # self._setup_editors()
 
     def change_to_state(self, state:MainControllerState) -> None:
         self._state = state
