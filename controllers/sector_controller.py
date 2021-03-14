@@ -70,7 +70,6 @@ class SectorAreaController():
         self._state.delete_sector()
      
 
-
 class State(ABC):
 
     _context     : SectorAreaController
@@ -102,27 +101,32 @@ class State(ABC):
 class EditingState(State):
 
     def rename_sector(self, change_to:str) -> None:
-        if not self.context.sector_selected is None:
-            if not change_to.lower() in self.context.sector_editor.get_all_sectors():
-                self.context.sector_editor.change_name(self.context.sector_selected, change_to.lower())
-                self.context.sector_selected = None
+        if self.context.sector_selected is None:
+            return
+        if not change_to.lower() in self.context.sector_editor.get_all_sectors():
+            self.context.sector_editor.change_name(self.context.sector_selected, change_to.lower())
+            self.context.sector_selected = None
 
     def insert_sector_to_the_left(self) -> None:
+        if self.context.sector_selected is None:
+            return
         col = self.context.sector_editor.get_col(self.context.sector_selected)
         self.context.sector_editor.add_sector('unname_'+ str(self.context.next_sector_id), col)
         self.context.next_sector_id += 1
 
     def insert_sector_to_the_right(self) -> None:
-        if not self.context.sector_selected is None:
-            col = self.context.sector_editor.get_col(self.context.sector_selected)
-            self.context.sector_editor.add_sector('unname_'+ str(self.context.next_sector_id), col+1)
-            self.context.next_sector_id += 1
-            self.context.sector_selected = None
+        if self.context.sector_selected is None:
+            return
+        col = self.context.sector_editor.get_col(self.context.sector_selected)
+        self.context.sector_editor.add_sector('unname_'+ str(self.context.next_sector_id), col+1)
+        self.context.next_sector_id += 1
+        self.context.sector_selected = None
     
     def delete_sector(self) -> None:
-        if not self.context.sector_selected is None:
-            self.context.sector_editor.remove_sector(self.context.sector_selected)
-            self.context.sector_selected = None
+        if self.context.sector_selected is None:
+            return
+        self.context.sector_editor.remove_sector(self.context.sector_selected)
+        self.context.sector_selected = None
 
 class ViewingState(State):
 
